@@ -1,13 +1,16 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
+import type { CSSProperties } from 'react';
 
 interface SkeletonProps {
   className?: string;
+  style?: CSSProperties;
 }
 
-export const Skeleton = memo(function Skeleton({ className = '' }: SkeletonProps) {
+export const Skeleton = memo(function Skeleton({ className = '', style }: SkeletonProps) {
   return (
     <div
       className={`animate-pulse bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+      style={style}
       aria-hidden="true"
     />
   );

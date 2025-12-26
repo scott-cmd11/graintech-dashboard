@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { FolderPlus, Folder, X, Plus, Trash2, Edit3, Check } from 'lucide-react';
 
 interface Collection {

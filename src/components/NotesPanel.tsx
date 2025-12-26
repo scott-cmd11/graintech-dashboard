@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { StickyNote, X, Save, Trash2, Plus } from 'lucide-react';
 
 interface Note {

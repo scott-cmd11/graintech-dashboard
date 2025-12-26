@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import type { BarChartData, DonutChartData } from '../types';
 
 interface SimpleBarChartProps {
@@ -56,7 +56,7 @@ export const SimpleDonutChart = memo(function SimpleDonutChart({
   const paths = useMemo(() => {
     let cumulativePercent = 0;
 
-    return data.map((d, i) => {
+    return data.map((d) => {
       const startPercent = cumulativePercent;
       const percentage = d.value / total;
       cumulativePercent += percentage;

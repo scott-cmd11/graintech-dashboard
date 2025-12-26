@@ -1,10 +1,9 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Cpu,
   Sun,
   Moon,
   Globe,
-  Zap,
   ExternalLink,
   TrendingUp,
   GitCompare,
@@ -15,7 +14,6 @@ import {
   ScrollText,
   Network,
   Sprout,
-  PieChart,
   Wand2,
   Calculator,
   FolderOpen,
@@ -44,7 +42,6 @@ import {
   aiResearchData,
   regulatoryData,
   marketStats,
-  typeColors,
 } from './data';
 
 // Components
@@ -95,7 +92,7 @@ interface Note {
 
 // Header Component
 function Header() {
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { toggleTheme, isDark } = useTheme();
   const { getShareableUrl } = useUrlState();
 
   return (
@@ -374,13 +371,6 @@ function Dashboard() {
     setNotes((prev) => prev.filter((n) => n.id !== noteId));
   }, [setNotes]);
 
-  // Open notes for a company
-  const handleOpenNotes = useCallback((company: Company) => {
-    setNoteCompanyId(company.id);
-    setNoteCompanyName(company.name);
-    setShowNotes(true);
-  }, []);
-
   // Handlers
   const handleToggleFavorite = useCallback(
     (companyId: number) => {
@@ -478,18 +468,6 @@ function Dashboard() {
   );
 
   // Chart data
-  const countryStats = useMemo(() => {
-    const stats: Record<string, number> = {};
-    companiesData.forEach((c) => {
-      const country = c.country.split('/')[0];
-      stats[country] = (stats[country] || 0) + 1;
-    });
-    return Object.entries(stats)
-      .map(([label, value]) => ({ label, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 7);
-  }, []);
-
   const techStats = useMemo(() => {
     const stats: Record<string, number> = {};
     companiesData.forEach((c) => {
@@ -687,7 +665,7 @@ function Dashboard() {
 
             {/* Company Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {paginatedCompanies.map((company, index) => (
+              {paginatedCompanies.map((company) => (
                 <CompanyCard
                   key={company.id}
                   company={company}

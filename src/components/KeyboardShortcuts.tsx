@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useCallback, useState } from 'react';
+import { memo, useEffect, useCallback, useState } from 'react';
 import { Keyboard } from 'lucide-react';
 
 interface KeyboardShortcutsProps {

@@ -1,5 +1,5 @@
-import React, { memo, useMemo } from 'react';
-import { DollarSign, TrendingUp, Building2 } from 'lucide-react';
+import { memo, useMemo } from 'react';
+import { DollarSign, TrendingUp } from 'lucide-react';
 import type { Company } from '../types';
 
 interface FundingTimelineProps {

@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface AdvancedFiltersProps {

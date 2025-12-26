@@ -1,4 +1,4 @@
-import React, { memo, useState, useMemo } from 'react';
+import { memo, useState, useMemo } from 'react';
 import { Calculator, DollarSign, Clock, TrendingUp, Info } from 'lucide-react';
 
 interface ROICalculatorProps {

@@ -1,5 +1,5 @@
-import React, { memo, useMemo } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import { memo, useMemo } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import { MapPin } from 'lucide-react';
 import type { Company } from '../types';
 import 'leaflet/dist/leaflet.css';

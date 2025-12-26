@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { Radar } from 'lucide-react';
 import type { Company } from '../types';
 

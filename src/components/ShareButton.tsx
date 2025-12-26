@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Share2, Link, Check, Twitter, Linkedin, Mail } from 'lucide-react';
 
 interface ShareButtonProps {

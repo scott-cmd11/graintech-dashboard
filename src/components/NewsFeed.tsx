@@ -1,5 +1,5 @@
-import React, { memo, useState, useMemo } from 'react';
-import { Newspaper, ExternalLink, Clock, Tag, ChevronDown, ChevronUp } from 'lucide-react';
+import { memo, useState, useMemo } from 'react';
+import { Newspaper, Clock, Tag, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface NewsItem {
   id: string;

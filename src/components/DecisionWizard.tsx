@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Wand2, ChevronRight, ChevronLeft, Check, RotateCcw } from 'lucide-react';
 import type { Company } from '../types';
 

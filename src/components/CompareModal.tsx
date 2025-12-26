@@ -1,5 +1,6 @@
-import React, { memo, useEffect, useCallback, useRef } from 'react';
-import { X, ExternalLink, Zap, Check, Minus } from 'lucide-react';
+import { memo, useEffect, useCallback, useRef } from 'react';
+import type React from 'react';
+import { X, ExternalLink, Zap, Check } from 'lucide-react';
 import type { Company } from '../types';
 
 interface CompareModalProps {
@@ -46,7 +47,6 @@ const comparisonRows: ComparisonRow[] = [
 function getCommonCrops(companies: Company[]): string[] {
   if (companies.length === 0) return [];
 
-  const firstCrops = new Set(companies[0].crops);
   return companies[0].crops.filter((crop) =>
     companies.every((company) => company.crops.includes(crop))
   );
