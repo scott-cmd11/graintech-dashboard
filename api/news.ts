@@ -2,8 +2,8 @@ export const config = {
   runtime: 'edge',
 };
 
-export default async function handler(request: Request) {
-  const apiKey = process.env.GNEWS_API_KEY;
+export default async function handler() {
+  const apiKey = process.env.GNEWS_API_KEY as string | undefined;
 
   if (!apiKey) {
     return new Response(
