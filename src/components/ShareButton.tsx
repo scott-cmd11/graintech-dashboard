@@ -63,7 +63,7 @@ export const ShareButton = memo(function ShareButton({ url, title = 'GrainTech D
   return (
     <div className="relative">
       <button
-        onClick={() => navigator.share ? handleNativeShare() : setIsOpen(!isOpen)}
+        onClick={() => 'share' in navigator ? handleNativeShare() : setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
         title="Share"
       >
@@ -71,7 +71,7 @@ export const ShareButton = memo(function ShareButton({ url, title = 'GrainTech D
         Share
       </button>
 
-      {isOpen && !navigator.share && (
+      {isOpen && !('share' in navigator) && (
         <>
           <div
             className="fixed inset-0 z-40"

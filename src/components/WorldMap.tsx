@@ -60,38 +60,6 @@ const countryMapping: Record<string, string> = {
   'Global': 'Global',
 };
 
-// Legend component
-function Legend() {
-  return (
-    <div className="leaflet-bottom leaflet-right">
-      <div className="leaflet-control bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 m-4 text-sm">
-        <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Companies</h4>
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-gray-600 dark:text-gray-400">1 company</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-green-500" />
-            <span className="text-gray-600 dark:text-gray-400">2-3 companies</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-green-500" />
-            <span className="text-gray-600 dark:text-gray-400">4-5 companies</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-green-500" />
-            <span className="text-gray-600 dark:text-gray-400">6+ companies</span>
-          </div>
-          <div className="flex items-center gap-2 pt-1 border-t border-gray-200 dark:border-gray-700 mt-1">
-            <div className="w-4 h-4 rounded-full bg-amber-500" />
-            <span className="text-gray-600 dark:text-gray-400">Selected</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // Hub data interface
 interface HubData {
