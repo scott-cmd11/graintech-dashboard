@@ -16,32 +16,44 @@ export const SimpleBarChart = memo(function SimpleBarChart({
   const barMaxHeight = 120; // pixels for the bar area
 
   return (
-    <div className={`flex items-end gap-2 w-full pt-6 ${className}`} role="img" aria-label="Bar chart">
-      {data.map((d, i) => (
-        <div
-          key={i}
-          className="flex-1 flex flex-col items-center group"
-          role="listitem"
-          aria-label={`${d.label}: ${d.value}`}
-        >
-          {/* Tooltip */}
-          <div className="relative w-full">
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-              {d.label}: {d.value}
-            </div>
-          </div>
-          {/* Bar */}
+    <div className={`flex flex-col w-full pt-6 ${className}`} role="img" aria-label="Bar chart">
+      {/* Bars */}
+      <div className="flex items-end gap-1 w-full">
+        {data.map((d, i) => (
           <div
-            className={`w-full rounded-t-sm transition-all duration-500 ${color}`}
-            style={{ height: `${Math.max((d.value / max) * barMaxHeight, 4)}px` }}
-            aria-hidden="true"
-          />
-          {/* Label */}
-          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-2 truncate w-full text-center">
-            {d.label}
-          </p>
-        </div>
-      ))}
+            key={i}
+            className="flex-1 flex flex-col items-center group"
+            role="listitem"
+            aria-label={`${d.label}: ${d.value}`}
+          >
+            {/* Tooltip */}
+            <div className="relative w-full">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
+                {d.label}: {d.value}
+              </div>
+            </div>
+            {/* Bar */}
+            <div
+              className={`w-full rounded-t-sm transition-all duration-500 ${color}`}
+              style={{ height: `${Math.max((d.value / max) * barMaxHeight, 4)}px` }}
+              aria-hidden="true"
+            />
+          </div>
+        ))}
+      </div>
+      {/* Labels - rotated 45 degrees */}
+      <div className="flex gap-1 w-full mt-2" style={{ height: '60px' }}>
+        {data.map((d, i) => (
+          <div key={i} className="flex-1 relative">
+            <p
+              className="absolute top-0 left-1/2 text-[9px] text-gray-500 dark:text-gray-400 whitespace-nowrap origin-top-left"
+              style={{ transform: 'rotate(45deg) translateX(-50%)' }}
+            >
+              {d.label}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 });
