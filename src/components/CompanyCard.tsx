@@ -96,19 +96,25 @@ export const CompanyCard = memo(function CompanyCard({
 
         {/* Crops */}
         <div className="flex flex-wrap gap-1 mb-3" role="list" aria-label="Supported crops">
-          {company.crops.slice(0, 3).map((crop, i) => (
-            <span
-              key={i}
-              role="listitem"
-              className="text-xs bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded border border-green-100 dark:border-green-800"
-            >
-              {crop}
-            </span>
-          ))}
-          {company.crops.length > 3 && (
-            <span className="text-xs text-gray-400 dark:text-gray-500 pl-1">
-              +{company.crops.length - 3}
-            </span>
+          {company.crops.length > 0 ? (
+            <>
+              {company.crops.slice(0, 3).map((crop, i) => (
+                <span
+                  key={i}
+                  role="listitem"
+                  className="text-xs bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded border border-green-100 dark:border-green-800"
+                >
+                  {crop}
+                </span>
+              ))}
+              {company.crops.length > 3 && (
+                <span className="text-xs text-gray-400 dark:text-gray-500 pl-1">
+                  +{company.crops.length - 3}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="text-xs text-gray-400 dark:text-gray-500">See source</span>
           )}
         </div>
 

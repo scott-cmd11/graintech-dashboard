@@ -104,19 +104,23 @@ export const AdvancedFilters = memo(function AdvancedFilters({
           <div className="mb-4">
             <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Crops</h4>
             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-              {crops.map((crop) => (
-                <button
-                  key={crop}
-                  onClick={() => handleCropToggle(crop)}
-                  className={`px-3 py-1 text-xs rounded-full transition-colors ${
-                    selectedCrops.includes(crop)
-                      ? 'bg-green-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  {crop}
-                </button>
-              ))}
+              {crops.length > 0 ? (
+                crops.map((crop) => (
+                  <button
+                    key={crop}
+                    onClick={() => handleCropToggle(crop)}
+                    className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                      selectedCrops.includes(crop)
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {crop}
+                  </button>
+                ))
+              ) : (
+                <span className="text-xs text-gray-400 dark:text-gray-500">No verified crops yet</span>
+              )}
             </div>
           </div>
 
@@ -124,19 +128,23 @@ export const AdvancedFilters = memo(function AdvancedFilters({
           <div className="mb-4">
             <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Countries</h4>
             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-              {countries.map((country) => (
-                <button
-                  key={country}
-                  onClick={() => handleCountryToggle(country)}
-                  className={`px-3 py-1 text-xs rounded-full transition-colors ${
-                    selectedCountries.includes(country)
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  {country}
-                </button>
-              ))}
+              {countries.length > 0 ? (
+                countries.map((country) => (
+                  <button
+                    key={country}
+                    onClick={() => handleCountryToggle(country)}
+                    className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                      selectedCountries.includes(country)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {country}
+                  </button>
+                ))
+              ) : (
+                <span className="text-xs text-gray-400 dark:text-gray-500">No verified countries yet</span>
+              )}
             </div>
           </div>
 
@@ -144,19 +152,23 @@ export const AdvancedFilters = memo(function AdvancedFilters({
           <div>
             <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Device Types</h4>
             <div className="flex flex-wrap gap-2">
-              {types.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => handleTypeToggle(type)}
-                  className={`px-3 py-1 text-xs rounded-full transition-colors ${
-                    selectedTypes.includes(type)
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
+              {types.length > 0 ? (
+                types.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleTypeToggle(type)}
+                    className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                      selectedTypes.includes(type)
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))
+              ) : (
+                <span className="text-xs text-gray-400 dark:text-gray-500">No verified device types yet</span>
+              )}
             </div>
           </div>
         </div>

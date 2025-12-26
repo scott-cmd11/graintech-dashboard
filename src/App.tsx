@@ -141,13 +141,19 @@ function Header() {
 
             {/* Market Stats */}
             <div className="grid grid-cols-3 gap-2 md:gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
-              {marketStats.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <p className="text-white font-bold text-lg md:text-xl">{stat.value}</p>
-                  <p className="text-amber-200 text-[10px] md:text-xs uppercase">{stat.label}</p>
-                  <p className="text-green-300 text-xs font-bold">{stat.growth}</p>
+              {marketStats.length > 0 ? (
+                marketStats.map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <p className="text-white font-bold text-lg md:text-xl">{stat.value}</p>
+                    <p className="text-amber-200 text-[10px] md:text-xs uppercase">{stat.label}</p>
+                    <p className="text-green-300 text-xs font-bold">{stat.growth}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-3 text-center text-xs text-amber-100/80">
+                  Verified market stats pending sources.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -508,6 +514,9 @@ function Dashboard() {
   const allCountries = useMemo(() => {
     const countries = new Set<string>();
     companiesData.forEach((c) => {
+      if (c.country === 'See source') {
+        return;
+      }
       c.country.split('/').forEach((country) => countries.add(country.trim()));
     });
     return Array.from(countries).sort();
@@ -823,14 +832,20 @@ function Dashboard() {
             </div>
 
             <div className="space-y-4">
-              {datasetsData.map((dataset, i) => (
-                <DatasetCard
-                  key={i}
-                  dataset={dataset}
-                  isExpanded={expandedDataset === i}
-                  onToggle={() => handleToggleDataset(i)}
-                />
-              ))}
+              {datasetsData.length > 0 ? (
+                datasetsData.map((dataset, i) => (
+                  <DatasetCard
+                    key={i}
+                    dataset={dataset}
+                    isExpanded={expandedDataset === i}
+                    onToggle={() => handleToggleDataset(i)}
+                  />
+                ))
+              ) : (
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                  No verified datasets available yet. Add citations to populate this section.
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -852,32 +867,38 @@ function Dashboard() {
               </div>
 
               <div className="grid md:grid-cols-4 gap-4 mt-6">
-                {aiResearchData.algorithms.map((algo, i) => (
-                  <div
-                    key={i}
-                    className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all group"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
-                        {algo.icon}
+                {aiResearchData.algorithms.length > 0 ? (
+                  aiResearchData.algorithms.map((algo, i) => (
+                    <div
+                      key={i}
+                      className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all group"
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                          {algo.icon}
+                        </div>
+                        <a
+                          href={algo.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                          title="Read Paper"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
                       </div>
-                      <a
-                        href={algo.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                        title="Read Paper"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
+                      <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">{algo.name}</h3>
+                      <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-2">
+                        {algo.role}
+                      </span>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{algo.desc}</p>
                     </div>
-                    <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">{algo.name}</h3>
-                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-2">
-                      {algo.role}
-                    </span>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{algo.desc}</p>
+                  ))
+                ) : (
+                  <div className="md:col-span-4 bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 text-center text-sm text-gray-500 dark:text-gray-400">
+                    No verified AI research entries yet. Add citations to populate this section.
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
@@ -888,36 +909,42 @@ function Dashboard() {
                   Crop-Specific Breakthroughs
                 </h3>
                 <div className="space-y-4">
-                  {aiResearchData.cropDeepDives.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-start pb-4 border-b border-gray-100 dark:border-gray-700 last:border-0 last:pb-0"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-bold text-gray-800 dark:text-gray-200">{item.crop}</span>
-                          <span className="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-full">
-                            {item.focus}
-                          </span>
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 ml-1"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
+                  {aiResearchData.cropDeepDives.length > 0 ? (
+                    aiResearchData.cropDeepDives.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-between items-start pb-4 border-b border-gray-100 dark:border-gray-700 last:border-0 last:pb-0"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-bold text-gray-800 dark:text-gray-200">{item.crop}</span>
+                            <span className="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-full">
+                              {item.focus}
+                            </span>
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 ml-1"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{item.detail}</p>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{item.detail}</p>
+                        <div className="text-right shrink-0 ml-4">
+                          <span className="block text-lg font-bold text-blue-600 dark:text-blue-400">
+                            {item.accuracy}
+                          </span>
+                          <span className="text-xs text-gray-400">Accuracy</span>
+                        </div>
                       </div>
-                      <div className="text-right shrink-0 ml-4">
-                        <span className="block text-lg font-bold text-blue-600 dark:text-blue-400">
-                          {item.accuracy}
-                        </span>
-                        <span className="text-xs text-gray-400">Accuracy</span>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+                      No verified crop deep-dives yet. Add citations to populate this section.
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
 
@@ -928,15 +955,21 @@ function Dashboard() {
                     Emerging Horizons
                   </h3>
                   <div className="space-y-3">
-                    {aiResearchData.futureTrends.map((trend, i) => (
-                      <div
-                        key={i}
-                        className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors"
-                      >
-                        <h4 className="font-bold text-indigo-200 mb-1 text-sm">{trend.title}</h4>
-                        <p className="text-xs text-indigo-50 leading-relaxed">{trend.desc}</p>
+                    {aiResearchData.futureTrends.length > 0 ? (
+                      aiResearchData.futureTrends.map((trend, i) => (
+                        <div
+                          key={i}
+                          className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors"
+                        >
+                          <h4 className="font-bold text-indigo-200 mb-1 text-sm">{trend.title}</h4>
+                          <p className="text-xs text-indigo-50 leading-relaxed">{trend.desc}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-xs text-indigo-100/80 text-center">
+                        No verified trend notes yet. Add citations to populate this section.
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
 
@@ -1152,107 +1185,8 @@ function Dashboard() {
         {activeTab === 'trends' && (
           <div className="space-y-6 animate-in fade-in duration-500">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Market Trends & Outlook</h2>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">Global Expansion</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
-                  ZoomAgri raised $11M in 2025 led by GrainCorp. Inarix partnering with Canadian grain companies. AgNext
-                  expanding to SEA and Africa.
-                </p>
-                <div className="mt-4 flex items-center text-green-600 dark:text-green-400 font-bold text-sm relative z-10">
-                  <TrendingUp className="w-4 h-4 mr-1" /> High Growth Area
-                </div>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">
-                  Mobile Democratization
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
-                  GoMicro and Inarix making quality assessment accessible to 600M+ farmers globally with sub-$500
-                  smartphone-based solutions.
-                </p>
-                <div className="mt-4 flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm relative z-10">
-                  <TrendingUp className="w-4 h-4 mr-1" /> Rapid Adoption
-                </div>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">
-                  Blockchain Integration
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
-                  Grain Discovery creating 'digital passports' for traceability. EU Digital Product Passport regulations
-                  driving adoption by 2027.
-                </p>
-                <div className="mt-4 flex items-center text-amber-600 dark:text-amber-400 font-bold text-sm relative z-10">
-                  <TrendingUp className="w-4 h-4 mr-1" /> Emerging Standard
-                </div>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
-                <div className="text-3xl mb-2">China</div>
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">China Industrial Scale</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Keyetech and Shandong Hongsheng leading fully automated grain inspection at industrial scale. National
-                  high-tech enterprise designations. Smart factory integration with government food reserves.
-                </p>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
-                <div className="text-3xl mb-2">India</div>
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">India Market Growth</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Nebulaa, Upjao, AgNext, and GrainScope addressing India's 100M+ farmers. ICAR/Pusa Krishi grants
-                  supporting AI grain assessment. 387% wheat export growth driving quality standardization.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-green-600 to-amber-600 rounded-xl p-8 text-white shadow-lg">
-              <h3 className="font-bold text-xl mb-6">Industry Trajectory</h3>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <p className="text-green-100 text-sm font-bold uppercase tracking-wider mb-3">Key Drivers</p>
-                  <ul className="space-y-3">
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Labor shortages in manual grain inspection
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Demand for objective, standardized grading
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> End-point royalty verification needs
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Food safety and traceability regulations
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> DON/Fusarium contamination detection
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-amber-100 text-sm font-bold uppercase tracking-wider mb-3">Emerging Capabilities</p>
-                  <ul className="space-y-3">
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Real-time in-combine quality monitoring
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Mycotoxin and DON contamination detection
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Variety purity verification (98%+ accuracy)
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Predictive quality mapping by field zone
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" /> Billion-kernel training datasets (Upjao)
-                    </li>
-                  </ul>
-                </div>
-              </div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 text-sm text-gray-600 dark:text-gray-400">
+              Verified trend summaries are pending sources. Provide citations to add region and adoption details.
             </div>
           </div>
         )}
@@ -1333,7 +1267,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto px-6 text-center text-sm">
         <p>GrainTech Intelligence Report - Research compiled December 2025</p>
         <p className="text-gray-500 mt-1">
-          Data sourced from company websites, press releases, and peer-reviewed publications
+          Data sourced from the citations listed in the dataset
         </p>
         <p className="text-gray-500 mt-1">
           {companiesData.length} Companies - {datasetsData.length} Datasets Tracked

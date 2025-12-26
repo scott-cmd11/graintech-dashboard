@@ -11,6 +11,7 @@ export interface Company {
   crops: string[];
   speed: string;
   url: string;
+  citations?: string[];
 }
 
 export type CompanyType =
@@ -21,7 +22,8 @@ export type CompanyType =
   | 'Mobile + Device'
   | 'Benchtop + In-line'
   | 'In-line + Benchtop'
-  | 'In-line';
+  | 'In-line'
+  | 'Unknown';
 
 export type FilterType = 'All' | CompanyType;
 
@@ -48,6 +50,7 @@ export interface Dataset {
   details: string;
   format: string;
   challenges: string;
+  citations?: string[];
 }
 
 // Tech Category Types
@@ -82,6 +85,7 @@ export interface Algorithm {
   desc: string;
   icon: React.ReactNode;
   url: string;
+  citations?: string[];
 }
 
 export interface CropDeepDive {
@@ -90,6 +94,7 @@ export interface CropDeepDive {
   detail: string;
   accuracy: string;
   url: string;
+  citations?: string[];
 }
 
 export interface FutureTrend {
@@ -113,6 +118,7 @@ export interface RegulatoryRegion {
   status: string;
   icon: React.ReactNode;
   url: string;
+  citations?: string[];
 }
 
 export interface RegulatoryData {
@@ -124,6 +130,7 @@ export interface MarketStat {
   label: string;
   value: string;
   growth: string;
+  citations?: string[];
 }
 
 // Chart Types

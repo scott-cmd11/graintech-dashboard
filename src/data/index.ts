@@ -28,50 +28,123 @@ import type {
 } from '../types';
 
 export const companiesData: Company[] = [
-  { id: 1, name: "Cgrain", product: "Cgrain Value / Sorter", country: "Sweden", type: "Benchtop", tech: "Cameras + Mirrors", description: "Uses mirrors to see every side of the grain kernel at once, so no defects are hidden. The 'Sorter' model can physically separate good seeds from bad ones.", funding: "Lantmannen partnership", crops: ["Wheat", "Barley", "Rice", "Oats"], speed: "8-12 kernels/sec", url: "www.cgrain.ai" },
-  { id: 2, name: "FOSS", product: "EyeFoss", country: "Denmark", type: "Benchtop", tech: "Lasers + Cameras", description: "The industry standard. Uses lasers to see wrinkles and dents on the grain surface, and cameras to check the color. Connects to the internet for easy updates.", funding: "Established Corp", crops: ["Wheat", "Barley"], speed: "10,000 kernels/4min", url: "www.fossanalytics.com" },
-  { id: 3, name: "QualySense", product: "QSorter Explorer", country: "Switzerland", type: "Benchtop", tech: "Light Sensors + Robotics", description: "Checks the quality inside each individual kernel very fast. It measures protein and oil levels for every single seed.", funding: "USDA/AGROSCOPE collab", crops: ["All grains", "Coffee", "Seeds"], speed: "30-50 kernels/sec", url: "www.qualysense.com" },
-  { id: 4, name: "ZoomAgri", product: "ZoomSpex / ZoomVarieties", country: "Argentina/Australia", type: "Benchtop", tech: "High-Detail Scanner", description: "Uses a scanner to identify exactly what type of barley is in the sample. Helps keep premium grain batches separate from standard ones.", funding: "$6M Series A (2023, GrainCorp co-led)", crops: ["Barley", "Wheat", "Corn", "Soy"], speed: "<3 min/sample", url: "www.zoomagri.com" },
-  { id: 5, name: "GoMicro", product: "GoMicro Assessor", country: "Singapore/Australia", type: "Mobile", tech: "Phone Camera + Attachment", description: "A low-cost attachment ($330) for your phone. Lets farmers check grain quality right on the farm so they don't get rejected at the elevator.", funding: "Bayer Crop Science Award", crops: ["Lentils", "Wheat", "Corn", "Soy", "Chickpeas"], speed: "<1 min/sample", url: "www.gomicro.co" },
-  { id: 6, name: "Inarix", product: "PocketLab", country: "France", type: "Mobile", tech: "Smartphone AI", description: "Uses advanced AI to work well even with different phone cameras and outdoor lighting. Very accurate at telling different barley types apart.", funding: "€3.1M seed (2023)", crops: ["Barley", "Wheat", "Soy"], speed: "<20 sec", url: "www.inarix.com" },
-  { id: 7, name: "GrainSense", product: "GS Go / GS Lab / GS Combine", country: "Finland", type: "Handheld Light Sensor", tech: "Portable Light Sensor", description: "A battery-powered handheld device. Measures protein and moisture in seconds. New models can be mounted directly on harvest machinery.", funding: "Nordic innovation", crops: ["All cereals", "Oilseeds"], speed: "Seconds", url: "www.grainsense.com" },
-  { id: 8, name: "Videometer", product: "VideometerLab 4", country: "Denmark", type: "Benchtop", tech: "Advanced Light Imaging", description: "Uses 19 different types of light (colors humans can't see) to spot diseases like Fusarium before they are visible to the naked eye.", funding: "Established Corp", crops: ["All seeds", "Research applications"], speed: "Seconds/petri dish", url: "www.videometer.com" },
-  { id: 9, name: "Zeutec", product: "SpectraAlyzer GRAIN VISION AI", country: "Germany", type: "Benchtop", tech: "Cameras + 3D Lights", description: "Uses special 3D lights to remove shadows, making it easier to measure the length and width of kernels accurately.", funding: "Established Corp", crops: ["Rice", "Wheat", "Quinoa", "Seeds"], speed: "60-90 sec", url: "www.zeutec.com" },
-  { id: 10, name: "Cropify", product: "Cropify Opal", country: "Australia", type: "Benchtop", tech: "Dual Cameras + AI", description: "Specifically trained to find weed seeds that are banned in export markets. Also helps track sustainability data.", funding: "$2M VC funding (2024)", crops: ["Lentils", "Chickpeas", "Faba beans"], speed: "~6 min/sample", url: "www.cropify.io" },
-  { id: 11, name: "Indyn/Platypus Vision", product: "Platypus", country: "Australia", type: "Benchtop", tech: "High-Res Vision", description: "Analyzes a large sample (1 liter) quickly. Has a 'Supervisor Mode' where a human can double-check the AI's work to build trust.", funding: "Self-funded, seeking partners", crops: ["Cereals", "Pulses", "Tree nuts"], speed: "Minutes", url: "www.indyn.com.au" },
-  { id: 12, name: "Agsure", product: "Agsure Device", country: "India", type: "Mobile + Device", tech: "Camera + Internet of Things", description: "Affordable hardware (~$1,800) designed for rice mills. Checks if rice kernels are broken or chalky.", funding: "$21M Series A (AgNext parent)", crops: ["Rice", "Wheat", "Pulses"], speed: "30 sec", url: "www.agnext.com" },
-  { id: 13, name: "Grain Discovery", product: "Digital Passport Platform", country: "Canada", type: "Software", tech: "Digital Tracking", description: "Creates 'digital passports' for soybeans. This links the quality of the bean directly to the buyer, ensuring farmers get paid for quality.", funding: "Protein Industries Canada", crops: ["Soy", "Corn", "Wheat", "Lentils"], speed: "Real-time", url: "www.graindiscovery.com" },
-  { id: 14, name: "Ground Truth Ag", product: "Benchtop + On-Combine Units", country: "Canada", type: "Benchtop + In-line", tech: "Cameras + Light Sensors", description: "Combines visual cameras and light sensors in one machine. Can sort high-protein wheat from low-protein wheat right during harvest.", funding: "$4M Seed + $4.5M Protein Industries Canada", crops: ["Wheat", "Lentils", "Soy", "Durum", "Oats", "Faba beans"], speed: "Real-time", url: "groundtruth.ag" },
-  { id: 15, name: "Upjao", product: "Upjao Easy / Upjao Ultra", country: "India", type: "Mobile + Device", tech: "Smart AI Network", description: "An app for traders and a scanner for mills. Helps small farmers get a fair grade for their crops.", funding: "Pusa Krishi Grant", crops: ["Wheat", "Rice", "Maize", "Soybean", "Pulses", "Millets"], speed: "<30 sec", url: "www.upjao.com" },
-  { id: 16, name: "Deimos Laboratory", product: "Visual Analysis Device", country: "Australia", type: "Benchtop", tech: "Self-Cleaning AI", description: "A printer-sized machine that cleans itself with air bursts so dust doesn't mess up the camera. Very fast.", funding: "CBH Group 50:50 JV (Acova)", crops: ["Wheat", "Barley", "WA Broad-acre crops"], speed: "10,000 kernels/<4 min", url: "deimos.com.au" },
-  { id: 17, name: "EasyODM", product: "Grain Sample Analysis System", country: "Lithuania", type: "Benchtop", tech: "Web Software", description: "Allows labs to connect their own cameras to EasyODM's software. Replaces slow manual inspections with fast AI checks.", funding: "Self-funded", crops: ["Wheat", "Barley", "Hemp", "Soy", "Corn", "Chickpeas", "Quinoa"], speed: "3 sec/sample", url: "easyodm.tech" },
-  { id: 18, name: "Nebulaa", product: "MATT Automatic Grain Analyser", country: "India", type: "Benchtop", tech: "Multi-Angle Vision", description: "Uses cameras to look at kernels from many angles. Claims to be 20 times faster than a human chemist.", funding: "$295K Seed (Swasa Agro)", crops: ["Rice", "Wheat", "Cereals", "Pulses"], speed: "<1 min/sample", url: "nebulaa.in" },
-  { id: 19, name: "Vibe Imaging Analytics", product: "QM3i Analyzers", country: "USA/Israel", type: "Benchtop", tech: "High-Res Optics", description: "Fast analysis in under a minute. Designed to work nights and weekends to help when there aren't enough human staff.", funding: "Global distribution network", crops: ["Rice", "Wheat", "Barley", "Seeds", "Coffee"], speed: "<1 min", url: "vibeia.com" },
-  { id: 20, name: "SuperGeo AI Tech", product: "Grain Grading App", country: "Canada", type: "Mobile", tech: "Location AI", description: "Calculates kernel weight automatically using a piece of paper for scale. Detects frost and heat damage in wheat.", funding: "Mitacs partnership", crops: ["Wheat", "Barley", "Canola", "Oats"], speed: "Seconds", url: "sga.ai" },
-  { id: 21, name: "Grainkart/GrainScope", product: "GrainScope AI Analyzer", country: "India", type: "Benchtop", tech: "AI Marketplace", description: "Building a 'Grain Bazaar' where buyers trust the quality because it was checked by an objective AI, not a person.", funding: "Self-funded", crops: ["Rice", "Paddy", "FRK"], speed: "<1 min", url: "grainscope.ai" },
-  { id: 22, name: "Keyetech", product: "AI Intelligent Sorting Machine", country: "China", type: "In-line", tech: "High-Contrast Cameras", description: "Uses powerful cameras to find very small defects like mold or foreign seeds that look similar to the grain.", funding: "National High-tech Enterprise", crops: ["Rice", "Grains", "Miscellaneous grains"], speed: "Real-time", url: "en.keyetech.com" },
-  { id: 23, name: "Shandong Hongsheng", product: "Fully Automated Inspection Platform", country: "China", type: "In-line + Benchtop", tech: "Auto-Weighing", description: "A large industrial system for state storage. It checks individual kernels and weighs them automatically for reports.", funding: "Specialized New Enterprise", crops: ["Wheat", "Rice", "Corn", "Grains"], speed: "Fully automated", url: "en.hosheng.cn" },
-  { id: 24, name: "John Deere", product: "HarvestLab 3000", country: "USA/Global", type: "In-line", tech: "Light Sensors (On-Combine)", description: "Senses protein, starch, and oil levels while the harvester is running. Creates maps showing where the best quality grain grew.", funding: "Public Corp (DE)", crops: ["Wheat", "Barley", "Corn", "Canola"], speed: "Real-time (Stream)", url: "www.deere.com" },
-  { id: 25, name: "Case IH", product: "Harvest Command", country: "USA/Global", type: "In-line", tech: "Cameras + Automation", description: "Automatically changes combine settings if it sees broken grain. It watches for cracks and dirt to keep quality high.", funding: "CNH Industrial", crops: ["Wheat", "Corn", "Soy", "Canola"], speed: "Real-time (Control Loop)", url: "www.caseih.com" },
-  { id: 26, name: "Next Instruments", product: "CropScan 3300H", country: "Australia", type: "In-line", tech: "Light Sensors + Logistics", description: "Analyzes protein in real-time on the combine. Helps farmers sort grain into different bins based on quality right in the field.", funding: "Private", crops: ["Cereals", "Oilseeds"], speed: "Real-time", url: "www.nextinstruments.net" }
+  { id: 1, name: "Cgrain", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.cgrain.ai" , citations: ["https://www.cgrain.ai"] },
+  { id: 2, name: "FOSS", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.fossanalytics.com" , citations: ["https://www.fossanalytics.com"] },
+  { id: 3, name: "QualySense", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.qualysense.com" , citations: ["https://www.qualysense.com"] },
+  { id: 4, name: "ZoomAgri", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.zoomagri.com" , citations: ["https://www.zoomagri.com"] },
+  { id: 5, name: "GoMicro", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.gomicro.co" , citations: ["https://www.gomicro.co"] },
+  { id: 6, name: "Inarix", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.inarix.com" , citations: ["https://www.inarix.com"] },
+  { id: 7, name: "GrainSense", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.grainsense.com" , citations: ["https://www.grainsense.com"] },
+  { id: 8, name: "Videometer", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.videometer.com" , citations: ["https://www.videometer.com"] },
+  { id: 9, name: "Zeutec", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.zeutec.com" , citations: ["https://www.zeutec.com"] },
+  { id: 10, name: "Cropify", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.cropify.io" , citations: ["https://www.cropify.io"] },
+  { id: 11, name: "Indyn/Platypus Vision", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.indyn.com.au" , citations: ["https://www.indyn.com.au"] },
+  { id: 12, name: "Agsure", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.agnext.com" , citations: ["https://www.agnext.com"] },
+  { id: 13, name: "Grain Discovery", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.graindiscovery.com" , citations: ["https://www.graindiscovery.com"] },
+  { id: 14, name: "Ground Truth Ag", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "groundtruth.ag" , citations: ["https://groundtruth.ag"] },
+  { id: 15, name: "Upjao", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.upjao.com" , citations: ["https://www.upjao.com"] },
+  { id: 16, name: "Deimos Laboratory", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "deimos.com.au" , citations: ["https://deimos.com.au"] },
+  { id: 17, name: "EasyODM", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "easyodm.tech" , citations: ["https://easyodm.tech"] },
+  { id: 18, name: "Nebulaa", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "nebulaa.in" , citations: ["https://nebulaa.in"] },
+  { id: 19, name: "Vibe Imaging Analytics", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "vibeia.com" , citations: ["https://vibeia.com"] },
+  { id: 20, name: "SuperGeo AI Tech", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "sga.ai" , citations: ["https://sga.ai"] },
+  { id: 21, name: "Grainkart/GrainScope", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "grainscope.ai" , citations: ["https://grainscope.ai"] },
+  { id: 22, name: "Keyetech", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "en.keyetech.com" , citations: ["https://en.keyetech.com"] },
+  { id: 23, name: "Shandong Hongsheng", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "en.hosheng.cn" , citations: ["https://en.hosheng.cn"] },
+  { id: 24, name: "John Deere", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.deere.com" , citations: ["https://www.deere.com"] },
+  { id: 25, name: "Case IH", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.caseih.com" , citations: ["https://www.caseih.com"] },
+  { id: 26, name: "Next Instruments", product: "See source", country: "See source", type: "Unknown", tech: "See source", description: "See source", funding: "See source", crops: [], speed: "See source", url: "www.nextinstruments.net" , citations: ["https://www.nextinstruments.net"] }
 ];
 
 export const datasetsData: Dataset[] = [
-  { name: "Global Wheat Head Detection", images: "6,500+", annotations: "275,000+ heads", description: "The standard dataset for counting wheat heads in the field. Used to estimate how much crop will be produced.", source: "ETH Zurich + 10 institutions", url: "www.global-wheat.com", license: "CC BY 4.0", year: "2020-2021", crops: ["Wheat"], tasks: ["Object Detection", "Counting", "Plant Analysis"], details: "Contains high-resolution images from fields in France, UK, Canada, Australia, Japan, China, and Switzerland. The 2021 version added 1,722 images from 5 additional countries.", format: "COCO JSON annotations", challenges: "Overlapping heads, variable lighting, motion blur" },
-  { name: "GrainSpace", images: "5.25M", annotations: "Expert Labels", description: "A massive collection that ensures AI trained on expensive scanners also works on cheap phones.", source: "UNSW Sydney", url: "github.com/hellodfan/GrainSpace", license: "CC BY-NC-SA 4.0", year: "2022", crops: ["Wheat", "Maize", "Rice"], tasks: ["Recognition", "Device Adaptation", "Defect Spotting"], details: "Images taken with three different devices: professional industrial cameras, lab cameras, and smartphones. This helps developers build apps that work for farmers with just a phone.", format: "PNG images + CSV metadata", challenges: "Different camera qualities, subtle defect variations" },
-  { name: "GrainSet", images: "350K+", annotations: "8 Categories", description: "A benchmark for checking grain quality. Very detailed labels for shape, size, and damage.", source: "Nature Scientific Data 2023", url: "github.com/hellodfan/GrainSet", license: "CC BY 4.0", year: "2023", crops: ["Wheat", "Maize", "Sorghum", "Rice"], tasks: ["Defect Classification", "Quality Grading", "Anomaly Detection"], details: "Images capture the entire surface of the kernel. It includes categories for mold, insect damage, sprouted seeds, broken seeds, heat damage, and immature seeds.", format: "PNG images + XML annotations", challenges: "Working across different crop types" },
-  { name: "Soybean Seeds Quality Set", images: "5,500+", annotations: "Defect Categories", description: "A focused dataset for spotting defects in soybeans, like broken skins or spots.", source: "GTS.AI / Research", url: "gts.ai/dataset-download", license: "Research", year: "2024", crops: ["Soybean"], tasks: ["Segmentation", "Defect Detection"], details: "Perfect for training AI to grade soybeans for food exports, where visual appearance is very important.", format: "Images + Masks", challenges: "Subtle color variations" },
-  { name: "Aruzz22.5K", images: "23,000+", annotations: "20 Rice Varieties", description: "Used to teach AI how to tell different types of rice apart, like Basmati vs. Jasmine.", source: "Mendeley Data / Kaggle", url: "data.mendeley.com/datasets/3mn9843tz2/4", license: "CC BY 4.0", year: "2024", crops: ["Rice"], tasks: ["Variety ID", "Fine Recognition"], details: "Helps prevent fraud where cheap rice is mixed with expensive premium rice.", format: "JPG images", challenges: "Very similar shapes between varieties" },
-  { name: "WisWheat", images: "High-res", annotations: "Text Descriptions", description: "Combines images of wheat with written descriptions of defects.", source: "arXiv / Research Community", url: "arxiv.org/html/2506.06084v1", license: "Open Access", year: "2025", crops: ["Wheat"], tasks: ["Defect Detection", "Grading", "Vision-Language"], details: "The latest research connecting computer vision (seeing) with natural language (reading/writing descriptions).", format: "Images + Text Descriptions", challenges: "Combining text and image data" },
-  { name: "Corn Kernel Images", images: "Various", annotations: "Fungal/Surface", description: "Datasets for spotting mold and surface damage on corn.", source: "Kaggle / Research", url: "kaggle.com", license: "Open", year: "2024", crops: ["Corn"], tasks: ["Fungal Detection"], details: "Focuses on finding mold, which is a major safety risk for corn storage.", format: "RGB", challenges: "Complex textures" }
+  {
+    name: "Global Wheat Head Detection",
+    images: "See source",
+    annotations: "See source",
+    description: "Wheat head detection dataset used in the Global Wheat Challenge.",
+    source: "Global Wheat",
+    url: "www.global-wheat.com",
+    license: "See source",
+    year: "2020-2021",
+    crops: ["Wheat"],
+    tasks: ["Object Detection", "Counting", "Plant Analysis"],
+    details: "See source for dataset composition and splits.",
+    format: "See source",
+    challenges: "See source",
+    citations: ["http://www.global-wheat.com/"]
+  },
+  {
+    name: "GrainSpace",
+    images: "5.25M",
+    annotations: "Expert labels",
+    description: "Large-scale dataset for cereal grain inspection and recognition.",
+    source: "GrainSpace repository",
+    url: "github.com/hellodfan/GrainSpace",
+    license: "CC BY-NC-SA 4.0",
+    year: "2022",
+    crops: ["Wheat", "Maize", "Rice"],
+    tasks: ["Recognition", "Device Adaptation", "Defect Spotting"],
+    details: "Collected across wheat, maize, and rice using professional, lab, and mobile devices.",
+    format: "PNG images + CSV metadata",
+    challenges: "Device domain shift and class imbalance.",
+    citations: ["https://github.com/hellodfan/GrainSpace"]
+  },
+  {
+    name: "GrainSet",
+    images: "350K+",
+    annotations: "8 categories",
+    description: "Annotated grain kernel image database for visual quality inspection.",
+    source: "Nature Scientific Data 2023",
+    url: "github.com/hellodfan/GrainSet",
+    license: "See source",
+    year: "2023",
+    crops: ["Wheat", "Maize", "Sorghum", "Rice"],
+    tasks: ["Defect Classification", "Quality Grading", "Anomaly Detection"],
+    details: "Single-kernel images with expert annotations across four cereal crops.",
+    format: "High-resolution images + XML annotations",
+    challenges: "Cross-crop variation in kernel appearance.",
+    citations: ["https://github.com/hellodfan/GrainSet", "https://doi.org/10.1038/s41597-023-02660-8"]
+  },
+  {
+    name: "Aruzz22.5K",
+    images: "23,650 augmented + 4,730 original",
+    annotations: "20 rice varieties",
+    description: "Image dataset of 20 rice varieties from Bangladesh.",
+    source: "Mendeley Data",
+    url: "data.mendeley.com/datasets/3mn9843tz2/4",
+    license: "See source",
+    year: "2024",
+    crops: ["Rice"],
+    tasks: ["Variety ID", "Fine Recognition"],
+    details: "Captured with an iPhone 11; includes original and augmented sets.",
+    format: "JPG images",
+    challenges: "Low-resolution originals and class balance.",
+    citations: ["https://data.mendeley.com/datasets/3mn9843tz2/4"]
+  },
+  {
+    name: "WisWheat",
+    images: "60,022 image-text pairs (reported)",
+    annotations: "Text descriptions",
+    description: "Vision-language dataset for wheat management.",
+    source: "arXiv preprint",
+    url: "arxiv.org/html/2506.06084v1",
+    license: "See source",
+    year: "2025",
+    crops: ["Wheat"],
+    tasks: ["Vision-Language", "Wheat Management"],
+    details: "Three-tier image-text dataset for wheat-related tasks.",
+    format: "Images + text",
+    challenges: "See source",
+    citations: ["https://arxiv.org/html/2506.06084v1"]
+  }
 ];
 
 export const techCategories: TechCategory[] = [
-  { name: "Standard Cameras (RGB)", icon: React.createElement(Eye, { className: "w-5 h-5" }), desc: "Uses regular cameras to see defects and shapes", companies: ["Cgrain", "ZoomAgri", "GoMicro", "Cropify", "Deimos", "EasyODM"] },
-  { name: "Light Sensors (NIR)", icon: React.createElement(Zap, { className: "w-5 h-5" }), desc: "Measures protein, moisture, and oil inside the grain", companies: ["QualySense", "GrainSense", "FOSS Infratec", "Ground Truth", "John Deere"] },
-  { name: "Advanced Light Sensors", icon: React.createElement(Microscope, { className: "w-5 h-5" }), desc: "Uses many types of light to find hidden mold", companies: ["Videometer", "Zeutec", "Platypus Vision"] },
-  { name: "Mobile / Smartphone", icon: React.createElement(Smartphone, { className: "w-5 h-5" }), desc: "Low-cost tools that use your phone", companies: ["GoMicro", "Inarix", "Agsure", "SuperGeo AI", "Upjao"] },
-  { name: "Industrial / In-line", icon: React.createElement(Factory, { className: "w-5 h-5" }), desc: "Big machines for high-volume processing", companies: ["Keyetech", "Shandong Hongsheng", "John Deere", "Case IH", "Next Instruments"] }
+  { name: "Standard Cameras (RGB)", icon: React.createElement(Eye, { className: "w-5 h-5" }), desc: "See source", companies: [] },
+  { name: "Light Sensors (NIR)", icon: React.createElement(Zap, { className: "w-5 h-5" }), desc: "See source", companies: [] },
+  { name: "Advanced Light Sensors", icon: React.createElement(Microscope, { className: "w-5 h-5" }), desc: "See source", companies: [] },
+  { name: "Mobile / Smartphone", icon: React.createElement(Smartphone, { className: "w-5 h-5" }), desc: "See source", companies: [] },
+  { name: "Industrial / In-line", icon: React.createElement(Factory, { className: "w-5 h-5" }), desc: "See source", companies: [] }
 ];
 
 export const historyData: HistoryEra[] = [
@@ -121,22 +194,25 @@ export const globalGradingPhilosophies: GradingPhilosophy[] = [
 
 export const aiResearchData: AIResearchData = {
   algorithms: [
-    { name: "DINOv2 (Smart AI)", role: "Self-Learning", desc: "Learns from images without needing humans to label them first. Works well in bad lighting.", icon: React.createElement(Eye, { className: "w-5 h-5 text-indigo-600" }), url: "https://arxiv.org/abs/2304.07193" },
-    { name: "Swin AI Model", role: "Detail Expert", desc: "Excellent at focusing on small details. Very good at spotting specific defects like mold or cracks.", icon: React.createElement(ScanLine, { className: "w-5 h-5 text-purple-600" }), url: "https://arxiv.org/abs/2103.14030" },
-    { name: "SSDINet (Fast AI)", role: "Speed King", desc: "Designed for speed. Can sort soybeans in milliseconds on high-speed conveyor belts.", icon: React.createElement(Zap, { className: "w-5 h-5 text-yellow-600" }), url: "https://ieeexplore.ieee.org/document/9696236" },
-    { name: "Spectral AI", role: "Light Reader", desc: "Reads raw data from light sensors directly to understand chemical composition.", icon: React.createElement(BrainCircuit, { className: "w-5 h-5 text-blue-600" }), url: "https://www.nature.com/articles/s41598-021-93739-7" }
+    {
+      name: "DINOv2",
+      role: "Self-Supervised Vision",
+      desc: "Self-supervised vision model for learning image representations.",
+      icon: React.createElement(Eye, { className: "w-5 h-5 text-indigo-600" }),
+      url: "https://arxiv.org/abs/2304.07193",
+      citations: ["https://arxiv.org/abs/2304.07193"]
+    },
+    {
+      name: "Swin Transformer",
+      role: "Hierarchical Vision Transformer",
+      desc: "Vision transformer architecture with shifted window attention.",
+      icon: React.createElement(ScanLine, { className: "w-5 h-5 text-purple-600" }),
+      url: "https://arxiv.org/abs/2103.14030",
+      citations: ["https://arxiv.org/abs/2103.14030"]
+    }
   ],
-  cropDeepDives: [
-    { crop: "Rice", focus: "Chalkiness & Fake Premium", detail: "AI can spot the difference between expensive Basmati rice and cheaper rice mixed in, with 96% accuracy.", accuracy: "96.87% (Accuracy)", url: "https://www.sciencedirect.com/science/article/pii/S016816992100456X" },
-    { crop: "Wheat", focus: "Disease & Bugs", detail: "AI identifies disease marks and bug damage much better than humans can.", accuracy: "98.00% (Accuracy)", url: "https://www.frontiersin.org/articles/10.3389/fpls.2020.556434/full" },
-    { crop: "Maize", focus: "Mold & Damage", detail: "New AI models classify moldy and broken kernels with near-perfect precision.", accuracy: "99.89% (Accuracy)", url: "https://www.mdpi.com/2076-3417/12/11/5688" },
-    { crop: "Toxins", focus: "Invisible Safety Threats", detail: "Special cameras can see dangerous toxins (like Aflatoxin) before they are visible to the eye.", accuracy: "98.42% (Safety)", url: "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hyperspectral-imaging" }
-  ],
-  futureTrends: [
-    { title: "Combining Sensors", desc: "Using cameras AND lasers together to see both the outside shape and the inside chemistry." },
-    { title: "Smart Harvesters", desc: "Machines like John Deere's that process data right in the field while harvesting." },
-    { title: "Digital Passports", desc: "Digital records that travel with the grain, proving its quality and safety." }
-  ]
+  cropDeepDives: [],
+  futureTrends: []
 };
 
 export const regulatoryData: RegulatoryData = {
@@ -145,60 +221,63 @@ export const regulatoryData: RegulatoryData = {
       name: "Canada",
       agency: "Canadian Grain Commission",
       legislation: "Modernizing Old Rules",
-      keyChange: "Making it easier to update grading rules without waiting for long legal processes. Using science to set standards.",
-      driver: "Better Standards for Farmers",
-      status: "Changing Rules",
+      keyChange: "See source",
+      driver: "See source",
+      status: "See source",
       icon: React.createElement(Building2, { className: "w-6 h-6 text-red-600" }),
-      url: "https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/"
+      url: "https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/",
+      citations: ["https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/"]
     },
     {
       name: "United States",
       agency: "USDA FGIS",
       legislation: "Grain Standards Act",
-      keyChange: "Created a formal process to test and approve new AI technology. Focus on food safety tracking.",
-      driver: "Standardization",
-      status: "Formal Process",
+      keyChange: "See source",
+      driver: "See source",
+      status: "See source",
       icon: React.createElement(Gavel, { className: "w-6 h-6 text-blue-600" }),
-      url: "https://www.ams.usda.gov/rules-regulations/usgsa"
+      url: "https://www.ams.usda.gov/rules-regulations/usgsa",
+      citations: ["https://www.ams.usda.gov/rules-regulations/usgsa"]
     },
     {
       name: "Argentina",
       agency: "SENASA",
       legislation: "Digital Modernization",
-      keyChange: "Expanding digital traceability systems. Using AI sensors to do routine checks so ships can leave ports faster.",
-      driver: "Speed & Tax Tracking",
-      status: "Rapid Adoption",
+      keyChange: "See source",
+      driver: "See source",
+      status: "See source",
       icon: React.createElement(Globe, { className: "w-6 h-6 text-sky-600" }),
-      url: "https://www.argentina.gob.ar/senasa"
+      url: "https://www.argentina.gob.ar/senasa",
+      citations: ["https://www.argentina.gob.ar/senasa"]
     },
     {
       name: "Australia",
       agency: "Grain Trade Australia",
       legislation: "Industry Self-Regulation",
-      keyChange: "Turning their visual grading guides into digital datasets to train AI.",
-      driver: "Efficiency",
-      status: "Industry Led",
+      keyChange: "See source",
+      driver: "See source",
+      status: "See source",
       icon: React.createElement(Sprout, { className: "w-6 h-6 text-amber-600" }),
-      url: "https://graintrade.org.au/"
+      url: "https://graintrade.org.au/",
+      citations: ["https://graintrade.org.au/"]
     },
     {
       name: "Europe / UK",
       agency: "EU Commission",
       legislation: "Ecodesign Regulation (ESPR)",
-      keyChange: "Digital Product Passports being developed (food sector planned for future phases). Subsidies for buying optical sorters.",
-      driver: "Sustainability & Safety",
-      status: "Early Stage",
+      keyChange: "See source",
+      driver: "See source",
+      status: "See source",
       icon: React.createElement(BookOpen, { className: "w-6 h-6 text-indigo-600" }),
-      url: "https://commission.europa.eu/energy-climate-change-environment/standards-tools-and-labels/products-labelling-rules-and-requirements/ecodesign-sustainable-products-regulation_en"
+      url: "https://commission.europa.eu/energy-climate-change-environment/standards-tools-and-labels/products-labelling-rules-and-requirements/ecodesign-sustainable-products-regulation_en",
+      citations: [
+        "https://commission.europa.eu/energy-climate-change-environment/standards-tools-and-labels/products-labelling-rules-and-requirements/ecodesign-sustainable-products-regulation_en"
+      ]
     }
   ]
 };
 
-export const marketStats: MarketStat[] = [
-  { label: "Global Grain Analysis Market", value: "$2.5-3B", growth: "+6% CAGR" },
-  { label: "AI Adoption (Large Farms)", value: "45-58%", growth: "+26% CAGR" },
-  { label: "Digital Grain Samples Tracked", value: "12M+", growth: "+150%" }
-];
+export const marketStats: MarketStat[] = [];
 
 // Type color mapping
 export const typeColors: Record<string, string> = {
@@ -209,5 +288,6 @@ export const typeColors: Record<string, string> = {
   "Mobile + Device": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
   "Benchtop + In-line": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
   "In-line + Benchtop": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
-  "In-line": "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200"
+  "In-line": "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200",
+  "Unknown": "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
 };

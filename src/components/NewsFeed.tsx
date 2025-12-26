@@ -10,6 +10,7 @@ interface NewsItem {
   summary: string;
   url: string;
   category?: string;
+  citations?: string[];
 }
 
 export const NewsFeed = memo(function NewsFeed() {

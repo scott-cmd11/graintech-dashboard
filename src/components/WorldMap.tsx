@@ -81,6 +81,9 @@ export const WorldMap = memo(function WorldMap({
     const hubs: Record<string, HubData> = {};
 
     companies.forEach((company) => {
+      if (company.country === 'See source') {
+        return;
+      }
       // Handle multi-country entries like "USA/Global"
       const countryParts = company.country.split('/');
       const primaryCountry = countryParts[0].trim();
@@ -147,60 +150,66 @@ export const WorldMap = memo(function WorldMap({
       </div>
 
       <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700" style={{ height: '400px' }}>
-        <MapContainer
-          center={[20, 0]}
-          zoom={2}
-          minZoom={1}
-          maxZoom={10}
-          scrollWheelZoom={true}
-          style={{ height: '100%', width: '100%' }}
-          className="z-0"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+        {hubData.length > 0 ? (
+          <MapContainer
+            center={[20, 0]}
+            zoom={2}
+            minZoom={1}
+            maxZoom={10}
+            scrollWheelZoom={true}
+            style={{ height: '100%', width: '100%' }}
+            className="z-0"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-          {hubData.map((hub) => (
-            <CircleMarker
-              key={hub.country}
-              center={[hub.lat, hub.lng]}
-              radius={getRadius(hub.count)}
-              pathOptions={{
-                fillColor: getColor(hub.country),
-                color: '#ffffff',
-                weight: 2,
-                opacity: 1,
-                fillOpacity: 0.8,
-              }}
-              eventHandlers={{
-                click: () => onCountryClick(hub.country),
-              }}
-            >
-              <Popup>
-                <div className="text-center min-w-[150px]">
-                  <h4 className="font-bold text-gray-900 text-base mb-1">{hub.name}</h4>
-                  <p className="text-green-600 font-semibold mb-2">
-                    {hub.count} {hub.count === 1 ? 'company' : 'companies'}
-                  </p>
-                  <div className="text-left text-xs text-gray-600 max-h-32 overflow-y-auto">
-                    {hub.companies.map((name, i) => (
-                      <div key={i} className="py-0.5 border-b border-gray-100 last:border-0">
-                        {name}
-                      </div>
-                    ))}
+            {hubData.map((hub) => (
+              <CircleMarker
+                key={hub.country}
+                center={[hub.lat, hub.lng]}
+                radius={getRadius(hub.count)}
+                pathOptions={{
+                  fillColor: getColor(hub.country),
+                  color: '#ffffff',
+                  weight: 2,
+                  opacity: 1,
+                  fillOpacity: 0.8,
+                }}
+                eventHandlers={{
+                  click: () => onCountryClick(hub.country),
+                }}
+              >
+                <Popup>
+                  <div className="text-center min-w-[150px]">
+                    <h4 className="font-bold text-gray-900 text-base mb-1">{hub.name}</h4>
+                    <p className="text-green-600 font-semibold mb-2">
+                      {hub.count} {hub.count === 1 ? 'company' : 'companies'}
+                    </p>
+                    <div className="text-left text-xs text-gray-600 max-h-32 overflow-y-auto">
+                      {hub.companies.map((name, i) => (
+                        <div key={i} className="py-0.5 border-b border-gray-100 last:border-0">
+                          {name}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => onCountryClick(hub.country)}
+                      className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Filter by {hub.name}
+                    </button>
                   </div>
-                  <button
-                    onClick={() => onCountryClick(hub.country)}
-                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Filter by {hub.name}
-                  </button>
-                </div>
-              </Popup>
-            </CircleMarker>
-          ))}
-        </MapContainer>
+                </Popup>
+              </CircleMarker>
+            ))}
+          </MapContainer>
+        ) : (
+          <div className="h-full flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+            No verified location data yet. Add citations to populate this map.
+          </div>
+        )}
       </div>
 
       {/* Legend */}
