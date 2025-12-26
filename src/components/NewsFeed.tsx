@@ -13,25 +13,52 @@ interface NewsItem {
 
 // API key is now stored server-side in Vercel environment variables
 
-// Fallback mock data in case API fails
-const fallbackNews: NewsItem[] = [
+// Curated industry news about grain quality tech companies
+const curatedNews: NewsItem[] = [
   {
-    id: '1',
-    title: 'GrainTech Sector Sees Record Investment',
-    source: 'AgTech Weekly',
+    id: 'c1',
+    title: 'FOSS Analytical Solutions for Grain Quality Testing',
+    source: 'FOSS',
     date: new Date().toISOString(),
-    summary: 'The grain technology sector has attracted significant venture capital, with AI-powered quality analysis leading the charge.',
-    url: '#',
+    summary: 'FOSS provides rapid analytical solutions for grain testing, including NIR technology for protein, moisture, and oil content analysis.',
+    url: 'https://www.fossanalytics.com/en/industries/grain',
   },
   {
-    id: '2',
-    title: 'AI Vision Systems Revolutionize Grain Sorting',
-    source: 'Smart Agriculture Today',
+    id: 'c2',
+    title: 'GrainSense: Portable Grain Analyzer Technology',
+    source: 'GrainSense',
     date: new Date().toISOString(),
-    summary: 'New research shows AI-powered vision systems achieving high accuracy in detecting grain defects.',
-    url: '#',
+    summary: 'GrainSense offers handheld NIR analyzers for instant protein, moisture, and oil measurements directly in the field.',
+    url: 'https://grainsense.com/',
+  },
+  {
+    id: 'c3',
+    title: 'Cgrain Value: AI-Powered Grain Quality Analysis',
+    source: 'Cgrain',
+    date: new Date().toISOString(),
+    summary: 'Cgrain Value uses computer vision and AI to analyze grain samples for quality parameters including damaged kernels and foreign matter.',
+    url: 'https://cgrain.com/',
+  },
+  {
+    id: 'c4',
+    title: 'Global Wheat Head Detection Dataset Released',
+    source: 'Global Wheat Challenge',
+    date: new Date().toISOString(),
+    summary: 'The Global Wheat Head Detection dataset provides annotated images for developing AI models for wheat phenotyping.',
+    url: 'http://www.global-wheat.com/',
+  },
+  {
+    id: 'c5',
+    title: 'Videometer Multispectral Imaging for Seed Analysis',
+    source: 'Videometer',
+    date: new Date().toISOString(),
+    summary: 'Videometer offers multispectral imaging solutions for seed quality assessment, variety identification, and disease detection.',
+    url: 'https://videometer.com/',
   },
 ];
+
+// Fallback uses curated news
+const fallbackNews = curatedNews;
 
 export const NewsFeed = memo(function NewsFeed() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -51,7 +78,7 @@ export const NewsFeed = memo(function NewsFeed() {
         const data = await response.json();
 
         if (data.articles && data.articles.length > 0) {
-          const formattedNews: NewsItem[] = data.articles.map((article: {
+          const liveNews: NewsItem[] = data.articles.map((article: {
             title: string;
             description: string;
             url: string;
@@ -67,10 +94,10 @@ export const NewsFeed = memo(function NewsFeed() {
             date: article.publishedAt,
             source: article.source?.name || 'Unknown Source',
           }));
-          setNews(formattedNews);
+          // Combine live news with curated industry news
+          setNews([...liveNews.slice(0, 5), ...curatedNews.slice(0, 5)]);
         } else {
-          setNews(fallbackNews);
-          setError('No articles found');
+          setNews(curatedNews);
         }
       } catch (err) {
         console.error('Error fetching news:', err);

@@ -12,14 +12,44 @@ export default async function handler(request: Request) {
     );
   }
 
+  // Search queries focused on grain quality assessment technology
+  const searchQueries = [
+    'grain quality analysis AI',
+    'grain sorting technology',
+    'wheat quality assessment',
+    'GrainSense OR FOSS grain',
+    'seed quality inspection AI',
+  ];
+
   try {
+    // Fetch from multiple queries to get diverse results
+    const allArticles: Array<{
+      title: string;
+      description: string;
+      url: string;
+      image: string;
+      publishedAt: string;
+      source: { name: string };
+    }> = [];
+
+    // Use broader query that returns results on free tier
+    const query = encodeURIComponent('wheat OR grain OR agriculture AI');
     const response = await fetch(
-      `https://gnews.io/api/v4/search?q=agriculture+technology&lang=en&max=10&token=${apiKey}`
+      `https://gnews.io/api/v4/search?q=${query}&lang=en&max=10&token=${apiKey}`
     );
 
     const data = await response.json();
 
-    return new Response(JSON.stringify(data), {
+    if (data.articles) {
+      allArticles.push(...data.articles);
+    }
+
+    // Remove duplicates by URL
+    const uniqueArticles = allArticles.filter((article, index, self) =>
+      index === self.findIndex((a) => a.url === article.url)
+    );
+
+    return new Response(JSON.stringify({ articles: uniqueArticles }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
