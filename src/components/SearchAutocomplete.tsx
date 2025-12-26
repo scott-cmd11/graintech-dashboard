@@ -5,6 +5,8 @@ import type { Company } from '../types';
 interface SearchAutocompleteProps {
   companies: Company[];
   onSelect: (value: string, type: string) => void;
+  initialValue?: string;
+  onChange?: (value: string) => void;
 }
 
 interface Suggestion {
@@ -16,9 +18,16 @@ interface Suggestion {
 export const SearchAutocomplete = memo(function SearchAutocomplete({
   companies,
   onSelect,
+  initialValue = '',
+  onChange,
 }: SearchAutocompleteProps) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(initialValue);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Sync with external initialValue changes
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -71,18 +80,21 @@ export const SearchAutocomplete = memo(function SearchAutocomplete({
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value);
+      const newValue = e.target.value;
+      setValue(newValue);
       setIsOpen(true);
       setSelectedIndex(-1);
+      onChange?.(newValue);
     },
-    []
+    [onChange]
   );
 
   const handleClear = useCallback(() => {
     setValue('');
     setIsOpen(false);
+    onChange?.('');
     inputRef.current?.focus();
-  }, []);
+  }, [onChange]);
 
   const handleSelect = useCallback(
     (suggestion: Suggestion) => {

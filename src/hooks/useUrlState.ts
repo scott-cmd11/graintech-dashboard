@@ -46,10 +46,10 @@ export function useUrlState() {
   const setUrlState = useCallback((state: UrlState) => {
     const params = new URLSearchParams();
 
-    if (state.tab && state.tab !== 'overview') params.set('tab', state.tab);
+    if (state.tab && state.tab !== 'landscape') params.set('tab', state.tab);
     if (state.search) params.set('search', state.search);
-    if (state.type && state.type !== 'all') params.set('type', state.type);
-    if (state.country && state.country !== 'all') params.set('country', state.country);
+    if (state.type && state.type !== 'All') params.set('type', state.type);
+    if (state.country && state.country !== 'All') params.set('country', state.country);
     if (state.sort && state.sort !== 'name') params.set('sort', state.sort);
     if (state.page && state.page > 1) params.set('page', state.page.toString());
     if (state.company) params.set('company', state.company.toString());
@@ -66,10 +66,10 @@ export function useUrlState() {
   const getShareableUrl = useCallback((state: UrlState): string => {
     const params = new URLSearchParams();
 
-    if (state.tab && state.tab !== 'overview') params.set('tab', state.tab);
+    if (state.tab && state.tab !== 'landscape') params.set('tab', state.tab);
     if (state.search) params.set('search', state.search);
-    if (state.type && state.type !== 'all') params.set('type', state.type);
-    if (state.country && state.country !== 'all') params.set('country', state.country);
+    if (state.type && state.type !== 'All') params.set('type', state.type);
+    if (state.country && state.country !== 'All') params.set('country', state.country);
     if (state.sort && state.sort !== 'name') params.set('sort', state.sort);
     if (state.company) params.set('company', state.company.toString());
 

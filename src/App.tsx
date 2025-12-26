@@ -580,6 +580,8 @@ function Dashboard() {
             <SearchAutocomplete
               companies={companiesData}
               onSelect={handleSearchSelect}
+              initialValue={searchTerm}
+              onChange={setSearchTerm}
             />
 
             <SearchFilter
