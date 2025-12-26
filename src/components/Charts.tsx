@@ -15,22 +15,24 @@ export const SimpleBarChart = memo(function SimpleBarChart({
   const max = useMemo(() => Math.max(...data.map(d => d.value)), [data]);
 
   return (
-    <div className={`flex items-end gap-2 h-40 w-full pt-6 ${className}`} role="img" aria-label="Bar chart">
+    <div className={`flex items-stretch gap-2 h-40 w-full pt-6 ${className}`} role="img" aria-label="Bar chart">
       {data.map((d, i) => (
         <div
           key={i}
-          className="flex-1 flex flex-col items-center group relative"
+          className="flex-1 flex flex-col items-center group relative h-full"
           role="listitem"
           aria-label={`${d.label}: ${d.value}`}
         >
           <div className="absolute -top-8 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
             {d.label}: {d.value}
           </div>
-          <div
-            className={`w-full rounded-t-sm transition-all duration-500 ${color}`}
-            style={{ height: `${(d.value / max) * 100}%` }}
-            aria-hidden="true"
-          />
+          <div className="flex-1 w-full flex items-end">
+            <div
+              className={`w-full rounded-t-sm transition-all duration-500 ${color}`}
+              style={{ height: `${(d.value / max) * 100}%` }}
+              aria-hidden="true"
+            />
+          </div>
           <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-2 truncate w-full text-center">
             {d.label}
           </p>
