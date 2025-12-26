@@ -1,5 +1,5 @@
 import { memo, useState, useCallback } from 'react';
-import { FolderPlus, Folder, X, Plus, Trash2, Edit3, Check } from 'lucide-react';
+import { FolderPlus, Folder, X, Trash2, Edit3, Check } from 'lucide-react';
 
 interface Collection {
   id: string;
