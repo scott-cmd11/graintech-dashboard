@@ -50,7 +50,7 @@ export const NewsFeed = memo(function NewsFeed() {
 
       try {
         const response = await fetch(
-          `https://gnews.io/api/v4/search?q=grain+technology+agriculture&lang=en&max=10&token=${GNEWS_API_KEY}`
+          `https://gnews.io/api/v4/search?q=agriculture+technology&lang=en&max=10&token=${GNEWS_API_KEY}`
         );
 
         if (!response.ok) {
