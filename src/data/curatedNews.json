@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1",
+    "title": "FOSS Analytical Solutions for Grain Quality Testing",
+    "source": "FOSS",
+    "date": "2024-12-20",
+    "summary": "FOSS provides rapid analytical solutions for grain testing, including NIR technology for protein, moisture, and oil content analysis.",
+    "url": "https://www.fossanalytics.com/en/industries/grain",
+    "category": "company"
+  },
+  {
+    "id": "2",
+    "title": "GrainSense: Portable Grain Analyzer Technology",
+    "source": "GrainSense",
+    "date": "2024-12-18",
+    "summary": "GrainSense offers handheld NIR analyzers for instant protein, moisture, and oil measurements directly in the field.",
+    "url": "https://grainsense.com/",
+    "category": "company"
+  },
+  {
+    "id": "3",
+    "title": "Cgrain Value: AI-Powered Grain Quality Analysis",
+    "source": "Cgrain",
+    "date": "2024-12-15",
+    "summary": "Cgrain Value uses computer vision and AI to analyze grain samples for quality parameters including damaged kernels and foreign matter.",
+    "url": "https://cgrain.com/",
+    "category": "company"
+  },
+  {
+    "id": "4",
+    "title": "Global Wheat Head Detection Dataset",
+    "source": "Global Wheat Challenge",
+    "date": "2024-12-10",
+    "summary": "The Global Wheat Head Detection dataset provides annotated images for developing AI models for wheat phenotyping.",
+    "url": "http://www.global-wheat.com/",
+    "category": "dataset"
+  },
+  {
+    "id": "5",
+    "title": "Videometer Multispectral Imaging for Seed Analysis",
+    "source": "Videometer",
+    "date": "2024-12-08",
+    "summary": "Videometer offers multispectral imaging solutions for seed quality assessment, variety identification, and disease detection.",
+    "url": "https://videometer.com/",
+    "category": "company"
+  },
+  {
+    "id": "6",
+    "title": "QualySense: High-Speed Grain Sorting Technology",
+    "source": "QualySense",
+    "date": "2024-12-05",
+    "summary": "QualySense QSorter provides single-kernel analysis and sorting for seeds and grains using advanced sensor technology.",
+    "url": "https://www.qualysense.com/",
+    "category": "company"
+  },
+  {
+    "id": "7",
+    "title": "Intello Labs: AI-Powered Crop Quality Assessment",
+    "source": "Intello Labs",
+    "date": "2024-12-01",
+    "summary": "Intello Labs uses smartphone-based AI to assess grain and produce quality, making testing accessible to farmers.",
+    "url": "https://www.intello.ai/",
+    "category": "company"
+  },
+  {
+    "id": "8",
+    "title": "GrainSet: Benchmark Dataset for Grain Analysis",
+    "source": "Research",
+    "date": "2024-11-28",
+    "summary": "GrainSet provides standardized image datasets for training machine learning models on grain quality assessment.",
+    "url": "https://github.com/",
+    "category": "dataset"
+  }
+]
