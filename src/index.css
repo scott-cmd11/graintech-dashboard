@@ -1,0 +1,288 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar styles */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in-95 {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-from-bottom-5 {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation classes */
+.animate-in {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.zoom-in-95 {
+  animation-name: zoom-in-95;
+}
+
+.slide-in-from-bottom-5 {
+  animation-name: slide-in-from-bottom-5;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+.duration-500 {
+  animation-duration: 500ms;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* Dark mode transitions */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom selection colors */
+::selection {
+  background-color: #fbbf24;
+  color: #1f2937;
+}
+
+.dark ::selection {
+  background-color: #d97706;
+  color: #ffffff;
+}
+
+/* Print-friendly styles */
+@media print {
+  /* Hide non-essential elements */
+  .no-print,
+  button:not(.print-visible),
+  .fixed,
+  nav,
+  .modal-backdrop,
+  .tooltip,
+  .dropdown-menu {
+    display: none !important;
+  }
+
+  /* Reset colors for printing */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  /* Remove shadows and backgrounds */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Ensure content uses full width */
+  .container,
+  .max-w-7xl,
+  .max-w-full {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Force light mode colors */
+  .dark\:bg-gray-800,
+  .dark\:bg-gray-900,
+  .dark\:bg-gray-700 {
+    background: white !important;
+  }
+
+  .dark\:text-gray-100,
+  .dark\:text-gray-200,
+  .dark\:text-gray-300,
+  .dark\:text-white {
+    color: black !important;
+  }
+
+  /* Card styling for print */
+  .bg-white,
+  [class*="rounded-xl"] {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure text is readable */
+  a {
+    color: black !important;
+    text-decoration: underline;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666;
+  }
+
+  /* Table styling */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th,
+  td {
+    border: 1px solid #e5e7eb;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background: #f3f4f6 !important;
+    font-weight: bold;
+  }
+
+  /* Grid becomes single column */
+  .grid {
+    display: block !important;
+  }
+
+  .grid > * {
+    margin-bottom: 16px;
+  }
+
+  /* Page breaks */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  img, svg {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  /* Headers for pages */
+  @page {
+    margin: 1.5cm;
+  }
+
+  @page :first {
+    margin-top: 2cm;
+  }
+
+  /* Print header */
+  .print-header {
+    display: block !important;
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+  }
+
+  .print-header h1 {
+    font-size: 24pt;
+    margin: 0;
+  }
+
+  .print-header p {
+    font-size: 10pt;
+    color: #666;
+    margin: 5px 0 0;
+  }
+
+  /* Company card print layout */
+  .company-card-print {
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+  }
+
+  /* Hide interactive elements */
+  input,
+  select,
+  .cursor-pointer {
+    display: none !important;
+  }
+
+  /* Show print-only content */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Footer for pages */
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 9pt;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
+  }
+}
+
+/* Hide print-only content in screen mode */
+.print-only {
+  display: none;
+}
+
+/* Skeleton animation */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-skeleton {
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
