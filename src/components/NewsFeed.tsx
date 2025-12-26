@@ -11,7 +11,7 @@ interface NewsItem {
   image?: string;
 }
 
-const GNEWS_API_KEY = import.meta.env.VITE_GNEWS_API_KEY;
+// API key is now stored server-side in Vercel environment variables
 
 // Fallback mock data in case API fails
 const fallbackNews: NewsItem[] = [
@@ -41,17 +41,8 @@ export const NewsFeed = memo(function NewsFeed() {
 
   useEffect(() => {
     async function fetchNews() {
-      if (!GNEWS_API_KEY) {
-        setNews(fallbackNews);
-        setLoading(false);
-        setError('API key not configured');
-        return;
-      }
-
       try {
-        const response = await fetch(
-          `https://gnews.io/api/v4/search?q=agriculture+technology&lang=en&max=10&token=${GNEWS_API_KEY}`
-        );
+        const response = await fetch('/api/news');
 
         if (!response.ok) {
           throw new Error('Failed to fetch news');
