@@ -1,5 +1,5 @@
-import { memo, useState } from 'react';
-import { Newspaper, Clock, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { memo, useState, useEffect } from 'react';
+import { Newspaper, Clock, ChevronDown, ChevronUp, ExternalLink, RefreshCw } from 'lucide-react';
 import curatedNews from '../data/curatedNews.json';
 
 interface NewsItem {
@@ -13,24 +13,47 @@ interface NewsItem {
 }
 
 export const NewsFeed = memo(function NewsFeed() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
-  const [filter, setFilter] = useState<string | null>(null);
+  const [showCurated, setShowCurated] = useState(false);
 
-  const news: NewsItem[] = curatedNews;
+  useEffect(() => {
+    async function fetchNews() {
+      try {
+        const response = await fetch('/api/news');
+        const data = await response.json();
 
-  const filteredNews = filter
-    ? news.filter((item) => item.category === filter)
-    : news;
+        if (data.articles && data.articles.length > 0) {
+          setNews(data.articles);
+        } else {
+          // Fallback to curated news if no alerts
+          setNews(curatedNews);
+          setShowCurated(true);
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        setNews(curatedNews);
+        setShowCurated(true);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const displayedNews = showAll ? filteredNews : filteredNews.slice(0, 4);
+    fetchNews();
+  }, []);
+
+  const displayedNews = showAll ? news : news.slice(0, 5);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Today';
+    if (diffHours < 1) return 'Just now';
+    if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays === 1) return 'Yesterday';
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
@@ -44,98 +67,85 @@ export const NewsFeed = memo(function NewsFeed() {
           <Newspaper className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Industry News</h3>
         </div>
+        {!loading && !showCurated && (
+          <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+            <RefreshCw className="w-3 h-3" />
+            Live from Google Alerts
+          </span>
+        )}
       </div>
 
-      {/* Filter buttons */}
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => setFilter(null)}
-          className={`px-3 py-1 text-xs rounded-full transition-colors ${
-            filter === null
-              ? 'bg-indigo-500 text-white'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-          }`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilter('company')}
-          className={`px-3 py-1 text-xs rounded-full transition-colors ${
-            filter === 'company'
-              ? 'bg-indigo-500 text-white'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-          }`}
-        >
-          Companies
-        </button>
-        <button
-          onClick={() => setFilter('dataset')}
-          className={`px-3 py-1 text-xs rounded-full transition-colors ${
-            filter === 'dataset'
-              ? 'bg-indigo-500 text-white'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-          }`}
-        >
-          Datasets
-        </button>
-      </div>
-
-      <div className="space-y-4">
-        {displayedNews.map((item) => (
-          <article
-            key={item.id}
-            className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          >
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{item.source}</span>
-                <span className="text-gray-300 dark:text-gray-600">•</span>
-                <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                  <Clock className="w-3 h-3" />
-                  {formatDate(item.date)}
-                </span>
-              </div>
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                {item.title}
-              </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                {item.summary}
-              </p>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium"
-              >
-                Visit Website
-                <ExternalLink className="w-3 h-3" />
-              </a>
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse p-4 bg-gray-100 dark:bg-gray-700 rounded-xl">
+              <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 mb-2" />
+              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/2" />
             </div>
-          </article>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className="space-y-4">
+            {displayedNews.map((item) => (
+              <article
+                key={item.id}
+                className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                      {item.source}
+                    </span>
+                    <span className="text-gray-300 dark:text-gray-600">•</span>
+                    <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                      <Clock className="w-3 h-3" />
+                      {formatDate(item.date)}
+                    </span>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
+                    {item.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+                    {item.summary}
+                  </p>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium"
+                  >
+                    Read Article
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
 
-      {filteredNews.length > 4 && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="w-full mt-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
-        >
-          {showAll ? (
-            <>
-              <ChevronUp className="w-4 h-4" />
-              Show Less
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-4 h-4" />
-              Show All ({filteredNews.length} items)
-            </>
+          {news.length > 5 && (
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="w-full mt-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
+            >
+              {showAll ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Show All ({news.length} articles)
+                </>
+              )}
+            </button>
           )}
-        </button>
+        </>
       )}
 
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 text-center">
-        Curated industry resources • Updated regularly
+        {showCurated ? 'Curated industry resources' : 'Powered by Google Alerts • Updates automatically'}
       </p>
     </div>
   );
