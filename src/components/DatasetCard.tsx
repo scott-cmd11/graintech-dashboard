@@ -39,24 +39,34 @@ export const DatasetCard = memo(function DatasetCard({
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">{dataset.name}</h3>
-              <span className="text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-700">
-                {dataset.year}
-              </span>
-              <span className="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-700">
-                {dataset.license}
-              </span>
+              {dataset.year && (
+                <span className="text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-700">
+                  {dataset.year}
+                </span>
+              )}
+              {dataset.license && (
+                <span className="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-700">
+                  {dataset.license}
+                </span>
+              )}
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{dataset.description}</p>
             <div className="flex flex-wrap gap-4 text-xs font-medium">
-              <span className="text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">
-                {dataset.images} images
-              </span>
-              <span className="text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
-                {dataset.annotations}
-              </span>
-              <span className="text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded">
-                {dataset.crops.join(', ')}
-              </span>
+              {dataset.images && (
+                <span className="text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">
+                  {dataset.images} images
+                </span>
+              )}
+              {dataset.annotations && (
+                <span className="text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
+                  {dataset.annotations}
+                </span>
+              )}
+              {dataset.crops.length > 0 && (
+                <span className="text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded">
+                  {dataset.crops.join(', ')}
+                </span>
+              )}
             </div>
           </div>
           <div className="ml-4 p-2 bg-gray-100 dark:bg-gray-700 rounded-full" aria-hidden="true">
@@ -105,12 +115,16 @@ export const DatasetCard = memo(function DatasetCard({
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide font-semibold">
                 Challenges
               </p>
-              <p className="text-sm text-gray-900 dark:text-gray-100">{dataset.challenges}</p>
+              {dataset.challenges && (
+                <p className="text-sm text-gray-900 dark:text-gray-100">{dataset.challenges}</p>
+              )}
             </div>
           </div>
-          <p className="text-sm text-gray-700 dark:text-gray-300 mb-6 leading-relaxed bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
-            {dataset.details}
-          </p>
+          {dataset.details && (
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-6 leading-relaxed bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+              {dataset.details}
+            </p>
+          )}
           <a
             href={`https://${dataset.url}`}
             target="_blank"

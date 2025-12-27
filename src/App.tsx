@@ -514,7 +514,7 @@ function Dashboard() {
   const allCountries = useMemo(() => {
     const countries = new Set<string>();
     companiesData.forEach((c) => {
-      if (c.country === 'See source') {
+      if (!c.country) {
         return;
       }
       c.country.split('/').forEach((country) => countries.add(country.trim()));
@@ -1185,8 +1185,56 @@ function Dashboard() {
         {activeTab === 'trends' && (
           <div className="space-y-6 animate-in fade-in duration-500">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Market Trends & Outlook</h2>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 text-sm text-gray-600 dark:text-gray-400">
-              Verified trend summaries are pending sources. Provide citations to add region and adoption details.
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">European Vanguard</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
+                  Lab-grade automation led by FOSS, Cgrain, Videometer, and Zeutec continues to set precision benchmarks.
+                </p>
+                <div className="mt-4 flex items-center text-green-600 dark:text-green-400 font-bold text-sm relative z-10">
+                  <TrendingUp className="w-4 h-4 mr-1" /> High Precision
+                </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">
+                  Edge Grading
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
+                  Smartphone and portable tools push grading to farm gates and receival points.
+                </p>
+                <div className="mt-4 flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm relative z-10">
+                  <TrendingUp className="w-4 h-4 mr-1" /> Rapid Adoption
+                </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">
+                  Sovereign Grading
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
+                  Exporting regions invest in domestic grading tech to protect varietal integrity.
+                </p>
+                <div className="mt-4 flex items-center text-amber-600 dark:text-amber-400 font-bold text-sm relative z-10">
+                  <TrendingUp className="w-4 h-4 mr-1" /> Strategic Priority
+                </div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+                <div className="text-3xl mb-2">Data</div>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Dataset Infrastructure</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Large-scale datasets such as GrainSpace, GrainSet, and GWHD are foundational to model accuracy.
+                </p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+                <div className="text-3xl mb-2">Ops</div>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Automation in Bulk Handling</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Automated inspection lines and inline sorting are expanding in major storage and export hubs.
+                </p>
+              </div>
             </div>
           </div>
         )}

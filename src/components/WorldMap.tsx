@@ -81,7 +81,7 @@ export const WorldMap = memo(function WorldMap({
     const hubs: Record<string, HubData> = {};
 
     companies.forEach((company) => {
-      if (company.country === 'See source') {
+      if (!company.country) {
         return;
       }
       // Handle multi-country entries like "USA/Global"

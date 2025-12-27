@@ -120,68 +120,82 @@ export const Modal = memo(function Modal({
 
           {/* Info Grid */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
-                Location
-              </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{company.country}</p>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
-                Type
-              </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{company.type}</p>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
-                Speed
-              </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{company.speed}</p>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
-                Funding
-              </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{company.funding}</p>
-            </div>
+            {company.country && (
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
+                  Location
+                </p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{company.country}</p>
+              </div>
+            )}
+            {company.type && (
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
+                  Type
+                </p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{company.type}</p>
+              </div>
+            )}
+            {company.speed && (
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
+                  Speed
+                </p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{company.speed}</p>
+              </div>
+            )}
+            {company.funding && (
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
+                  Funding
+                </p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{company.funding}</p>
+              </div>
+            )}
           </div>
 
           {/* Technology */}
-          <div className="mb-6">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold uppercase">
-              Technology
-            </p>
-            <p className="font-medium text-amber-700 dark:text-amber-400 text-lg flex items-center gap-2">
-              <Zap className="w-5 h-5" aria-hidden="true" />
-              {company.tech}
-            </p>
-          </div>
+          {company.tech && (
+            <div className="mb-6">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold uppercase">
+                Technology
+              </p>
+              <p className="font-medium text-amber-700 dark:text-amber-400 text-lg flex items-center gap-2">
+                <Zap className="w-5 h-5" aria-hidden="true" />
+                {company.tech}
+              </p>
+            </div>
+          )}
 
           {/* Description */}
-          <div className="mb-6">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
-              Description
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{company.description}</p>
-          </div>
+          {company.description && (
+            <div className="mb-6">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">
+                Description
+              </p>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{company.description}</p>
+            </div>
+          )}
 
           {/* Crops */}
-          <div className="mb-8">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold uppercase">
-              Supported Crops
-            </p>
-            <div className="flex flex-wrap gap-2" role="list" aria-label="Supported crops">
-              {company.crops.map((crop, i) => (
-                <span
-                  key={i}
-                  role="listitem"
-                  className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 px-3 py-1.5 rounded-full text-sm font-medium"
-                >
-                  {crop}
-                </span>
-              ))}
+          {company.crops.length > 0 && (
+            <div className="mb-8">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold uppercase">
+                Supported Crops
+              </p>
+              <div className="flex flex-wrap gap-2" role="list" aria-label="Supported crops">
+                {company.crops.map((crop, i) => (
+                  <span
+                    key={i}
+                    role="listitem"
+                    className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 px-3 py-1.5 rounded-full text-sm font-medium"
+                  >
+                    {crop}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Footer */}
           <div className="flex flex-wrap gap-4 pt-6 border-t border-gray-100 dark:border-gray-700">
