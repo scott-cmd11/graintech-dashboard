@@ -1,8 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
-import { SlidersHorizontal, TrendingUp, RotateCcw, TrendingDown, Check, AlertCircle } from "lucide-react";
+import { SlidersHorizontal, TrendingUp, RotateCcw, TrendingDown, Check, AlertCircle, ArrowRight } from "lucide-react";
 import type { Region } from "../data/grainTechEntities";
 import { calculateScenario } from "../utils/scenarioModel";
-import { SimpleLineChart } from "./Charts";
 
 const regions: Region[] = [
   "North America",
@@ -140,23 +139,26 @@ export const ScenarioExplorer = function ScenarioExplorer() {
     ? ((outputs.riskReductionScore - baseline.riskReductionScore) / baseline.riskReductionScore * 100)
     : 0;
 
-  const curveData = useMemo(() => {
-    const levels = [10, 25, 50, 75, 100];
-    return levels.map((level) => {
+  // Calculate value progression based on current slider settings scaled up
+  const valueProgression = useMemo(() => {
+    const scales = [25, 50, 75, 100];
+    return scales.map((scale) => {
+      const scaleFactor = scale / 100;
       const result = calculateScenario({
         region,
-        onFarmAdoption: level,
-        elevatorAdoption: level,
-        regulatoryAdoption: level,
+        onFarmAdoption: onFarmAdoption * scaleFactor,
+        elevatorAdoption: elevatorAdoption * scaleFactor,
+        regulatoryAdoption: regulatoryAdoption * scaleFactor,
       });
       return {
-        label: `${level}%`,
-        value: Math.round(result.incrementalValueUSD / 1_000_000),
+        scale,
+        valueUSD: result.incrementalValueUSD,
+        valueM: Math.round(result.incrementalValueUSD / 1_000_000),
       };
     });
-  }, [region]);
+  }, [region, onFarmAdoption, elevatorAdoption, regulatoryAdoption]);
 
-  const maxValue = Math.max(...curveData.map(d => d.value));
+  const maxValue = Math.max(...valueProgression.map(d => d.valueM));
   const maxHours = Math.max(outputs.timeSavedHours, baseline.timeSavedHours);
 
   // Quick preset functions
@@ -390,14 +392,55 @@ export const ScenarioExplorer = function ScenarioExplorer() {
         </div>
       </div>
 
-      {/* VALUE CURVE CHART */}
+      {/* VALUE GROWTH PROGRESSION */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-        <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-4">
+        <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-6">
           <TrendingUp className="w-4 h-4 text-emerald-500" />
-          <span>Value Growth Curve</span>
-          <span className="text-[10px] text-gray-400 dark:text-gray-500">USD millions across all adoption rates</span>
+          <span>Value Growth Based on Your Scenario</span>
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">As adoption scales to your target</span>
         </div>
-        <SimpleLineChart data={curveData} color="stroke-emerald-500" />
+
+        <div className="grid gap-3">
+          {valueProgression.map((item, index) => (
+            <div key={item.scale}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                  {item.scale}% of your scenario
+                </span>
+                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  ${item.valueM}M
+                </span>
+              </div>
+              <div className="h-8 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-lg overflow-hidden"
+                   style={{
+                     width: `${(item.valueUSD / valueProgression[3].valueUSD) * 100}%`,
+                     minWidth: item.scale === 100 ? '100%' : 'auto'
+                   }}>
+                <div className="h-full flex items-center justify-end pr-3">
+                  {item.scale === 100 && (
+                    <span className="text-xs font-bold text-white">
+                      {item.valueM}M
+                    </span>
+                  )}
+                </div>
+              </div>
+              {index < valueProgression.length - 1 && (
+                <div className="flex justify-center my-2">
+                  <ArrowRight className="w-4 h-4 text-gray-300 dark:text-gray-700 rotate-90" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+            <strong className="text-gray-900 dark:text-gray-100">Current Scenario:</strong> On-farm {onFarmAdoption}% • Elevator {elevatorAdoption}% • Regulatory {regulatoryAdoption}%
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-500">
+            Move the sliders above to see how value grows as adoption scales to your target rates.
+          </p>
+        </div>
       </div>
     </div>
   );
