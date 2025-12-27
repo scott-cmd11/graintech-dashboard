@@ -57,7 +57,6 @@ import {
   Pagination,
   WorldMap,
   AdvancedFilters,
-  SearchAutocomplete,
   KeyboardShortcuts,
   ROICalculator,
   DecisionWizard,
@@ -445,18 +444,6 @@ function Dashboard() {
     searchInput?.focus();
   }, []);
 
-  // Search autocomplete handler
-  const handleSearchSelect = useCallback((value: string, type: string) => {
-    if (type === 'company') {
-      const company = companiesData.find((c) => c.name === value);
-      if (company) {
-        setSelectedCompany(company);
-      }
-    } else {
-      setSearchTerm(value);
-    }
-  }, []);
-
   // Map country click handler
   const handleCountryClick = useCallback((country: string) => {
     setAdvancedFilters((prev) => ({
@@ -585,14 +572,6 @@ function Dashboard() {
         {/* Companies Tab */}
         {activeTab === 'landscape' && (
           <div className="space-y-6 animate-in fade-in duration-500">
-            {/* Search Autocomplete */}
-            <SearchAutocomplete
-              companies={companiesData}
-              onSelect={handleSearchSelect}
-              initialValue={searchTerm}
-              onChange={setSearchTerm}
-            />
-
             <SearchFilter
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}

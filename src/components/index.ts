@@ -9,7 +9,6 @@ export { Pagination } from './Pagination';
 export { WorldMap } from './WorldMap';
 export { Skeleton, SkeletonCard, SkeletonGrid, SkeletonChart } from './Skeleton';
 export { AdvancedFilters } from './AdvancedFilters';
-export { SearchAutocomplete } from './SearchAutocomplete';
 export { KeyboardShortcuts } from './KeyboardShortcuts';
 export { ROICalculator } from './ROICalculator';
 export { DecisionWizard } from './DecisionWizard';

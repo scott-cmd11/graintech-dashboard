@@ -14,10 +14,13 @@ interface FundingEvent {
   color: string;
 }
 
-// Parse funding info to extract amounts and types
-function parseFunding(funding: string): { amount: string; type: string } {
+// Parse funding info to extract amounts, types, and years.
+function parseFunding(funding: string): { amount: string; type: string; year?: number } {
   const amountMatch = funding.match(/\$[\d.]+[MBK]?/i);
   const amount = amountMatch ? amountMatch[0] : '';
+
+  const yearMatch = funding.match(/20\d{2}/);
+  const year = yearMatch ? Number(yearMatch[0]) : undefined;
 
   let type = 'Other';
   if (funding.toLowerCase().includes('seed')) type = 'Seed';
@@ -27,7 +30,7 @@ function parseFunding(funding: string): { amount: string; type: string } {
   else if (funding.toLowerCase().includes('grant')) type = 'Grant';
   else if (funding.toLowerCase().includes('partnership')) type = 'Partnership';
 
-  return { amount, type };
+  return { amount, type, year };
 }
 
 const typeColors: Record<string, string> = {
@@ -45,15 +48,8 @@ export const FundingTimeline = memo(function FundingTimeline({ companies }: Fund
     const events: FundingEvent[] = [];
 
     companies.forEach((company) => {
-      const { amount, type } = parseFunding(company.funding);
-      if (amount || type !== 'Other') {
-        // Estimate year based on funding type (mock data)
-        let year = 2024;
-        if (type === 'Seed') year = 2022;
-        else if (type === 'Series A') year = 2023;
-        else if (type === 'Series B') year = 2024;
-        else if (type === 'Corporate') year = 2020;
-
+      const { amount, type, year } = parseFunding(company.funding);
+      if ((amount || type !== 'Other') && year) {
         events.push({
           company: company.name,
           amount: amount || company.funding,
@@ -137,7 +133,7 @@ export const FundingTimeline = memo(function FundingTimeline({ companies }: Fund
           <span className="text-sm font-medium">Industry Trend</span>
         </div>
         <p className="text-sm text-green-700 dark:text-green-400">
-          Significant VC investment in GrainTech sector, with Series A rounds becoming more common in 2024-2025.
+          Recent funding mentions include seed rounds, Series A, and partnerships reported in 2024-2025.
         </p>
       </div>
     </div>
