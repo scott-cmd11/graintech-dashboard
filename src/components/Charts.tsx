@@ -58,6 +58,42 @@ export const SimpleBarChart = memo(function SimpleBarChart({
   );
 });
 
+interface SimpleHorizontalBarChartProps {
+  data: BarChartData[];
+  color?: string;
+  className?: string;
+}
+
+export const SimpleHorizontalBarChart = memo(function SimpleHorizontalBarChart({
+  data,
+  color = 'bg-blue-500',
+  className = '',
+}: SimpleHorizontalBarChartProps) {
+  const max = useMemo(() => Math.max(...data.map(d => d.value)), [data]);
+
+  return (
+    <div className={`space-y-3 ${className}`} role="img" aria-label="Horizontal bar chart">
+      {data.map((item, i) => (
+        <div key={i} className="grid grid-cols-[140px_1fr_40px] items-center gap-3">
+          <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate">
+            {item.label}
+          </span>
+          <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full ${color}`}
+              style={{ width: `${Math.max((item.value / max) * 100, 4)}%` }}
+              aria-hidden="true"
+            />
+          </div>
+          <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 text-right">
+            {item.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+});
+
 interface SimpleDonutChartProps {
   data: DonutChartData[];
   className?: string;
@@ -141,4 +177,4 @@ export const SimpleDonutChart = memo(function SimpleDonutChart({
   );
 });
 
-export default { SimpleBarChart, SimpleDonutChart };
+export default { SimpleBarChart, SimpleHorizontalBarChart, SimpleDonutChart };

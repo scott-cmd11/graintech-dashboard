@@ -297,7 +297,7 @@ export const companiesData: Company[] = [
     id: 20,
     name: "EasyODM",
     product: "Grain Sample Analysis System",
-    country: "",
+    country: "Lithuania",
     type: "Software",
     tech: "Camera-based inspection software",
     description: "Software platform for grain sample analysis.",

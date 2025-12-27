@@ -47,6 +47,7 @@ import {
 // Components
 import {
   SimpleBarChart,
+  SimpleHorizontalBarChart,
   SimpleDonutChart,
   TabNav,
   CompanyCard,
@@ -755,7 +756,7 @@ function Dashboard() {
                 <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 text-center">
                   Device Types Distribution
                 </h3>
-                <SimpleBarChart data={deviceTypeStats} color="bg-blue-500 hover:bg-blue-600" />
+                <SimpleHorizontalBarChart data={deviceTypeStats} color="bg-blue-500" />
                 <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
                   Benchtop and Mobile solutions dominate the market
                 </p>

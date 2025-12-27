@@ -1,4 +1,4 @@
-export { SimpleBarChart, SimpleDonutChart } from './Charts';
+export { SimpleBarChart, SimpleHorizontalBarChart, SimpleDonutChart } from './Charts';
 export { TabNav } from './TabNav';
 export { CompanyCard } from './CompanyCard';
 export { Modal } from './Modal';

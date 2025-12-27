@@ -126,7 +126,8 @@ export const WorldMap = memo(function WorldMap({
 
   // Total stats
   const totalCountries = hubData.length;
-  const totalCompanies = hubData.reduce((sum, hub) => sum + hub.count, 0);
+  const totalMappedCompanies = hubData.reduce((sum, hub) => sum + hub.count, 0);
+  const totalCompanies = companies.length;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
@@ -143,11 +144,16 @@ export const WorldMap = memo(function WorldMap({
             <span className="text-gray-500 dark:text-gray-400 ml-1">countries</span>
           </div>
           <div className="text-center">
-            <span className="font-bold text-gray-900 dark:text-gray-100">{totalCompanies}</span>
-            <span className="text-gray-500 dark:text-gray-400 ml-1">companies</span>
+            <span className="font-bold text-gray-900 dark:text-gray-100">{totalMappedCompanies}</span>
+            <span className="text-gray-500 dark:text-gray-400 ml-1">mapped companies</span>
           </div>
         </div>
       </div>
+      {totalMappedCompanies !== totalCompanies && (
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          {totalCompanies - totalMappedCompanies} {totalCompanies - totalMappedCompanies === 1 ? 'company' : 'companies'} without location data yet.
+        </p>
+      )}
 
       <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700" style={{ height: '400px' }}>
         {hubData.length > 0 ? (
