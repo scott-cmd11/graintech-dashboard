@@ -90,6 +90,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
     useCases: false,
   });
   const [localCompaniesOpen, setLocalCompaniesOpen] = useState(defaultCompaniesOpen);
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   const toggleFilterSection = (section: keyof typeof expandedFilterSections) => {
     setExpandedFilterSections((prev) => ({
@@ -315,444 +316,8 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
   const totalPagesWithLocations = Math.ceil(visibleWithLocations.length / ITEMS_PER_PAGE);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <div className="flex items-center gap-3">
-          <Globe className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-            Global AI Grain Landscape
-          </h3>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {filteredSolutions.length} of {grainSolutions.length} solutions
-          </div>
-          <div className="text-[10px] text-gray-500 dark:text-gray-400 space-y-0.5">
-            <div>
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">{maturityBreakdown.Commercial}</span> Commercial
-              {maturityBreakdown.Pilot > 0 && (
-                <>
-                  {" • "}
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">{maturityBreakdown.Pilot}</span> Pilot
-                </>
-              )}
-              {maturityBreakdown.Experimental > 0 && (
-                <>
-                  {" • "}
-                  <span className="font-semibold text-amber-600 dark:text-amber-400">{maturityBreakdown.Experimental}</span> Experimental
-                </>
-              )}
-            </div>
-            {maturityBreakdown.NoLocation > 0 && (
-              <div>
-                <span className="text-gray-400 dark:text-gray-500">{maturityBreakdown.NoLocation} without location data</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {showFilters && (
-        <div className="space-y-4 mb-4">
-          <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <FilterIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-            <span className="text-xs text-blue-700 dark:text-blue-300 mr-auto">Filter mode:</span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setFilterMode("or")}
-                className={`px-2 py-1 text-xs rounded transition-colors ${
-                  filterMode === "or"
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
-                }`}
-              >
-                OR
-              </button>
-              <button
-                onClick={() => setFilterMode("and")}
-                className={`px-2 py-1 text-xs rounded transition-colors ${
-                  filterMode === "and"
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
-                }`}
-              >
-                AND
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-              Quick Presets
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() =>
-                  updateFilters({
-                    regions: activeFilters.regions,
-                    sensing: activeFilters.sensing,
-                    formFactors: ["HandheldSensor" as FormFactor, "OnCombine" as FormFactor, "Smartphone" as FormFactor],
-                    useCases: activeFilters.useCases,
-                  })
-                }
-                className="px-3 py-1 text-xs rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-              >
-                Field Solutions
-              </button>
-              <button
-                onClick={() =>
-                  updateFilters({
-                    regions: activeFilters.regions,
-                    sensing: activeFilters.sensing,
-                    formFactors: ["Benchtop" as FormFactor, "LabSystem" as FormFactor],
-                    useCases: activeFilters.useCases,
-                  })
-                }
-                className="px-3 py-1 text-xs rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-              >
-                Lab Systems
-              </button>
-              <button
-                onClick={() =>
-                  updateFilters({
-                    regions: activeFilters.regions,
-                    sensing: activeFilters.sensing,
-                    formFactors: activeFilters.formFactors,
-                    useCases: ["ElevatorGrading" as UseCase, "RegulatoryExport" as UseCase],
-                  })
-                }
-                className="px-3 py-1 text-xs rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-              >
-                Grade & Export
-              </button>
-              <button
-                onClick={() =>
-                  updateFilters({
-                    regions: activeFilters.regions,
-                    sensing: activeFilters.sensing,
-                    formFactors: activeFilters.formFactors,
-                    useCases: ["OnFarmPreGrading" as UseCase, "MandiProcurement" as UseCase],
-                  })
-                }
-                className="px-3 py-1 text-xs rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-              >
-                Farmer/Trader
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleFilterSection("search")}
-              className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
-                Search
-              </p>
-              <div className="sm:hidden">
-                {expandedFilterSections.search ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
-            </button>
-            {(expandedFilterSections.search || true) && (
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
-                  <Search className="w-4 h-4" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search companies or products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                />
-                {searchTerm && (
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleFilterSection("regions")}
-              className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
-                Regions
-              </p>
-              <div className="sm:hidden">
-                {expandedFilterSections.regions ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
-            </button>
-            {(expandedFilterSections.regions || true) && (
-              <div className="flex flex-wrap gap-2">
-              {availableFilters.regions.map((region) => {
-                const selected = activeFilters.regions.includes(region);
-                return (
-                  <button
-                    key={region}
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        regions: toggleFilter(prev.regions, region),
-                      }))
-                    }
-                    className={`${chipBase} ${
-                      selected
-                        ? "bg-emerald-500 border-emerald-500 text-white"
-                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
-                  >
-                    {formatEnumLabel(region)}
-                  </button>
-                );
-              })}
-            </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleFilterSection("sensing")}
-              className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
-                Sensing Tech
-              </p>
-              <div className="sm:hidden">
-                {expandedFilterSections.sensing ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
-            </button>
-            {(expandedFilterSections.sensing || true) && (
-              <div className="flex flex-wrap gap-2">
-              {availableFilters.sensing.map((tech) => {
-                const selected = activeFilters.sensing.includes(tech);
-                const color = sensingColors[tech];
-                return (
-                  <button
-                    key={tech}
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        sensing: toggleFilter(prev.sensing, tech),
-                      }))
-                    }
-                    className={`${chipBase} ${
-                      selected
-                        ? "text-white"
-                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
-                    style={selected ? { backgroundColor: color, borderColor: color } : undefined}
-                  >
-                    {formatEnumLabel(tech)}
-                  </button>
-                );
-              })}
-            </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleFilterSection("formFactors")}
-              className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
-                Form Factor
-              </p>
-              <div className="sm:hidden">
-                {expandedFilterSections.formFactors ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
-            </button>
-            {(expandedFilterSections.formFactors || true) && (
-              <div className="flex flex-wrap gap-2">
-              {availableFilters.formFactors.map((factor) => {
-                const selected = activeFilters.formFactors.includes(factor);
-                return (
-                  <button
-                    key={factor}
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        formFactors: toggleFilter(prev.formFactors, factor),
-                      }))
-                    }
-                    className={`${chipBase} ${
-                      selected
-                        ? "bg-blue-500 border-blue-500 text-white"
-                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
-                  >
-                    {formatEnumLabel(factor)}
-                  </button>
-                );
-              })}
-            </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleFilterSection("useCases")}
-              className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
-                Use Cases
-              </p>
-              <div className="sm:hidden">
-                {expandedFilterSections.useCases ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
-            </button>
-            {(expandedFilterSections.useCases || true) && (
-              <div className="flex flex-wrap gap-2">
-              {availableFilters.useCases.map((useCase) => {
-                const selected = activeFilters.useCases.includes(useCase);
-                return (
-                  <button
-                    key={useCase}
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        useCases: toggleFilter(prev.useCases, useCase),
-                      }))
-                    }
-                    className={`${chipBase} ${
-                      selected
-                        ? "bg-amber-500 border-amber-500 text-white"
-                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
-                  >
-                    {formatEnumLabel(useCase)}
-                  </button>
-                );
-              })}
-            </div>
-            )}
-          </div>
-
-          {(activeFilters.regions.length > 0 ||
-            activeFilters.sensing.length > 0 ||
-            activeFilters.formFactors.length > 0 ||
-            activeFilters.useCases.length > 0) && (
-            <button
-              onClick={resetFilters}
-              className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-            >
-              Clear all filters
-            </button>
-          )}
-        </div>
-      )}
-
-      {(searchTerm || activeFilters.regions.length > 0 || activeFilters.sensing.length > 0 || activeFilters.formFactors.length > 0 || activeFilters.useCases.length > 0) && (
-        <div className="mb-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => setFilterSummaryOpen(!filterSummaryOpen)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 mb-2 w-full"
-          >
-            <span>Active Filters</span>
-            {filterSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-          {filterSummaryOpen && (
-            <div className="flex flex-wrap gap-2">
-              {searchTerm && (
-                <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs">
-                  <span>Search: {searchTerm}</span>
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="hover:text-blue-900 dark:hover:text-blue-200"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              {activeFilters.regions.map((region) => (
-                <div
-                  key={region}
-                  className="flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-xs"
-                >
-                  <span>{formatEnumLabel(region)}</span>
-                  <button
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        regions: prev.regions.filter((r) => r !== region),
-                      }))
-                    }
-                    className="hover:text-emerald-900 dark:hover:text-emerald-200"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {activeFilters.sensing.map((tech) => (
-                <div
-                  key={tech}
-                  className="flex items-center gap-2 px-3 py-1 rounded-full text-xs text-white"
-                  style={{ backgroundColor: sensingColors[tech] }}
-                >
-                  <span>{formatEnumLabel(tech)}</span>
-                  <button
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        sensing: prev.sensing.filter((s) => s !== tech),
-                      }))
-                    }
-                    className="hover:opacity-75"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {activeFilters.formFactors.map((factor) => (
-                <div
-                  key={factor}
-                  className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs"
-                >
-                  <span>{formatEnumLabel(factor)}</span>
-                  <button
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        formFactors: prev.formFactors.filter((f) => f !== factor),
-                      }))
-                    }
-                    className="hover:text-blue-900 dark:hover:text-blue-200"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {activeFilters.useCases.map((useCase) => (
-                <div
-                  key={useCase}
-                  className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs"
-                >
-                  <span>{formatEnumLabel(useCase)}</span>
-                  <button
-                    onClick={() =>
-                      updateFilters((prev) => ({
-                        ...prev,
-                        useCases: prev.useCases.filter((u) => u !== useCase),
-                      }))
-                    }
-                    className="hover:text-amber-900 dark:hover:text-amber-200"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
+    <div className="space-y-6">
+      {/* MAP HERO SECTION */}
       <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 h-[360px] sm:h-[420px]">
         <MapContainer
           center={[15, 0]}
@@ -820,7 +385,8 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
         </MapContainer>
       </div>
 
-      <div className="mt-4 p-3 sm:p-0 sm:mt-4 sticky bottom-0 sm:static bg-white dark:bg-gray-800 sm:bg-transparent dark:sm:bg-transparent border-t border-gray-200 dark:border-gray-700 sm:border-0 rounded-t-lg sm:rounded-none grid gap-3 sm:flex sm:items-center sm:justify-between text-xs text-gray-600 dark:text-gray-400">
+      {/* MAP LEGEND */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 grid gap-3 sm:flex sm:items-center sm:justify-between text-xs text-gray-600 dark:text-gray-400">
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
           {Object.entries(sensingColors).map(([tech, color]) => (
             <div key={tech} className="flex items-center gap-2">
@@ -849,7 +415,512 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
         </div>
       </div>
 
-      <section className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+      {/* GETTING STARTED HELP CARD */}
+      <div className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 rounded-xl p-5 border border-emerald-200 dark:border-emerald-800">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 mt-0.5">
+            <span className="text-2xl">💡</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm mb-2">
+              Getting Started with the Map
+            </h3>
+            <ul className="space-y-1.5 text-xs text-gray-700 dark:text-gray-300">
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex-shrink-0">•</span>
+                <span><strong>Click map markers</strong> to see company details</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex-shrink-0">•</span>
+                <span><strong>Use Quick Presets</strong> below to instantly filter by solution type (easiest way!)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex-shrink-0">•</span>
+                <span><strong>Color of marker</strong> shows sensing technology used (see legend above)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex-shrink-0">•</span>
+                <span><strong>Size of marker</strong> indicates deployment scale (experimental to commercial)</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* FILTER SECTION */}
+      {showFilters && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <div className="flex items-center gap-3">
+              <Globe className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                Global AI Grain Landscape
+              </h3>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {filteredSolutions.length} of {grainSolutions.length} solutions
+              </div>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400 space-y-0.5">
+                <div>
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">{maturityBreakdown.Commercial}</span> Commercial
+                  {maturityBreakdown.Pilot > 0 && (
+                    <>
+                      {" • "}
+                      <span className="font-semibold text-blue-600 dark:text-blue-400">{maturityBreakdown.Pilot}</span> Pilot
+                    </>
+                  )}
+                  {maturityBreakdown.Experimental > 0 && (
+                    <>
+                      {" • "}
+                      <span className="font-semibold text-amber-600 dark:text-amber-400">{maturityBreakdown.Experimental}</span> Experimental
+                    </>
+                  )}
+                </div>
+                {maturityBreakdown.NoLocation > 0 && (
+                  <div>
+                    <span className="text-gray-400 dark:text-gray-500">{maturityBreakdown.NoLocation} without location data</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* QUICK PRESETS - Always visible */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
+                <span>⚡ Quick Presets</span>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-normal">(Recommended)</span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() =>
+                    updateFilters({
+                      regions: activeFilters.regions,
+                      sensing: activeFilters.sensing,
+                      formFactors: ["HandheldSensor" as FormFactor, "OnCombine" as FormFactor, "Smartphone" as FormFactor],
+                      useCases: activeFilters.useCases,
+                    })
+                  }
+                  className="px-3 py-1.5 text-xs rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-700 font-medium"
+                  title="Field solutions like handheld sensors and on-combine systems"
+                >
+                  🌾 Field Solutions
+                </button>
+                <button
+                  onClick={() =>
+                    updateFilters({
+                      regions: activeFilters.regions,
+                      sensing: activeFilters.sensing,
+                      formFactors: ["Benchtop" as FormFactor, "LabSystem" as FormFactor],
+                      useCases: activeFilters.useCases,
+                    })
+                  }
+                  className="px-3 py-1.5 text-xs rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors border border-blue-200 dark:border-blue-700 font-medium"
+                  title="Laboratory analysis systems like benchtops and full lab setups"
+                >
+                  🧪 Lab Systems
+                </button>
+                <button
+                  onClick={() =>
+                    updateFilters({
+                      regions: activeFilters.regions,
+                      sensing: activeFilters.sensing,
+                      formFactors: activeFilters.formFactors,
+                      useCases: ["ElevatorGrading" as UseCase, "RegulatoryExport" as UseCase],
+                    })
+                  }
+                  className="px-3 py-1.5 text-xs rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors border border-amber-200 dark:border-amber-700 font-medium"
+                  title="Solutions for commercial grading and export compliance"
+                >
+                  📊 Grade & Export
+                </button>
+                <button
+                  onClick={() =>
+                    updateFilters({
+                      regions: activeFilters.regions,
+                      sensing: activeFilters.sensing,
+                      formFactors: activeFilters.formFactors,
+                      useCases: ["OnFarmPreGrading" as UseCase, "MandiProcurement" as UseCase],
+                    })
+                  }
+                  className="px-3 py-1.5 text-xs rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors border border-orange-200 dark:border-orange-700 font-medium"
+                  title="Tools for farmers and traders to grade grain before sale"
+                >
+                  👨‍🌾 Farmer/Trader
+                </button>
+              </div>
+            </div>
+
+            {/* ADVANCED FILTERS TOGGLE */}
+            <button
+              onClick={() => setAdvancedFiltersOpen(!advancedFiltersOpen)}
+              className="flex items-center gap-2 w-full text-left mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1 hover:text-emerald-600 dark:hover:text-emerald-400">
+                Advanced Filters
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-gray-400 dark:text-gray-500">{
+                  (activeFilters.regions.length + activeFilters.sensing.length + activeFilters.formFactors.length + activeFilters.useCases.length) > 0
+                    ? `${activeFilters.regions.length + activeFilters.sensing.length + activeFilters.formFactors.length + activeFilters.useCases.length} active`
+                    : 'expand'
+                }</span>
+                {advancedFiltersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </div>
+            </button>
+
+            {/* ADVANCED FILTERS - Hidden by default */}
+            {advancedFiltersOpen && (
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <FilterIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  <span className="text-xs text-blue-700 dark:text-blue-300 mr-auto">Filter mode (combine filters with):</span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setFilterMode("or")}
+                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                        filterMode === "or"
+                          ? "bg-blue-600 text-white"
+                          : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
+                      }`}
+                      title="Show results matching any selected filter"
+                    >
+                      OR
+                    </button>
+                    <button
+                      onClick={() => setFilterMode("and")}
+                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                        filterMode === "and"
+                          ? "bg-blue-600 text-white"
+                          : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
+                      }`}
+                      title="Show results matching all selected filters"
+                    >
+                      AND
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => toggleFilterSection("search")}
+                    className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
+                      🔍 Search
+                    </p>
+                    <div className="sm:hidden">
+                      {expandedFilterSections.search ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+                  {(expandedFilterSections.search || true) && (
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <Search className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search companies or products... (e.g., BASF, RGB sensor)"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      />
+                      {searchTerm && (
+                        <button
+                          onClick={() => setSearchTerm("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => toggleFilterSection("regions")}
+                    className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
+                      🌍 Regions
+                    </p>
+                    <div className="sm:hidden">
+                      {expandedFilterSections.regions ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+                  {(expandedFilterSections.regions || true) && (
+                    <div className="flex flex-wrap gap-2">
+                    {availableFilters.regions.map((region) => {
+                      const selected = activeFilters.regions.includes(region);
+                      return (
+                        <button
+                          key={region}
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              regions: toggleFilter(prev.regions, region),
+                            }))
+                          }
+                          className={`${chipBase} ${
+                            selected
+                              ? "bg-emerald-500 border-emerald-500 text-white"
+                              : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                          }`}
+                        >
+                          {formatEnumLabel(region)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => toggleFilterSection("sensing")}
+                    className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
+                      🔬 Sensing Tech
+                    </p>
+                    <div className="sm:hidden">
+                      {expandedFilterSections.sensing ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+                  {(expandedFilterSections.sensing || true) && (
+                    <div className="flex flex-wrap gap-2">
+                    {availableFilters.sensing.map((tech) => {
+                      const selected = activeFilters.sensing.includes(tech);
+                      const color = sensingColors[tech];
+                      return (
+                        <button
+                          key={tech}
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              sensing: toggleFilter(prev.sensing, tech),
+                            }))
+                          }
+                          className={`${chipBase} ${
+                            selected
+                              ? "text-white"
+                              : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                          }`}
+                          style={selected ? { backgroundColor: color, borderColor: color } : undefined}
+                        >
+                          {formatEnumLabel(tech)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => toggleFilterSection("formFactors")}
+                    className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
+                      📱 Form Factor
+                    </p>
+                    <div className="sm:hidden">
+                      {expandedFilterSections.formFactors ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+                  {(expandedFilterSections.formFactors || true) && (
+                    <div className="flex flex-wrap gap-2">
+                    {availableFilters.formFactors.map((factor) => {
+                      const selected = activeFilters.formFactors.includes(factor);
+                      return (
+                        <button
+                          key={factor}
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              formFactors: toggleFilter(prev.formFactors, factor),
+                            }))
+                          }
+                          className={`${chipBase} ${
+                            selected
+                              ? "bg-blue-500 border-blue-500 text-white"
+                              : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                          }`}
+                        >
+                          {formatEnumLabel(factor)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => toggleFilterSection("useCases")}
+                    className="flex items-center gap-2 w-full text-left mb-2 sm:mb-0"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 flex-1">
+                      ✓ Use Cases
+                    </p>
+                    <div className="sm:hidden">
+                      {expandedFilterSections.useCases ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+                  {(expandedFilterSections.useCases || true) && (
+                    <div className="flex flex-wrap gap-2">
+                    {availableFilters.useCases.map((useCase) => {
+                      const selected = activeFilters.useCases.includes(useCase);
+                      return (
+                        <button
+                          key={useCase}
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              useCases: toggleFilter(prev.useCases, useCase),
+                            }))
+                          }
+                          className={`${chipBase} ${
+                            selected
+                              ? "bg-amber-500 border-amber-500 text-white"
+                              : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                          }`}
+                        >
+                          {formatEnumLabel(useCase)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  )}
+                </div>
+
+                {(activeFilters.regions.length > 0 ||
+                  activeFilters.sensing.length > 0 ||
+                  activeFilters.formFactors.length > 0 ||
+                  activeFilters.useCases.length > 0) && (
+                  <button
+                    onClick={resetFilters}
+                    className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ACTIVE FILTERS SUMMARY */}
+            {(searchTerm || activeFilters.regions.length > 0 || activeFilters.sensing.length > 0 || activeFilters.formFactors.length > 0 || activeFilters.useCases.length > 0) && (
+              <div className="mt-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={() => setFilterSummaryOpen(!filterSummaryOpen)}
+                  className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 mb-2 w-full"
+                >
+                  <span>Active Filters</span>
+                  {filterSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+                {filterSummaryOpen && (
+                  <div className="flex flex-wrap gap-2">
+                    {searchTerm && (
+                      <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs">
+                        <span>Search: {searchTerm}</span>
+                        <button
+                          onClick={() => setSearchTerm("")}
+                          className="hover:text-blue-900 dark:hover:text-blue-200"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                    {activeFilters.regions.map((region) => (
+                      <div
+                        key={region}
+                        className="flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-xs"
+                      >
+                        <span>{formatEnumLabel(region)}</span>
+                        <button
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              regions: prev.regions.filter((r) => r !== region),
+                            }))
+                          }
+                          className="hover:text-emerald-900 dark:hover:text-emerald-200"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {activeFilters.sensing.map((tech) => (
+                      <div
+                        key={tech}
+                        className="flex items-center gap-2 px-3 py-1 rounded-full text-xs text-white"
+                        style={{ backgroundColor: sensingColors[tech] }}
+                      >
+                        <span>{formatEnumLabel(tech)}</span>
+                        <button
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              sensing: prev.sensing.filter((s) => s !== tech),
+                            }))
+                          }
+                          className="hover:opacity-75"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {activeFilters.formFactors.map((factor) => (
+                      <div
+                        key={factor}
+                        className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs"
+                      >
+                        <span>{formatEnumLabel(factor)}</span>
+                        <button
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              formFactors: prev.formFactors.filter((f) => f !== factor),
+                            }))
+                          }
+                          className="hover:text-blue-900 dark:hover:text-blue-200"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {activeFilters.useCases.map((useCase) => (
+                      <div
+                        key={useCase}
+                        className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs"
+                      >
+                        <span>{formatEnumLabel(useCase)}</span>
+                        <button
+                          onClick={() =>
+                            updateFilters((prev) => ({
+                              ...prev,
+                              useCases: prev.useCases.filter((u) => u !== useCase),
+                            }))
+                          }
+                          className="hover:text-amber-900 dark:hover:text-amber-200"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* COMPANIES SECTION - At the bottom */}
+      <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
         <button
           type="button"
           onClick={toggleCompaniesOpen}
