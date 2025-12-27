@@ -27,7 +27,7 @@ interface GrainLandscapeFiltersProps {
 }
 
 const chipBase =
-  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500";
+  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500";
 
 function toggleFilter<T>(items: T[], value: T): T[] {
   return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
@@ -106,7 +106,7 @@ export const GrainLandscapeFilters = function GrainLandscapeFilters({
                     }
                     className={`${chipBase} ${
                       selected
-                        ? "bg-emerald-500 border-emerald-500 text-white"
+                        ? "bg-emerald-600 border-emerald-600 text-white"
                         : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
                     }`}
                   >
@@ -195,7 +195,7 @@ export const GrainLandscapeFilters = function GrainLandscapeFilters({
                     }
                     className={`${chipBase} ${
                       selected
-                        ? "bg-amber-500 border-amber-500 text-white"
+                        ? "bg-teal-500 border-teal-500 text-white"
                         : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
                     }`}
                   >

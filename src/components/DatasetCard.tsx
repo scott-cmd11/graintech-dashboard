@@ -40,7 +40,7 @@ export const DatasetCard = memo(function DatasetCard({
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">{dataset.name}</h3>
               {dataset.year && (
-                <span className="text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-700">
+                <span className="text-xs bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-300 px-2 py-0.5 rounded border border-teal-200 dark:border-teal-700">
                   {dataset.year}
                 </span>
               )}
@@ -53,7 +53,7 @@ export const DatasetCard = memo(function DatasetCard({
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{dataset.description}</p>
             <div className="flex flex-wrap gap-4 text-xs font-medium">
               {dataset.images && (
-                <span className="text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">
+                <span className="text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded">
                   {dataset.images} images
                 </span>
               )}
@@ -63,7 +63,7 @@ export const DatasetCard = memo(function DatasetCard({
                 </span>
               )}
               {dataset.crops.length > 0 && (
-                <span className="text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded">
+                <span className="text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded">
                   {dataset.crops.join(', ')}
                 </span>
               )}
@@ -104,7 +104,7 @@ export const DatasetCard = memo(function DatasetCard({
                   <span
                     key={j}
                     role="listitem"
-                    className="text-xs bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 text-purple-700 dark:text-purple-400 px-2 py-1 rounded shadow-sm"
+                    className="text-xs bg-white dark:bg-gray-800 border border-teal-200 dark:border-teal-700 text-teal-700 dark:text-teal-400 px-2 py-1 rounded shadow-sm"
                   >
                     {task}
                   </span>
@@ -129,7 +129,7 @@ export const DatasetCard = memo(function DatasetCard({
             href={`https://${dataset.url}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
             <ExternalLink className="w-4 h-4" aria-hidden="true" />
             Access Dataset at {dataset.url}

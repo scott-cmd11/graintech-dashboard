@@ -32,7 +32,7 @@ const comparisonRows: ComparisonRow[] = [
           {crops.map((crop, i) => (
             <span
               key={i}
-              className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded"
+              className="text-xs bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded"
             >
               {crop}
             </span>
@@ -133,7 +133,7 @@ export const CompareModal = memo(function CompareModal({
           <button
             onClick={onClose}
             aria-label="Close comparison"
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <X className="w-6 h-6" />
           </button>
@@ -158,7 +158,7 @@ export const CompareModal = memo(function CompareModal({
                           href={`https://${company.url}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-1"
+                          className="text-sm text-teal-600 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
                         >
                           <ExternalLink className="w-3 h-3" />
                           Website
@@ -194,7 +194,7 @@ export const CompareModal = memo(function CompareModal({
                       {row.render ? (
                         row.render(company[row.key], company)
                       ) : row.key === 'tech' ? (
-                        <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
+                        <span className="flex items-center gap-1 text-teal-600 dark:text-teal-400 font-medium">
                           <Zap className="w-4 h-4" />
                           {String(company[row.key])}
                         </span>

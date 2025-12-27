@@ -74,7 +74,7 @@ export const AdvancedFilters = memo(function AdvancedFilters({
           <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           <span className="font-medium text-gray-900 dark:text-gray-100">Advanced Filters</span>
           {totalFilters > 0 && (
-            <span className="bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full">
+            <span className="bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-300 text-xs font-bold px-2 py-0.5 rounded-full">
               {totalFilters}
             </span>
           )}
@@ -111,7 +111,7 @@ export const AdvancedFilters = memo(function AdvancedFilters({
                     onClick={() => handleCropToggle(crop)}
                     className={`px-3 py-1 text-xs rounded-full transition-colors ${
                       selectedCrops.includes(crop)
-                        ? 'bg-green-500 text-white'
+                        ? 'bg-emerald-600 text-white'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                   >
@@ -159,7 +159,7 @@ export const AdvancedFilters = memo(function AdvancedFilters({
                     onClick={() => handleTypeToggle(type)}
                     className={`px-3 py-1 text-xs rounded-full transition-colors ${
                       selectedTypes.includes(type)
-                        ? 'bg-purple-500 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                   >

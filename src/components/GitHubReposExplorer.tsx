@@ -160,7 +160,7 @@ export const GitHubReposExplorer = function GitHubReposExplorer() {
             Open Source Resources
           </h3>
         </div>
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-4 text-amber-800 dark:text-amber-300">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-4 text-amber-700 dark:text-amber-300">
           {error}
         </div>
       </div>
@@ -182,7 +182,7 @@ export const GitHubReposExplorer = function GitHubReposExplorer() {
 
         {loading ? (
           <div className="flex items-center justify-center gap-2 py-12">
-            <Loader className="w-5 h-5 animate-spin text-amber-600" />
+            <Loader className="w-5 h-5 animate-spin text-teal-600" />
             <span className="text-gray-600 dark:text-gray-400">Discovering repositories...</span>
           </div>
         ) : (
@@ -195,8 +195,8 @@ export const GitHubReposExplorer = function GitHubReposExplorer() {
                   onClick={() => setSelectedCategory(selectedCategory === cat.name ? null : cat.name)}
                   className={`px-3 py-1.5 text-xs rounded-lg font-medium transition-colors border ${
                     selectedCategory === cat.name
-                      ? 'bg-amber-600 text-white border-amber-600'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-amber-600 dark:hover:border-amber-500'
+                      ? 'bg-teal-600 text-white border-teal-600'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-teal-600 dark:hover:border-teal-500'
                   }`}
                 >
                   {cat.name} ({cat.count})
@@ -218,16 +218,16 @@ export const GitHubReposExplorer = function GitHubReposExplorer() {
                     href={repo.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-4 hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-md transition-all group"
+                    className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-4 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-md transition-all group"
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                           {repo.name}
                         </h4>
                       </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 flex-shrink-0 mt-0.5" />
+                      <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 flex-shrink-0 mt-0.5" />
                     </div>
 
                     {/* Description */}
@@ -243,7 +243,7 @@ export const GitHubReposExplorer = function GitHubReposExplorer() {
                         {repo.topics.slice(0, 3).map((topic) => (
                           <span
                             key={topic}
-                            className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                            className="text-[10px] px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400"
                           >
                             {topic}
                           </span>

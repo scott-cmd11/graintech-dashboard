@@ -65,7 +65,7 @@ export const Pagination = memo(function Pagination({
           onClick={onFirstPage}
           disabled={!hasPrevPage}
           aria-label="Go to first page"
-          className={`hidden sm:inline-flex p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+          className={`hidden sm:inline-flex p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
             hasPrevPage
               ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
@@ -79,7 +79,7 @@ export const Pagination = memo(function Pagination({
           onClick={onPrevPage}
           disabled={!hasPrevPage}
           aria-label="Go to previous page"
-          className={`p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+          className={`p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
             hasPrevPage
               ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
@@ -94,7 +94,7 @@ export const Pagination = memo(function Pagination({
             <>
               <button
                 onClick={() => onPageChange(1)}
-                className="px-3 py-1 text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="px-3 py-1 text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 1
               </button>
@@ -110,9 +110,9 @@ export const Pagination = memo(function Pagination({
               onClick={() => onPageChange(page)}
               aria-label={`Go to page ${page}`}
               aria-current={currentPage === page ? 'page' : undefined}
-              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                 currentPage === page
-                  ? 'bg-amber-500 text-white font-medium'
+                  ? 'bg-teal-600 text-white font-medium'
                   : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
@@ -127,7 +127,7 @@ export const Pagination = memo(function Pagination({
               )}
               <button
                 onClick={() => onPageChange(totalPages)}
-                className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 {totalPages}
               </button>
@@ -140,7 +140,7 @@ export const Pagination = memo(function Pagination({
           onClick={onNextPage}
           disabled={!hasNextPage}
           aria-label="Go to next page"
-          className={`p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+          className={`p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
             hasNextPage
               ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
@@ -154,7 +154,7 @@ export const Pagination = memo(function Pagination({
           onClick={onLastPage}
           disabled={!hasNextPage}
           aria-label="Go to last page"
-          className={`hidden sm:inline-flex p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+          className={`hidden sm:inline-flex p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
             hasNextPage
               ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
@@ -173,7 +173,7 @@ export const Pagination = memo(function Pagination({
           id="items-per-page"
           value={itemsPerPage}
           onChange={handleItemsPerPageChange}
-          className="px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         >
           {itemsPerPageOptions.map((option) => (
             <option key={option} value={option}>

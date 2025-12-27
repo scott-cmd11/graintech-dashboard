@@ -86,7 +86,7 @@ export const TechnologyRadar = memo(function TechnologyRadar({ companies }: Tech
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
       <div className="flex items-center gap-3 mb-6">
-        <Radar className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+        <Radar className="w-6 h-6 text-teal-600 dark:text-teal-400" />
         <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Technology Radar</h3>
       </div>
 
@@ -96,7 +96,7 @@ export const TechnologyRadar = memo(function TechnologyRadar({ companies }: Tech
           onClick={() => setSelectedQuadrant(null)}
           className={`px-3 py-1 text-sm rounded-full transition-colors ${
             selectedQuadrant === null
-              ? 'bg-purple-500 text-white'
+              ? 'bg-teal-600 text-white'
               : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
           }`}
         >
@@ -108,7 +108,7 @@ export const TechnologyRadar = memo(function TechnologyRadar({ companies }: Tech
             onClick={() => setSelectedQuadrant(i)}
             className={`px-3 py-1 text-sm rounded-full transition-colors ${
               selectedQuadrant === i
-                ? 'bg-purple-500 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >

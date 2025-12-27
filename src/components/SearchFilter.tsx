@@ -91,7 +91,7 @@ export const SearchFilter = memo(function SearchFilter({
           value={searchTerm}
           onChange={handleSearchChange}
           aria-label="Search companies"
-          className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+          className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
         />
         {searchTerm && (
           <button
@@ -111,7 +111,7 @@ export const SearchFilter = memo(function SearchFilter({
           value={filterType}
           onChange={handleFilterChange}
           aria-label="Filter by type"
-          className="w-full sm:w-auto px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="w-full sm:w-auto px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         >
           {filterOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -128,7 +128,7 @@ export const SearchFilter = memo(function SearchFilter({
           value={sortField}
           onChange={handleSortChange}
           aria-label="Sort by"
-          className="w-full sm:w-auto px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="w-full sm:w-auto px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         >
           {sortOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -143,7 +143,7 @@ export const SearchFilter = memo(function SearchFilter({
         onClick={onToggleFavorites}
         aria-label={showFavoritesOnly ? 'Show all companies' : 'Show favorites only'}
         aria-pressed={showFavoritesOnly}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 w-full sm:w-auto ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 w-full sm:w-auto ${
           showFavoritesOnly
             ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400'
             : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -160,7 +160,7 @@ export const SearchFilter = memo(function SearchFilter({
         <button
           aria-label="Export data"
           aria-haspopup="true"
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 w-full sm:w-auto"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 w-full sm:w-auto"
         >
           <Download className="w-4 h-4" />
           <span className="text-sm font-medium">Export</span>

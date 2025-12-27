@@ -36,7 +36,7 @@ function parseFunding(funding: string): { amount: string; type: string; year?: n
 const typeColors: Record<string, string> = {
   'Seed': 'bg-green-500',
   'Series A': 'bg-blue-500',
-  'Series B': 'bg-purple-500',
+  'Series B': 'bg-teal-600',
   'Corporate': 'bg-gray-500',
   'Grant': 'bg-amber-500',
   'Partnership': 'bg-teal-500',
@@ -74,7 +74,7 @@ export const FundingTimeline = memo(function FundingTimeline({ companies }: Fund
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
       <div className="flex items-center gap-3 mb-6">
-        <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
+        <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
         <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Funding Activity</h3>
       </div>
 
@@ -115,7 +115,7 @@ export const FundingTimeline = memo(function FundingTimeline({ companies }: Fund
                     {event.type}
                   </span>
                   {event.amount && (
-                    <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                       {event.amount}
                     </span>
                   )}
@@ -127,12 +127,12 @@ export const FundingTimeline = memo(function FundingTimeline({ companies }: Fund
       </div>
 
       {/* Total Raised */}
-      <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/30 rounded-xl">
-        <div className="flex items-center gap-2 text-green-800 dark:text-green-300 mb-1">
+      <div className="mt-6 p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl">
+        <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 mb-1">
           <TrendingUp className="w-4 h-4" />
           <span className="text-sm font-medium">Industry Trend</span>
         </div>
-        <p className="text-sm text-green-700 dark:text-green-400">
+        <p className="text-sm text-emerald-700 dark:text-emerald-400">
           Recent funding mentions include seed rounds, Series A, and partnerships reported in 2024-2025.
         </p>
       </div>

@@ -496,7 +496,7 @@ export const historyData: HistoryEra[] = [
     title: "Checking by Eye",
     desc: "Grain was valued by where it came from (e.g., 'Sicilian Wheat'). Buyers had to inspect specific sacks personally to trust them.",
     metric: "Visual & Origin",
-    icon: React.createElement(Eye, { className: "w-6 h-6 text-amber-600" })
+    icon: React.createElement(Eye, { className: "w-6 h-6 text-blue-900" })
   },
   {
     era: "1856 - 1900",
@@ -517,14 +517,14 @@ export const historyData: HistoryEra[] = [
     title: "The Chemistry Era",
     desc: "Scientists invented sensors (NIR) to measure protein and oil. Grading moved from just 'how it looks' to 'what is inside it'.",
     metric: "Protein & Chemical Content",
-    icon: React.createElement(FlaskConical, { className: "w-6 h-6 text-purple-600" })
+    icon: React.createElement(FlaskConical, { className: "w-6 h-6 text-teal-600" })
   },
   {
     era: "2020s - Future",
     title: "The Digital Return",
     desc: "AI allows us to track every single kernel again. We can now have the efficiency of bulk shipping but the specific details of the ancient system.",
     metric: "Digital Analysis",
-    icon: React.createElement(Cpu, { className: "w-6 h-6 text-green-600" })
+    icon: React.createElement(Cpu, { className: "w-6 h-6 text-emerald-700" })
   }
 ];
 
@@ -549,7 +549,7 @@ export const aiResearchData: AIResearchData = {
       name: "Swin Transformer",
       role: "Hierarchical Vision Transformer",
       desc: "Vision transformer architecture with shifted window attention.",
-      icon: React.createElement(ScanLine, { className: "w-5 h-5 text-purple-600" }),
+      icon: React.createElement(ScanLine, { className: "w-5 h-5 text-teal-600" }),
       url: "https://arxiv.org/abs/2103.14030",
       citations: ["https://arxiv.org/abs/2103.14030"]
     },
@@ -557,7 +557,7 @@ export const aiResearchData: AIResearchData = {
       name: "GrainNet (YOLOv7)",
       role: "Kernel Detection",
       desc: "YOLOv7-based detection for grain counting and inspection tasks.",
-      icon: React.createElement(ScanLine, { className: "w-5 h-5 text-amber-600" }),
+      icon: React.createElement(ScanLine, { className: "w-5 h-5 text-teal-600" }),
       url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11934480/",
       citations: ["https://pmc.ncbi.nlm.nih.gov/articles/PMC11934480/"]
     }
@@ -637,7 +637,7 @@ export const regulatoryData: RegulatoryData = {
       keyChange: "GTA endorsed technology for assessment of specific barley varieties.",
       driver: "Varietal purity for trade",
       status: "Endorsement (2025)",
-      icon: React.createElement(Sprout, { className: "w-6 h-6 text-amber-600" }),
+      icon: React.createElement(Sprout, { className: "w-6 h-6 text-emerald-700" }),
       url: "https://graintrade.org.au/",
       citations: ["https://graintrade.org.au/member-update/member-update-no-25-of-2025-endorsement-of-technology-as-a-method-for-assessment-of-specific-barley-varieties/"]
     },
@@ -665,9 +665,9 @@ export const marketStats: MarketStat[] = [
 
 export const typeColors: Record<string, string> = {
   "Benchtop": "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  "Mobile": "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  "Handheld Light Sensor": "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  "Software": "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
+  "Mobile": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
+  "Handheld Light Sensor": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
+  "Software": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
   "Mobile + Device": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
   "Benchtop + In-line": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
   "In-line + Benchtop": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",

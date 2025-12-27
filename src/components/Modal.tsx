@@ -100,7 +100,7 @@ export const Modal = memo(function Modal({
                 onClick={handleFavoriteClick}
                 aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                 aria-pressed={isFavorite}
-                className={`p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                className={`p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                   isFavorite
                     ? 'bg-red-100 dark:bg-red-900/50 text-red-500 dark:text-red-400'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500'
@@ -111,7 +111,7 @@ export const Modal = memo(function Modal({
               <button
                 onClick={onClose}
                 aria-label="Close modal"
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -160,7 +160,7 @@ export const Modal = memo(function Modal({
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold uppercase">
                 Technology
               </p>
-              <p className="font-medium text-amber-700 dark:text-amber-400 text-lg flex items-center gap-2">
+              <p className="font-medium text-teal-700 dark:text-teal-400 text-lg flex items-center gap-2">
                 <Zap className="w-5 h-5" aria-hidden="true" />
                 {company.tech}
               </p>
@@ -188,7 +188,7 @@ export const Modal = memo(function Modal({
                   <span
                     key={i}
                     role="listitem"
-                    className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 px-3 py-1.5 rounded-full text-sm font-medium"
+                    className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 rounded-full text-sm font-medium"
                   >
                     {crop}
                   </span>
@@ -203,7 +203,7 @@ export const Modal = memo(function Modal({
               href={`https://${company.url}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
+              className="inline-flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 rounded"
             >
               <ExternalLink className="w-4 h-4" aria-hidden="true" />
               Visit Website

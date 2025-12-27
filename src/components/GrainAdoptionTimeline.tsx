@@ -13,15 +13,15 @@ interface GrainAdoptionTimelineProps {
 }
 
 const categoryColors: Record<AdoptionEvent["category"], string> = {
-  ProductLaunch: "bg-emerald-500",
+  ProductLaunch: "bg-emerald-600",
   Regulation: "bg-blue-500",
   Pilot: "bg-amber-500",
-  NationalProgram: "bg-purple-500",
+  NationalProgram: "bg-teal-600",
   Other: "bg-slate-500",
 };
 
 const chipBase =
-  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500";
+  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500";
 const monthNames = [
   "Jan",
   "Feb",
@@ -138,7 +138,7 @@ export const GrainAdoptionTimeline = function GrainAdoptionTimeline({
                   onClick={() => setRegions((prev) => toggleFilter(prev, region as Region))}
                   className={`${chipBase} ${
                     selected
-                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      ? "bg-emerald-600 border-emerald-600 text-white"
                       : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
                   }`}
                 >
@@ -200,7 +200,7 @@ export const GrainAdoptionTimeline = function GrainAdoptionTimeline({
                         onClick={() => setActiveEventId(event.id)}
                         className={`w-full text-left rounded-xl border p-4 transition-colors ${
                           activeEventId === event.id
-                            ? "border-amber-300 dark:border-amber-600 bg-amber-50/60 dark:bg-amber-900/20"
+                            ? "border-teal-300 dark:border-teal-600 bg-teal-50/60 dark:bg-teal-900/20"
                             : "border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/40"
                         }`}
                       >

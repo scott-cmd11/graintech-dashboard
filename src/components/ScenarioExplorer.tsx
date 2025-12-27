@@ -191,7 +191,7 @@ export const ScenarioExplorer = function ScenarioExplorer() {
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
         <div className="flex items-center gap-3 mb-2">
-          <SlidersHorizontal className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+          <SlidersHorizontal className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
             Scenario Explorer
           </h3>
@@ -209,7 +209,7 @@ export const ScenarioExplorer = function ScenarioExplorer() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => applyPreset('conservative')}
-              className="px-3 py-1.5 text-xs rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors border border-orange-200 dark:border-orange-700 font-medium"
+              className="px-3 py-1.5 text-xs rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/50 transition-colors border border-teal-200 dark:border-teal-700 font-medium"
             >
               Conservative (10%)
             </button>
@@ -244,7 +244,7 @@ export const ScenarioExplorer = function ScenarioExplorer() {
               <select
                 value={region}
                 onChange={(event) => setRegion(event.target.value as Region)}
-                className="mt-2 w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="mt-2 w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               >
                 {regions.map((item) => (
                   <option key={item} value={item}>
@@ -266,7 +266,7 @@ export const ScenarioExplorer = function ScenarioExplorer() {
                   max={100}
                   value={onFarmAdoption}
                   onChange={(event) => setOnFarmAdoption(Number(event.target.value))}
-                  className="w-full accent-amber-500"
+                  className="w-full accent-teal-500"
                 />
               </div>
               <div>
@@ -280,7 +280,7 @@ export const ScenarioExplorer = function ScenarioExplorer() {
                   max={100}
                   value={elevatorAdoption}
                   onChange={(event) => setElevatorAdoption(Number(event.target.value))}
-                  className="w-full accent-amber-500"
+                  className="w-full accent-teal-500"
                 />
               </div>
               <div>
@@ -294,7 +294,7 @@ export const ScenarioExplorer = function ScenarioExplorer() {
                   max={100}
                   value={regulatoryAdoption}
                   onChange={(event) => setRegulatoryAdoption(Number(event.target.value))}
-                  className="w-full accent-amber-500"
+                  className="w-full accent-teal-500"
                 />
               </div>
             </div>

@@ -66,9 +66,9 @@ export const CompanyCard = memo(function CompanyCard({
       tabIndex={0}
       role="button"
       aria-label={`View details for ${company.name}`}
-      className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
+      className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
         isSelected
-          ? 'border-amber-500 ring-2 ring-amber-500 shadow-lg'
+          ? 'border-teal-500 ring-2 ring-teal-500 shadow-lg'
           : 'border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1'
       }`}
     >
@@ -76,7 +76,7 @@ export const CompanyCard = memo(function CompanyCard({
         {/* Header */}
         <div className="flex justify-between items-start mb-3 gap-2">
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-gray-900 dark:text-gray-100 truncate text-base sm:text-lg group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 truncate text-base sm:text-lg group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
               {company.name}
             </h3>
             <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">{company.product}</p>
@@ -103,7 +103,7 @@ export const CompanyCard = memo(function CompanyCard({
               <span
                 key={i}
                 role="listitem"
-                className="text-xs bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded border border-green-100 dark:border-green-800"
+                className="text-xs bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-800"
               >
                 {crop}
               </span>
@@ -118,7 +118,7 @@ export const CompanyCard = memo(function CompanyCard({
 
         {/* Tech & Actions */}
         <div className="pt-3 border-t border-gray-50 dark:border-gray-700 flex justify-between items-center">
-          <p className="text-[11px] sm:text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+          <p className="text-[11px] sm:text-xs text-teal-600 dark:text-teal-400 font-medium flex items-center gap-1">
             <Zap className="w-3 h-3" aria-hidden="true" />
             <span className="truncate max-w-[110px] sm:max-w-[150px]">{company.tech}</span>
           </p>
@@ -130,7 +130,7 @@ export const CompanyCard = memo(function CompanyCard({
               disabled={!isSelected && compareCount >= maxCompare}
               aria-label={isSelected ? 'Remove from comparison' : 'Add to comparison'}
               aria-pressed={isSelected}
-              className={`p-1.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+              className={`p-1.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                 isSelected
                   ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
                   : compareCount >= maxCompare
@@ -146,7 +146,7 @@ export const CompanyCard = memo(function CompanyCard({
               onClick={handleFavoriteClick}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               aria-pressed={isFavorite}
-              className={`p-1.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+              className={`p-1.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                 isFavorite
                   ? 'bg-red-100 dark:bg-red-900/50 text-red-500 dark:text-red-400'
                   : 'text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400'

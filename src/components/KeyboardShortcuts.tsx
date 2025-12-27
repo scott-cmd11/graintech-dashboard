@@ -130,7 +130,7 @@ export const KeyboardShortcuts = memo(function KeyboardShortcuts({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-6">
-          <Keyboard className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+          <Keyboard className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Keyboard Shortcuts</h2>
         </div>
 

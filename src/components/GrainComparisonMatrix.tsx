@@ -77,7 +77,7 @@ const presetColumns: Record<"performance" | "stack" | "business", ColumnKey[]> =
 };
 
 const chipBase =
-  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500";
+  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500";
 
 function toggleFilter<T>(items: T[], value: T): T[] {
   return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
@@ -349,7 +349,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                 console.log("Comparing:", selected);
                 alert(`Ready to compare ${selected.length} solutions. (Modal integration coming soon)`);
               }}
-              className="px-3 py-2 text-xs rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors inline-flex items-center gap-2"
+              className="px-3 py-2 text-xs rounded-lg bg-teal-500 hover:bg-teal-600 text-white transition-colors inline-flex items-center gap-2"
             >
               <CheckSquare className="w-4 h-4" />
               Compare ({selectedRows.size})
@@ -459,12 +459,12 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
               {useCases.map((useCase) => (
                 <div
                   key={useCase}
-                  className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs"
+                  className="flex items-center gap-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 px-3 py-1 rounded-full text-xs"
                 >
                   <span>{formatEnumLabel(useCase)}</span>
                   <button
                     onClick={() => setUseCases((prev) => prev.filter((u) => u !== useCase))}
-                    className="hover:text-amber-900 dark:hover:text-amber-200"
+                    className="hover:text-teal-900 dark:hover:text-teal-200"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -587,7 +587,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                   onClick={() => setUseCases((prev) => toggleFilter(prev, useCase))}
                   className={`${chipBase} ${
                     selected
-                      ? "bg-amber-500 border-amber-500 text-white"
+                      ? "bg-teal-500 border-teal-500 text-white"
                       : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
                   }`}
                 >
@@ -618,7 +618,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
               }
               setUseCases((prev) => prev.filter((item) => item !== filter.value));
             }}
-            className="px-3 py-1 text-xs rounded-full border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+            className="px-3 py-1 text-xs rounded-full border border-teal-200 dark:border-teal-700 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50"
           >
             {filter.category}: {filter.value}
           </button>
@@ -654,7 +654,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
               </button>
               <button
                 onClick={() => applyPreset("business")}
-                className="px-3 py-1 text-xs rounded-full border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                className="px-3 py-1 text-xs rounded-full border border-teal-200 dark:border-teal-700 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50"
               >
                 Business Only
               </button>
@@ -723,7 +723,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                   title={selectedRows.size === sortedSolutions.length ? "Deselect all" : "Select all"}
                 >
                   {selectedRows.size === sortedSolutions.length ? (
-                    <CheckSquare className="w-4 h-4 text-amber-600" />
+                    <CheckSquare className="w-4 h-4 text-teal-600" />
                   ) : (
                     <Square className="w-4 h-4" />
                   )}
@@ -767,7 +767,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
               <tr
                 key={solution.id}
                 className={`group border-b border-gray-100 dark:border-gray-700 ${
-                  isSelected ? "bg-amber-50 dark:bg-amber-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700/40"
+                  isSelected ? "bg-teal-50 dark:bg-teal-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700/40"
                 }`}
               >
                 <td className="px-3 py-3 w-12 text-center">
@@ -776,7 +776,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                     className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
                   >
                     {isSelected ? (
-                      <CheckSquare className="w-4 h-4 text-amber-600" />
+                      <CheckSquare className="w-4 h-4 text-teal-600" />
                     ) : (
                       <Square className="w-4 h-4 text-gray-400" />
                     )}
@@ -823,7 +823,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                         {solution.useCases.map((useCase) => (
                           <span
                             key={`${solution.id}-${useCase}`}
-                            className="text-[10px] px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-700"
+                            className="text-[10px] px-2 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
                           >
                             {formatEnumLabel(useCase)}
                           </span>

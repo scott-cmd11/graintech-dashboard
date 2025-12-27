@@ -69,13 +69,13 @@ function Header() {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <Cpu className="w-10 h-10 text-amber-200" aria-hidden="true" />
+              <Cpu className="w-10 h-10 text-blue-200" aria-hidden="true" />
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight display-font">GrainTech Intelligence</h1>
             </div>
-            <p className="text-amber-100 text-sm sm:text-lg max-w-xl">
+            <p className="text-blue-100 text-sm sm:text-lg max-w-xl">
               How grain quality checks are going digital
             </p>
-            <div className="flex flex-wrap gap-2 sm:gap-4 mt-4 text-[10px] sm:text-xs font-medium uppercase tracking-wider text-amber-200/80">
+            <div className="flex flex-wrap gap-2 sm:gap-4 mt-4 text-[10px] sm:text-xs font-medium uppercase tracking-wider text-blue-200/80">
               <span>{companiesData.length} Companies</span>
               <span>|</span>
               <span>{datasetsData.length} Datasets</span>
@@ -346,13 +346,13 @@ function Dashboard() {
             <div className="space-y-8 animate-in fade-in duration-500">
             {/* Stats Cards at top */}
             <div className="grid md:grid-cols-4 gap-4">
-              <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
+              <div className="bg-gradient-to-br from-blue-800 to-blue-900 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-3 opacity-10">
                   <Cpu className="w-16 h-16" />
                 </div>
-                <h3 className="text-amber-100 font-medium text-xs uppercase tracking-wider mb-1">Companies</h3>
+                <h3 className="text-blue-100 font-medium text-xs uppercase tracking-wider mb-1">Companies</h3>
                 <p className="text-3xl font-bold">{companiesData.length}</p>
-                <p className="text-xs text-amber-100 mt-1">Tracked globally</p>
+                <p className="text-xs text-blue-100 mt-1">Tracked globally</p>
               </div>
               <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-3 opacity-10">
@@ -370,13 +370,13 @@ function Dashboard() {
                 <p className="text-3xl font-bold">{allCrops.length}</p>
                 <p className="text-xs text-green-100 mt-1">Supported</p>
               </div>
-              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
+              <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-3 opacity-10">
                   <BrainCircuit className="w-16 h-16" />
                 </div>
-                <h3 className="text-purple-100 font-medium text-xs uppercase tracking-wider mb-1">Device Types</h3>
+                <h3 className="text-teal-100 font-medium text-xs uppercase tracking-wider mb-1">Device Types</h3>
                 <p className="text-3xl font-bold">{allTypes.length}</p>
-                <p className="text-xs text-purple-100 mt-1">Categories</p>
+                <p className="text-xs text-teal-100 mt-1">Categories</p>
               </div>
             </div>
 
@@ -440,7 +440,7 @@ function Dashboard() {
             <div className="space-y-6 animate-in fade-in duration-500">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
               <div className="flex items-center gap-3 mb-3">
-                <Database className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+                <Database className="w-8 h-8 text-teal-600 dark:text-teal-400" />
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Open datasets</h2>
               </div>
               <p className="text-gray-600 dark:text-gray-400 section-lead">
@@ -590,9 +590,9 @@ function Dashboard() {
                   </div>
                 </div>
 
-                <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6 border border-orange-100 dark:border-orange-800">
-                  <h3 className="text-lg font-bold text-orange-900 dark:text-orange-200 mb-2">Why it matters</h3>
-                  <p className="text-sm text-orange-800 dark:text-orange-300 leading-relaxed">
+                <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-6 border border-teal-100 dark:border-teal-800">
+                  <h3 className="text-lg font-bold text-teal-900 dark:text-teal-200 mb-2">Why it matters</h3>
+                  <p className="text-sm text-teal-800 dark:text-teal-300 leading-relaxed">
                     AI is moving from hand-built rules to models that learn patterns. This can track grain quality in real time and support identity preservation at scale.
                   </p>
                 </div>
@@ -712,7 +712,7 @@ function Dashboard() {
           <div className="space-y-8 animate-in fade-in duration-500">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center gap-3 mb-4">
-                <ScrollText className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+                <ScrollText className="w-8 h-8 text-blue-900 dark:text-blue-400" />
                 <div>
                   <h2 className="text-2xl font-bold section-title text-gray-900 dark:text-gray-100">How grading built trust</h2>
                   <p className="text-gray-600 dark:text-gray-400 section-lead">
@@ -730,15 +730,15 @@ function Dashboard() {
               <div className="space-y-8">
                 {historyData.map((era, i) => (
                   <div key={i} className="relative flex flex-col md:flex-row gap-6 items-start group">
-                    <div className="hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-white dark:bg-gray-800 border-2 border-amber-100 dark:border-amber-800 shadow-sm z-10 shrink-0 group-hover:scale-110 transition-transform">
-                      <div className="text-amber-600 dark:text-amber-400">{era.icon}</div>
+                    <div className="hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-white dark:bg-gray-800 border-2 border-blue-100 dark:border-blue-800 shadow-sm z-10 shrink-0 group-hover:scale-110 transition-transform">
+                      <div className="text-blue-900 dark:text-blue-400">{era.icon}</div>
                     </div>
                     <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-all">
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-xs font-bold text-amber-600 dark:text-amber-400 tracking-wider">
+                        <span className="text-xs font-bold text-blue-900 dark:text-blue-400 tracking-wider">
                           {era.era}
                         </span>
-                        <div className="md:hidden text-amber-600 dark:text-amber-400 mb-2">{era.icon}</div>
+                        <div className="md:hidden text-blue-900 dark:text-blue-400 mb-2">{era.icon}</div>
                       </div>
                       <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{era.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">{era.desc}</p>
@@ -756,7 +756,7 @@ function Dashboard() {
 
             <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-8 text-white mt-12 shadow-xl">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Globe className="w-6 h-6 text-amber-400" />
+                <Globe className="w-6 h-6 text-blue-400" />
                 How grading works around the world
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -765,7 +765,7 @@ function Dashboard() {
                     key={i}
                     className="bg-white/5 rounded-xl p-5 border border-white/10 hover:bg-white/10 transition-colors"
                   >
-                    <h4 className="font-bold text-lg text-amber-400 mb-1">{philosophy.region}</h4>
+                    <h4 className="font-bold text-lg text-blue-400 mb-1">{philosophy.region}</h4>
                     <p className="text-sm font-medium text-slate-200 mb-3">{philosophy.philosophy}</p>
                     <div className="space-y-2 text-xs text-slate-300 border-t border-white/10 pt-3">
                       <div>
@@ -821,7 +821,7 @@ function Dashboard() {
                 <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
                   Exporting regions invest in local grading tech to protect variety purity.
                 </p>
-                <div className="mt-4 flex items-center text-amber-600 dark:text-amber-400 font-bold text-sm relative z-10">
+                <div className="mt-4 flex items-center text-teal-600 dark:text-teal-400 font-bold text-sm relative z-10">
                   <TrendingUp className="w-4 h-4 mr-1" /> Strategic focus
                 </div>
               </div>
@@ -892,7 +892,7 @@ export default function App() {
     <ThemeProvider>
       <div className="min-h-screen app-shell transition-colors duration-300">
         <Header />
-        <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-100">
+        <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-100">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium">
             Disclaimer: AI-generated content. Unofficial and for developmental use only.
           </div>

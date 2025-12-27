@@ -9,7 +9,7 @@ interface SimpleBarChartProps {
 
 export const SimpleBarChart = memo(function SimpleBarChart({
   data,
-  color = 'bg-amber-500 hover:bg-amber-600',
+  color = 'bg-teal-500 hover:bg-teal-600',
   className = '',
 }: SimpleBarChartProps) {
   const max = useMemo(() => Math.max(...data.map(d => d.value)), [data]);

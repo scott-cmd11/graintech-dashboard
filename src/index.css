@@ -9,22 +9,24 @@
     --ink-900: #0f172a;
     --ink-700: #334155;
     --ink-500: #64748b;
-    --brand-amber: #b45309;
-    --brand-teal: #0f766e;
-    --paper: #f7f3eb;
+    --brand-navy: #1e3a8a;
+    --brand-emerald: #065f46;
+    --brand-teal: #0d9488;
+    --paper: #f8fafc;
     --card: #ffffff;
-    --card-border: #e7e5e4;
+    --card-border: #e2e8f0;
   }
 
   .dark {
     --ink-900: #e2e8f0;
-    --ink-700: #cbd5f5;
+    --ink-700: #cbd5e1;
     --ink-500: #94a3b8;
-    --brand-amber: #f59e0b;
+    --brand-navy: #3b82f6;
+    --brand-emerald: #10b981;
     --brand-teal: #14b8a6;
     --paper: #0f172a;
-    --card: #0b1220;
-    --card-border: #1f2937;
+    --card: #1f2937;
+    --card-border: #374151;
   }
 
   body {
@@ -37,20 +39,20 @@
 /* App shell and headings */
 .app-shell {
   background:
-    radial-gradient(1200px circle at 10% -10%, rgba(180, 83, 9, 0.12), transparent 45%),
-    radial-gradient(900px circle at 90% 0%, rgba(15, 118, 110, 0.12), transparent 45%),
-    linear-gradient(180deg, #f8fafc 0%, #f7f3eb 100%);
+    radial-gradient(1200px circle at 10% -10%, rgba(30, 58, 138, 0.08), transparent 45%),
+    radial-gradient(900px circle at 90% 0%, rgba(13, 148, 136, 0.08), transparent 45%),
+    linear-gradient(180deg, #f8fafc 0%, #f0f4f8 100%);
 }
 
 .dark .app-shell {
   background:
-    radial-gradient(1000px circle at 10% -10%, rgba(20, 184, 166, 0.12), transparent 45%),
-    radial-gradient(900px circle at 90% 0%, rgba(245, 158, 11, 0.12), transparent 45%),
-    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+    radial-gradient(1000px circle at 10% -10%, rgba(59, 130, 246, 0.1), transparent 45%),
+    radial-gradient(900px circle at 90% 0%, rgba(16, 185, 129, 0.1), transparent 45%),
+    linear-gradient(180deg, #0f172a 0%, #111827 100%);
 }
 
 .brand-hero {
-  background: linear-gradient(120deg, var(--brand-amber), var(--brand-teal));
+  background: linear-gradient(120deg, var(--brand-navy), var(--brand-teal));
 }
 
 .display-font {
@@ -143,7 +145,7 @@
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid #f59e0b;
+  outline: 2px solid var(--brand-teal);
   outline-offset: 2px;
 }
 
@@ -154,12 +156,12 @@ html {
 
 /* Custom selection colors */
 ::selection {
-  background-color: #fbbf24;
-  color: #1f2937;
+  background-color: #a7f3d0;
+  color: #065f46;
 }
 
 .dark ::selection {
-  background-color: #d97706;
+  background-color: #10b981;
   color: #ffffff;
 }
 

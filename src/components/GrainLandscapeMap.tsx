@@ -51,7 +51,7 @@ const maturityOrder: MaturityLevel[] = [
 ];
 
 const chipBase =
-  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500";
+  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500";
 
 function toggleFilter<T>(items: T[], value: T): T[] {
   return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
@@ -473,7 +473,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   {maturityBreakdown.Experimental > 0 && (
                     <>
                       {" • "}
-                      <span className="font-semibold text-amber-600 dark:text-amber-400">{maturityBreakdown.Experimental}</span> Experimental
+                      <span className="font-semibold text-teal-600 dark:text-teal-400">{maturityBreakdown.Experimental}</span> Experimental
                     </>
                   )}
                 </div>
@@ -531,7 +531,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       useCases: ["ElevatorGrading" as UseCase, "RegulatoryExport" as UseCase],
                     })
                   }
-                  className="px-3 py-1.5 text-xs rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors border border-amber-200 dark:border-amber-700 font-medium"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/50 transition-colors border border-teal-200 dark:border-teal-700 font-medium"
                   title="Solutions for commercial grading and export compliance"
                 >
                   📊 Grade & Export
@@ -545,7 +545,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       useCases: ["OnFarmPreGrading" as UseCase, "MandiProcurement" as UseCase],
                     })
                   }
-                  className="px-3 py-1.5 text-xs rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors border border-orange-200 dark:border-orange-700 font-medium"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-700 font-medium"
                   title="Tools for farmers and traders to grade grain before sale"
                 >
                   👨‍🌾 Farmer/Trader
@@ -785,7 +785,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                           }
                           className={`${chipBase} ${
                             selected
-                              ? "bg-amber-500 border-amber-500 text-white"
+                              ? "bg-teal-500 border-teal-500 text-white"
                               : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
                           }`}
                         >
@@ -895,7 +895,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                     {activeFilters.useCases.map((useCase) => (
                       <div
                         key={useCase}
-                        className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs"
+                        className="flex items-center gap-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 px-3 py-1 rounded-full text-xs"
                       >
                         <span>{formatEnumLabel(useCase)}</span>
                         <button
@@ -905,7 +905,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                               useCases: prev.useCases.filter((u) => u !== useCase),
                             }))
                           }
-                          className="hover:text-amber-900 dark:hover:text-amber-200"
+                          className="hover:text-teal-900 dark:hover:text-teal-200"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -1028,7 +1028,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       {solution.userSegments.map((segment: UserSegment) => (
                         <span
                           key={`${solution.id}-${segment}`}
-                          className="text-[10px] px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-700"
+                          className="text-[10px] px-2 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
                         >
                           {formatEnumLabel(segment)}
                         </span>

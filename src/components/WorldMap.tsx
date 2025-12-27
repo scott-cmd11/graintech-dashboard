@@ -139,7 +139,7 @@ export const WorldMap = memo(function WorldMap({
     const isSelected = selectedCountries.some(
       (sc) => countryMapping[sc] === country || sc === country
     );
-    return isSelected ? '#f59e0b' : '#22c55e';
+    return isSelected ? '#0d9488' : '#10b981';
   };
 
   // Total stats
@@ -151,7 +151,7 @@ export const WorldMap = memo(function WorldMap({
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <MapPin className="w-6 h-6 text-green-600 dark:text-green-400" />
+          <MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
             Global Innovation Hubs
           </h3>
@@ -208,7 +208,7 @@ export const WorldMap = memo(function WorldMap({
                       setStyle: (style: Record<string, string | number>) => void;
                       openPopup: () => void;
                     };
-                    target.setStyle({ fillColor: '#f59e0b', fillOpacity: 0.95 });
+                    target.setStyle({ fillColor: '#0d9488', fillOpacity: 0.95 });
                     target.openPopup();
                   },
                   mouseout: (event) => {
@@ -224,7 +224,7 @@ export const WorldMap = memo(function WorldMap({
                 <Popup>
                   <div className="text-center min-w-[150px]">
                     <h4 className="font-bold text-gray-900 text-base mb-1">{hub.name}</h4>
-                    <p className="text-green-600 font-semibold mb-2">
+                    <p className="text-emerald-600 font-semibold mb-2">
                       {hub.count} {hub.count === 1 ? 'company' : 'companies'}
                     </p>
                     <div className="text-left text-xs text-gray-600 max-h-32 overflow-y-auto">
@@ -260,7 +260,7 @@ export const WorldMap = memo(function WorldMap({
           return (
             <div key={bucket.id} className="flex items-center gap-2">
               <div
-                className="rounded-full bg-green-500"
+                className="rounded-full bg-emerald-500"
                 style={{ width: `${diameter}px`, height: `${diameter}px` }}
               />
               <span>{bucket.label}</span>
@@ -268,7 +268,7 @@ export const WorldMap = memo(function WorldMap({
           );
         })}
         <div className="flex items-center gap-2 pl-4 border-l border-gray-300 dark:border-gray-600">
-          <div className="w-4 h-4 rounded-full bg-amber-500" />
+          <div className="w-4 h-4 rounded-full bg-teal-500" />
           <span>Selected</span>
         </div>
       </div>
