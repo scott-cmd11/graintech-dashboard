@@ -14,10 +14,15 @@ import {
   Network,
   Sprout,
   Printer,
+  Layers3,
+  ChevronDown,
+  ChevronUp,
+  Filter,
 } from 'lucide-react';
 
 // Types
 import type { TabId } from './types';
+import type { FormFactor, Region, SensingTech, UseCase } from './data/grainTechEntities';
 
 // Context
 import { ThemeProvider, useTheme } from './context/ThemeContext';
@@ -34,7 +39,6 @@ import {
   globalGradingPhilosophies,
   aiResearchData,
   regulatoryData,
-  marketStats,
   grainSolutions,
   adoptionEvents,
 } from './data';
@@ -49,6 +53,7 @@ import {
   TechnologyRadar,
   NewsFeed,
   ShareButton,
+  GrainLandscapeFilters,
   GrainLandscapeMap,
   TechStackExplorer,
   GrainComparisonMatrix,
@@ -106,22 +111,6 @@ function Header() {
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-            {/* Market Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 w-full sm:w-auto">
-              {marketStats.length > 0 ? (
-                marketStats.map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <p className="text-white font-bold text-base sm:text-lg md:text-xl">{stat.value}</p>
-                    <p className="text-amber-200 text-[10px] md:text-xs uppercase">{stat.label}</p>
-                    <p className="text-green-300 text-xs font-bold">{stat.growth}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="col-span-3 text-center text-xs text-amber-100/80">
-                  Market stats need sources.
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -144,7 +133,7 @@ function Dashboard() {
 
   // Tab State
   const [activeTab, setActiveTab] = useState<TabId>(() => {
-    if (urlState.tab === 'landscape') {
+    if (urlState.tab === 'landscape' || urlState.tab === 'tech-stack') {
       return 'ai-landscape';
     }
     return (urlState.tab as TabId) || 'ai-landscape';
@@ -152,16 +141,33 @@ function Dashboard() {
 
   // Selection State
   const [expandedDataset, setExpandedDataset] = useState<number | null>(null);
+  const [techStackOpen, setTechStackOpen] = useState(
+    () => urlState.tab === 'tech-stack' || Boolean(urlState.techStack)
+  );
+  const [filtersOpen, setFiltersOpen] = useState(() => urlState.filtersOpen === true);
+  const [companiesOpen, setCompaniesOpen] = useState(() => urlState.companiesOpen === true);
+  const [landscapeFilters, setLandscapeFilters] = useState({
+    regions: [] as Region[],
+    sensing: [] as SensingTech[],
+    formFactors: [] as FormFactor[],
+    useCases: [] as UseCase[],
+  });
 
   // Update URL when state changes
   useEffect(() => {
-    if (urlState.tab === 'landscape') {
+    if (urlState.tab === 'landscape' || urlState.tab === 'tech-stack') {
       setActiveTab('ai-landscape');
+    }
+    if (urlState.tab === 'tech-stack') {
+      setTechStackOpen(true);
     }
     setUrlState({
       tab: activeTab,
+      techStack: activeTab === 'ai-landscape' && techStackOpen,
+      filtersOpen,
+      companiesOpen,
     });
-  }, [activeTab, setUrlState, urlState.tab]);
+  }, [activeTab, setUrlState, urlState.tab, techStackOpen, filtersOpen, companiesOpen]);
 
   const handleToggleDataset = useCallback((index: number) => {
     setExpandedDataset((prev) => (prev === index ? null : index));
@@ -231,13 +237,100 @@ function Dashboard() {
         <main className="flex-1">
         {activeTab === 'ai-landscape' && (
           <div className="space-y-6 animate-in fade-in duration-500">
-            <GrainLandscapeMap grainSolutions={grainSolutions} />
-          </div>
-        )}
-
-        {activeTab === 'tech-stack' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <TechStackExplorer grainSolutions={grainSolutions} />
+            <GrainLandscapeMap
+              grainSolutions={grainSolutions}
+              filters={landscapeFilters}
+              onFiltersChange={setLandscapeFilters}
+              showFilters={false}
+              companiesOpen={companiesOpen}
+              onCompaniesToggle={() => setCompaniesOpen((prev) => !prev)}
+            />
+            <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setFiltersOpen((prev) => !prev)}
+                className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+                aria-expanded={filtersOpen}
+                aria-controls="landscape-filters-panel"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 text-emerald-600 dark:text-emerald-400">
+                    <Filter className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                      Landscape Filters
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Apply once to update the map and technology stack view.
+                    </p>
+                  </div>
+                </div>
+                <span className="text-gray-400 dark:text-gray-500">
+                  {filtersOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </span>
+              </button>
+              {filtersOpen && (
+                <div className="px-6 pb-6">
+                  <GrainLandscapeFilters
+                    grainSolutions={grainSolutions}
+                    filters={landscapeFilters}
+                    onFiltersChange={setLandscapeFilters}
+                    variant="embedded"
+                  />
+                </div>
+              )}
+            </section>
+            <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setTechStackOpen((prev) => !prev)}
+                className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+                aria-expanded={techStackOpen}
+                aria-controls="tech-stack-panel"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 text-emerald-600 dark:text-emerald-400">
+                    <Layers3 className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                      Technology Stack Explorer
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Drill into sensing, AI layers, form factors, and use cases.
+                    </p>
+                  </div>
+                </div>
+                <span className="text-gray-400 dark:text-gray-500">
+                  {techStackOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </span>
+              </button>
+              {techStackOpen && (
+                <div id="tech-stack-panel" className="px-6 pb-6">
+                  <TechStackExplorer
+                    grainSolutions={grainSolutions}
+                    variant="embedded"
+                    filters={{
+                      regions: landscapeFilters.regions,
+                      sensingTech: landscapeFilters.sensing,
+                      formFactors: landscapeFilters.formFactors,
+                      useCases: landscapeFilters.useCases,
+                    }}
+                    onFiltersChange={(next) =>
+                      setLandscapeFilters((prev) => ({
+                        ...prev,
+                        regions: next.regions ?? prev.regions,
+                        sensing: next.sensingTech,
+                        formFactors: next.formFactors,
+                        useCases: next.useCases,
+                      }))
+                    }
+                    showSharedFilters={false}
+                  />
+                </div>
+              )}
+            </section>
           </div>
         )}
 
@@ -803,6 +896,11 @@ export default function App() {
     <ThemeProvider>
       <div className="min-h-screen app-shell transition-colors duration-300">
         <Header />
+        <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-100">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium">
+            Disclaimer: AI-generated content. Unofficial and for developmental use only.
+          </div>
+        </div>
         <Dashboard />
         <Footer />
       </div>

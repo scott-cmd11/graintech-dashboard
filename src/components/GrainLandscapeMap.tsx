@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
-import { Globe, ExternalLink } from "lucide-react";
+import { Globe, ExternalLink, ChevronDown, ChevronUp, Building2 } from "lucide-react";
 import type {
   GrainSolution,
   Region,
@@ -17,6 +17,22 @@ import "leaflet/dist/leaflet.css";
 
 interface GrainLandscapeMapProps {
   grainSolutions: GrainSolution[];
+  filters?: {
+    regions: Region[];
+    sensing: SensingTech[];
+    formFactors: FormFactor[];
+    useCases: UseCase[];
+  };
+  onFiltersChange?: (filters: {
+    regions: Region[];
+    sensing: SensingTech[];
+    formFactors: FormFactor[];
+    useCases: UseCase[];
+  }) => void;
+  showFilters?: boolean;
+  companiesOpen?: boolean;
+  onCompaniesToggle?: () => void;
+  defaultCompaniesOpen?: boolean;
 }
 
 const sensingColors: Record<SensingTech, string> = {
@@ -59,11 +75,70 @@ function getDeploymentScore(solution: GrainSolution): number {
 
 export const GrainLandscapeMap = function GrainLandscapeMap({
   grainSolutions,
+  filters,
+  onFiltersChange,
+  showFilters = true,
+  companiesOpen,
+  onCompaniesToggle,
+  defaultCompaniesOpen = true,
 }: GrainLandscapeMapProps) {
-  const [regions, setRegions] = useState<Region[]>([]);
-  const [sensing, setSensing] = useState<SensingTech[]>([]);
-  const [formFactors, setFormFactors] = useState<FormFactor[]>([]);
-  const [useCases, setUseCases] = useState<UseCase[]>([]);
+  const isControlled = Boolean(filters && onFiltersChange);
+  const [localRegions, setLocalRegions] = useState<Region[]>([]);
+  const [localSensing, setLocalSensing] = useState<SensingTech[]>([]);
+  const [localFormFactors, setLocalFormFactors] = useState<FormFactor[]>([]);
+  const [localUseCases, setLocalUseCases] = useState<UseCase[]>([]);
+  const [localCompaniesOpen, setLocalCompaniesOpen] = useState(defaultCompaniesOpen);
+  const isCompaniesControlled = typeof companiesOpen === "boolean" && Boolean(onCompaniesToggle);
+  const resolvedCompaniesOpen = isCompaniesControlled ? (companiesOpen as boolean) : localCompaniesOpen;
+  const toggleCompaniesOpen = () => {
+    if (isCompaniesControlled && onCompaniesToggle) {
+      onCompaniesToggle();
+      return;
+    }
+    setLocalCompaniesOpen((prev) => !prev);
+  };
+
+  const activeFilters = isControlled
+    ? filters
+    : {
+        regions: localRegions,
+        sensing: localSensing,
+        formFactors: localFormFactors,
+        useCases: localUseCases,
+      };
+
+  const updateFilters = (
+    updater:
+      | {
+          regions: Region[];
+          sensing: SensingTech[];
+          formFactors: FormFactor[];
+          useCases: UseCase[];
+        }
+      | ((
+          prev: {
+            regions: Region[];
+            sensing: SensingTech[];
+            formFactors: FormFactor[];
+            useCases: UseCase[];
+          }
+        ) => {
+          regions: Region[];
+          sensing: SensingTech[];
+          formFactors: FormFactor[];
+          useCases: UseCase[];
+        })
+  ) => {
+    const next = typeof updater === "function" ? updater(activeFilters) : updater;
+    if (isControlled && onFiltersChange) {
+      onFiltersChange(next);
+      return;
+    }
+    setLocalRegions(next.regions);
+    setLocalSensing(next.sensing);
+    setLocalFormFactors(next.formFactors);
+    setLocalUseCases(next.useCases);
+  };
 
   const availableFilters = useMemo(() => {
     return getGrainFilterOptions(grainSolutions);
@@ -71,12 +146,12 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
 
   const filteredSolutions = useMemo(() => {
     return filterGrainSolutions(grainSolutions, {
-      regions,
-      sensing,
-      formFactors,
-      useCases,
+      regions: activeFilters.regions,
+      sensing: activeFilters.sensing,
+      formFactors: activeFilters.formFactors,
+      useCases: activeFilters.useCases,
     });
-  }, [grainSolutions, regions, sensing, formFactors, useCases]);
+  }, [grainSolutions, activeFilters]);
 
   const sortedSolutions = useMemo(() => {
     return [...filteredSolutions].sort((a, b) => a.company.localeCompare(b.company));
@@ -87,10 +162,12 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
   );
 
   const resetFilters = () => {
-    setRegions([]);
-    setSensing([]);
-    setFormFactors([]);
-    setUseCases([]);
+    updateFilters({
+      regions: [],
+      sensing: [],
+      formFactors: [],
+      useCases: [],
+    });
   };
 
   return (
@@ -107,114 +184,139 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
         </div>
       </div>
 
-      <div className="space-y-4 mb-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Regions
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {availableFilters.regions.map((region) => {
-              const selected = regions.includes(region);
-              return (
-                <button
-                  key={region}
-                  onClick={() => setRegions((prev) => toggleFilter(prev, region))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-emerald-500 border-emerald-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                >
-                  {formatEnumLabel(region)}
-                </button>
-              );
-            })}
+      {showFilters && (
+        <div className="space-y-4 mb-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Regions
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {availableFilters.regions.map((region) => {
+                const selected = activeFilters.regions.includes(region);
+                return (
+                  <button
+                    key={region}
+                    onClick={() =>
+                      updateFilters((prev) => ({
+                        ...prev,
+                        regions: toggleFilter(prev.regions, region),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-emerald-500 border-emerald-500 text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {formatEnumLabel(region)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Sensing Tech
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {availableFilters.sensing.map((tech) => {
-              const selected = sensing.includes(tech);
-              const color = sensingColors[tech];
-              return (
-                <button
-                  key={tech}
-                  onClick={() => setSensing((prev) => toggleFilter(prev, tech))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                  style={selected ? { backgroundColor: color, borderColor: color } : undefined}
-                >
-                  {formatEnumLabel(tech)}
-                </button>
-              );
-            })}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Sensing Tech
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {availableFilters.sensing.map((tech) => {
+                const selected = activeFilters.sensing.includes(tech);
+                const color = sensingColors[tech];
+                return (
+                  <button
+                    key={tech}
+                    onClick={() =>
+                      updateFilters((prev) => ({
+                        ...prev,
+                        sensing: toggleFilter(prev.sensing, tech),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                    style={selected ? { backgroundColor: color, borderColor: color } : undefined}
+                  >
+                    {formatEnumLabel(tech)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Form Factor
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {availableFilters.formFactors.map((factor) => {
-              const selected = formFactors.includes(factor);
-              return (
-                <button
-                  key={factor}
-                  onClick={() => setFormFactors((prev) => toggleFilter(prev, factor))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-blue-500 border-blue-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                >
-                  {formatEnumLabel(factor)}
-                </button>
-              );
-            })}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Form Factor
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {availableFilters.formFactors.map((factor) => {
+                const selected = activeFilters.formFactors.includes(factor);
+                return (
+                  <button
+                    key={factor}
+                    onClick={() =>
+                      updateFilters((prev) => ({
+                        ...prev,
+                        formFactors: toggleFilter(prev.formFactors, factor),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-blue-500 border-blue-500 text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {formatEnumLabel(factor)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Use Cases
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {availableFilters.useCases.map((useCase) => {
-              const selected = useCases.includes(useCase);
-              return (
-                <button
-                  key={useCase}
-                  onClick={() => setUseCases((prev) => toggleFilter(prev, useCase))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-amber-500 border-amber-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                >
-                  {formatEnumLabel(useCase)}
-                </button>
-              );
-            })}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Use Cases
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {availableFilters.useCases.map((useCase) => {
+                const selected = activeFilters.useCases.includes(useCase);
+                return (
+                  <button
+                    key={useCase}
+                    onClick={() =>
+                      updateFilters((prev) => ({
+                        ...prev,
+                        useCases: toggleFilter(prev.useCases, useCase),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-amber-500 border-amber-500 text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {formatEnumLabel(useCase)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        {(regions.length > 0 || sensing.length > 0 || formFactors.length > 0 || useCases.length > 0) && (
-          <button
-            onClick={resetFilters}
-            className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-          >
-            Clear all filters
-          </button>
-        )}
-      </div>
+          {(activeFilters.regions.length > 0 ||
+            activeFilters.sensing.length > 0 ||
+            activeFilters.formFactors.length > 0 ||
+            activeFilters.useCases.length > 0) && (
+            <button
+              onClick={resetFilters}
+              className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+            >
+              Clear all filters
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 h-[360px] sm:h-[420px]">
         <MapContainer
@@ -312,65 +414,99 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {sortedSolutions.map((solution) => {
-          const companyUrl = getCompanyUrl(solution.company);
-          return (
-            <div
-              key={solution.id}
-              className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">{solution.company}</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{solution.productName}</p>
-                  {companyUrl && (
-                    <a
-                      href={formatCompanyUrl(companyUrl)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
-                    >
-                      Website
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  )}
-                </div>
-                {solution.maturityLevel && (
-                  <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
-                    {solution.maturityLevel}
-                  </span>
-                )}
-              </div>
-
-            <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
-              <div>Regions: {formatEnumList(solution.regions)}</div>
-              <div>Tech: {formatEnumList(solution.sensingTech)}</div>
-              <div>Use cases: {formatEnumList(solution.useCases)}</div>
+      <section className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <button
+          type="button"
+          onClick={toggleCompaniesOpen}
+          className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+          aria-expanded={resolvedCompaniesOpen}
+          aria-controls="landscape-companies-panel"
+        >
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 text-emerald-600 dark:text-emerald-400">
+              <Building2 className="w-5 h-5" />
+            </span>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                Companies & Solutions
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {sortedSolutions.length} filtered results
+              </p>
             </div>
+          </div>
+          <span className="text-gray-400 dark:text-gray-500">
+            {resolvedCompaniesOpen ? (
+              <ChevronUp className="w-5 h-5" />
+            ) : (
+              <ChevronDown className="w-5 h-5" />
+            )}
+          </span>
+        </button>
+        {resolvedCompaniesOpen && (
+          <div id="landscape-companies-panel" className="px-6 pb-6">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {sortedSolutions.map((solution) => {
+                const companyUrl = getCompanyUrl(solution.company);
+                return (
+                  <div
+                    key={solution.id}
+                    className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">{solution.company}</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{solution.productName}</p>
+                        {companyUrl && (
+                          <a
+                            href={formatCompanyUrl(companyUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+                          >
+                            Website
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                      {solution.maturityLevel && (
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
+                          {solution.maturityLevel}
+                        </span>
+                      )}
+                    </div>
 
-              <div className="mt-3 flex flex-wrap gap-2">
-                {solution.formFactors.map((factor) => (
-                  <span
-                    key={`${solution.id}-${factor}`}
-                    className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
-                  >
-                    {formatEnumLabel(factor)}
-                  </span>
-                ))}
-                {solution.userSegments.map((segment: UserSegment) => (
-                  <span
-                    key={`${solution.id}-${segment}`}
-                    className="text-[10px] px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-700"
-                  >
-                    {formatEnumLabel(segment)}
-                  </span>
-                ))}
-              </div>
+                  <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                    <div>Regions: {formatEnumList(solution.regions)}</div>
+                    <div>Tech: {formatEnumList(solution.sensingTech)}</div>
+                    <div>Use cases: {formatEnumList(solution.useCases)}</div>
+                  </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {solution.formFactors.map((factor) => (
+                        <span
+                          key={`${solution.id}-${factor}`}
+                          className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
+                        >
+                          {formatEnumLabel(factor)}
+                        </span>
+                      ))}
+                      {solution.userSegments.map((segment: UserSegment) => (
+                        <span
+                          key={`${solution.id}-${segment}`}
+                          className="text-[10px] px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-700"
+                        >
+                          {formatEnumLabel(segment)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 };

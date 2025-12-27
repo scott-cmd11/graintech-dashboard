@@ -1,5 +1,14 @@
 import { memo, useState, useEffect } from 'react';
-import { Newspaper, Clock, ChevronDown, ChevronUp, ExternalLink, RefreshCw } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Newspaper,
+  RefreshCw,
+  User,
+} from 'lucide-react';
 import curatedNews from '../data/curatedNews.json';
 
 interface NewsItem {
@@ -9,6 +18,7 @@ interface NewsItem {
   date: string;
   summary: string;
   url: string;
+  imageUrl?: string;
   category?: string;
   citations?: string[];
 }
@@ -45,19 +55,48 @@ export const NewsFeed = memo(function NewsFeed() {
 
   const displayedNews = showAll ? news : news.slice(0, 5);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const isDateOnly = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
 
-    if (diffHours < 1) return 'Just now';
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const parseDate = (value: string) => {
+    if (isDateOnly(value)) {
+      return new Date(`${value}T00:00:00`);
+    }
+    return new Date(value);
+  };
+
+  const formatDate = (value: string) => {
+    const date = parseDate(value);
+    if (Number.isNaN(date.getTime())) return 'Unknown date';
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  const formatTime = (value: string) => {
+    if (isDateOnly(value)) return null;
+    const date = parseDate(value);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
+
+  const gradients = [
+    'from-amber-500/80 via-orange-500/70 to-rose-500/70',
+    'from-emerald-500/80 via-teal-500/70 to-cyan-500/70',
+    'from-sky-500/80 via-blue-500/70 to-indigo-500/70',
+    'from-fuchsia-500/80 via-purple-500/70 to-indigo-500/70',
+  ];
+
+  const getGradient = (source: string) => {
+    const hash = source.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return gradients[Math.abs(hash) % gradients.length];
+  };
+
+  const getSourceInitials = (source: string) => {
+    const parts = source.split(' ').filter(Boolean);
+    const initials = parts.map((part) => part[0]).slice(0, 2).join('');
+    return initials ? initials.toUpperCase() : 'GI';
   };
 
   return (
@@ -76,57 +115,102 @@ export const NewsFeed = memo(function NewsFeed() {
       </div>
 
       {loading ? (
-        <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse p-4 bg-gray-100 dark:bg-gray-700 rounded-xl">
-              <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 mb-2" />
-              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/2" />
+            <div key={i} className="animate-pulse overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-700">
+              <div className="h-36 bg-gray-200 dark:bg-gray-700" />
+              <div className="p-4 space-y-3">
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5" />
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/5" />
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24" />
+              </div>
             </div>
           ))}
         </div>
       ) : (
-      <div className="space-y-4">
-        {displayedNews.map((item) => (
-          <article
-            key={item.id}
-            className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          >
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
-                  {item.source}
-                </span>
-                <span className="text-gray-300 dark:text-gray-600">|</span>
-                <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                  <Clock className="w-3 h-3" />
-                  {formatDate(item.date)}
-                </span>
-              </div>
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-                {item.title}
-              </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
-                {item.summary}
-              </p>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium"
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {displayedNews.map((item) => {
+            const timeLabel = formatTime(item.date);
+            const imageUrl = item.imageUrl;
+            return (
+              <article
+                key={item.id}
+                className="group overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800/70 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
-                Read article
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          </article>
-        ))}
-      </div>
+                <div
+                  className={`relative h-36 w-full ${
+                    imageUrl ? 'bg-slate-900' : `bg-gradient-to-br ${getGradient(item.source)}`
+                  }`}
+                >
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={item.title}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : null}
+                  <div className="absolute inset-0 bg-slate-900/30" />
+                  {item.category && (
+                    <span className="absolute right-3 top-3 rounded-full bg-white/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/90">
+                      {item.category}
+                    </span>
+                  )}
+                  <div className="absolute bottom-3 left-3">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">
+                      Source
+                    </span>
+                    <div className="text-xl font-semibold text-white">{getSourceInitials(item.source)}</div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <span className="inline-flex items-center gap-1">
+                      <User className="w-3.5 h-3.5" />
+                      {item.source}
+                    </span>
+                    <span className="text-gray-300 dark:text-gray-600">|</span>
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {formatDate(item.date)}
+                    </span>
+                    {timeLabel && (
+                      <>
+                        <span className="text-gray-300 dark:text-gray-600">|</span>
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {timeLabel}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <h4 className="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+                    {item.title}
+                  </h4>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+                    {item.summary}
+                  </p>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200"
+                  >
+                    Read more
+                    <ArrowUpRight className="w-4 h-4" />
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       )}
 
       {news.length > 5 && !loading && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full mt-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
+          className="w-full mt-6 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
         >
           {showAll ? (
             <>

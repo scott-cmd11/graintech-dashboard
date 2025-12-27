@@ -34,6 +34,7 @@ interface NewsItem {
   date: string;
   summary: string;
   url: string;
+  imageUrl?: string;
 }
 
 function decodeHtmlEntities(text: string): string {
@@ -46,8 +47,8 @@ function decodeHtmlEntities(text: string): string {
     .replace(/<[^>]*>/g, ''); // Strip HTML tags
 }
 
-function extractUrl(content: string): string {
-  const match = content.match(/href="([^"]+)"/);
+function extractImageFromContent(content: string): string {
+  const match = content.match(/<img[^>]+src="([^"]+)"/i);
   return match ? match[1] : '';
 }
 
@@ -57,6 +58,40 @@ function isWhitelisted(url: string): boolean {
     return WHITELISTED_HOSTS.has(host);
   } catch {
     return false;
+  }
+}
+
+function extractOgImage(html: string): string {
+  const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["'][^>]*>/i);
+  if (ogMatch) return ogMatch[1];
+  const ogAltMatch = html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["'][^>]*>/i);
+  if (ogAltMatch) return ogAltMatch[1];
+  const twitterMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["'][^>]*>/i);
+  if (twitterMatch) return twitterMatch[1];
+  const twitterAltMatch = html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["'][^>]*>/i);
+  return twitterAltMatch ? twitterAltMatch[1] : '';
+}
+
+async function fetchOgImage(url: string): Promise<string> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 1500);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
+
+    if (!response.ok) {
+      return '';
+    }
+
+    const html = await response.text();
+    return extractOgImage(html);
+  } catch {
+    return '';
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -85,7 +120,9 @@ async function fetchFeed(url: string): Promise<NewsItem[]> {
 
       // Extract content/summary
       const contentMatch = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/);
-      const content = contentMatch ? decodeHtmlEntities(contentMatch[1]) : '';
+      const contentRaw = contentMatch ? contentMatch[1] : '';
+      const content = contentRaw ? decodeHtmlEntities(contentRaw) : '';
+      const imageUrl = contentRaw ? extractImageFromContent(contentRaw) : '';
 
       // Extract published date
       const publishedMatch = entry.match(/<published>([\s\S]*?)<\/published>/);
@@ -103,6 +140,7 @@ async function fetchFeed(url: string): Promise<NewsItem[]> {
           date: published,
           summary: content.substring(0, 300) + (content.length > 300 ? '...' : ''),
           url,
+          imageUrl: imageUrl || undefined,
         });
       }
     }
@@ -133,6 +171,25 @@ export default async function handler() {
 
     // Sort by date (newest first)
     allArticles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    const maxOgLookups = 10;
+    let ogLookups = 0;
+
+    for (const article of allArticles) {
+      if (article.imageUrl || ogLookups >= maxOgLookups) {
+        continue;
+      }
+
+      if (!isWhitelisted(article.url)) {
+        continue;
+      }
+
+      const ogImage = await fetchOgImage(article.url);
+      if (ogImage) {
+        article.imageUrl = ogImage;
+      }
+      ogLookups += 1;
+    }
 
     // Limit to 20 articles
     allArticles = allArticles.slice(0, 20);

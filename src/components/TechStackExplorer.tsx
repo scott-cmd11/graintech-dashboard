@@ -5,6 +5,7 @@ import type {
   SensingTech,
   FormFactor,
   UseCase,
+  Region,
 } from "../data/grainTechEntities";
 import type { AILayer } from "../utils/aiLayer";
 import { aiLayerOrder, deriveAiLayers } from "../utils/aiLayer";
@@ -15,6 +16,20 @@ import { formatEnumLabel, formatEnumList } from "../utils/formatLabels";
 
 interface TechStackExplorerProps {
   grainSolutions: GrainSolution[];
+  variant?: "standalone" | "embedded";
+  filters?: {
+    regions?: Region[];
+    sensingTech: SensingTech[];
+    formFactors: FormFactor[];
+    useCases: UseCase[];
+  };
+  onFiltersChange?: (filters: {
+    regions?: Region[];
+    sensingTech: SensingTech[];
+    formFactors: FormFactor[];
+    useCases: UseCase[];
+  }) => void;
+  showSharedFilters?: boolean;
 }
 
 type ActiveFilter =
@@ -32,11 +47,63 @@ function toggleFilter<T>(items: T[], value: T): T[] {
 
 export const TechStackExplorer = function TechStackExplorer({
   grainSolutions,
+  variant = "standalone",
+  filters,
+  onFiltersChange,
+  showSharedFilters = true,
 }: TechStackExplorerProps) {
-  const [sensingTech, setSensingTech] = useState<SensingTech[]>([]);
+  const isEmbedded = variant === "embedded";
+  const isControlled = Boolean(filters && onFiltersChange);
+  const [localSensingTech, setLocalSensingTech] = useState<SensingTech[]>([]);
   const [aiLayers, setAiLayers] = useState<AILayer[]>([]);
-  const [formFactors, setFormFactors] = useState<FormFactor[]>([]);
-  const [useCases, setUseCases] = useState<UseCase[]>([]);
+  const [localFormFactors, setLocalFormFactors] = useState<FormFactor[]>([]);
+  const [localUseCases, setLocalUseCases] = useState<UseCase[]>([]);
+
+  const sharedFilters = isControlled
+    ? {
+        regions: filters?.regions ?? [],
+        sensingTech: filters?.sensingTech ?? [],
+        formFactors: filters?.formFactors ?? [],
+        useCases: filters?.useCases ?? [],
+      }
+    : {
+        regions: [],
+        sensingTech: localSensingTech,
+        formFactors: localFormFactors,
+        useCases: localUseCases,
+      };
+
+  const updateSharedFilters = (
+    updater:
+      | {
+          regions?: Region[];
+          sensingTech: SensingTech[];
+          formFactors: FormFactor[];
+          useCases: UseCase[];
+        }
+      | ((
+          prev: {
+            regions?: Region[];
+            sensingTech: SensingTech[];
+            formFactors: FormFactor[];
+            useCases: UseCase[];
+          }
+        ) => {
+          regions?: Region[];
+          sensingTech: SensingTech[];
+          formFactors: FormFactor[];
+          useCases: UseCase[];
+        })
+  ) => {
+    const next = typeof updater === "function" ? updater(sharedFilters) : updater;
+    if (isControlled && onFiltersChange) {
+      onFiltersChange(next);
+      return;
+    }
+    setLocalSensingTech(next.sensingTech);
+    setLocalFormFactors(next.formFactors);
+    setLocalUseCases(next.useCases);
+  };
 
   const options = useMemo(() => {
     const base = getGrainFilterOptions(grainSolutions);
@@ -57,10 +124,10 @@ export const TechStackExplorer = function TechStackExplorer({
 
   const filteredSolutions = useMemo(() => {
     const baseFiltered = filterGrainSolutions(grainSolutions, {
-      regions: [],
-      sensing: sensingTech,
-      formFactors,
-      useCases,
+      regions: sharedFilters.regions ?? [],
+      sensing: sharedFilters.sensingTech,
+      formFactors: sharedFilters.formFactors,
+      useCases: sharedFilters.useCases,
     });
     return solutionsWithAi.filter(({ solution, aiLayers: layers }) => {
       if (!baseFiltered.includes(solution)) {
@@ -69,18 +136,24 @@ export const TechStackExplorer = function TechStackExplorer({
       const matchAi = aiLayers.length === 0 || layers.some((layer) => aiLayers.includes(layer));
       return matchAi;
     });
-  }, [solutionsWithAi, grainSolutions, sensingTech, aiLayers, formFactors, useCases]);
+  }, [solutionsWithAi, grainSolutions, sharedFilters, aiLayers]);
 
   const activeFilters: ActiveFilter[] = [
-    ...sensingTech.map((value) => ({ category: "Sensing" as const, value })),
+    ...sharedFilters.sensingTech.map((value) => ({ category: "Sensing" as const, value })),
     ...aiLayers.map((value) => ({ category: "AI" as const, value })),
-    ...formFactors.map((value) => ({ category: "FormFactor" as const, value })),
-    ...useCases.map((value) => ({ category: "UseCase" as const, value })),
+    ...sharedFilters.formFactors.map((value) => ({ category: "FormFactor" as const, value })),
+    ...sharedFilters.useCases.map((value) => ({ category: "UseCase" as const, value })),
   ];
+  const visibleActiveFilters = showSharedFilters
+    ? activeFilters
+    : activeFilters.filter((filter) => filter.category === "AI");
 
   const handleRemoveFilter = (filter: ActiveFilter) => {
     if (filter.category === "Sensing") {
-      setSensingTech((prev) => prev.filter((item) => item !== filter.value));
+      updateSharedFilters((prev) => ({
+        ...prev,
+        sensingTech: prev.sensingTech.filter((item) => item !== filter.value),
+      }));
       return;
     }
     if (filter.category === "AI") {
@@ -88,54 +161,80 @@ export const TechStackExplorer = function TechStackExplorer({
       return;
     }
     if (filter.category === "FormFactor") {
-      setFormFactors((prev) => prev.filter((item) => item !== filter.value));
+      updateSharedFilters((prev) => ({
+        ...prev,
+        formFactors: prev.formFactors.filter((item) => item !== filter.value),
+      }));
       return;
     }
-    setUseCases((prev) => prev.filter((item) => item !== filter.value));
+    updateSharedFilters((prev) => ({
+      ...prev,
+      useCases: prev.useCases.filter((item) => item !== filter.value),
+    }));
   };
 
   const clearFilters = () => {
-    setSensingTech([]);
+    if (showSharedFilters) {
+      updateSharedFilters({
+        regions: sharedFilters.regions ?? [],
+        sensingTech: [],
+        formFactors: [],
+        useCases: [],
+      });
+    }
     setAiLayers([]);
-    setFormFactors([]);
-    setUseCases([]);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-      <div className="mb-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
-          Technology Stack Explorer
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Explore how sensing, AI, hardware, and use cases combine across the global grain AI ecosystem.
-        </p>
-      </div>
+    <div
+      className={
+        isEmbedded
+          ? "space-y-6"
+          : "bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm"
+      }
+    >
+      {!isEmbedded && (
+        <div className="mb-6">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
+            Technology Stack Explorer
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Explore how sensing, AI, hardware, and use cases combine across the global grain AI ecosystem.
+          </p>
+        </div>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Sensing Tech
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {options.sensing.map((tech) => {
-              const selected = sensingTech.includes(tech);
-              return (
-                <button
-                  key={tech}
-                  onClick={() => setSensingTech((prev) => toggleFilter(prev, tech))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-emerald-500 border-emerald-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                >
-                  {formatEnumLabel(tech)}
-                </button>
-              );
-            })}
+        {showSharedFilters && (
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Sensing Tech
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {options.sensing.map((tech) => {
+                const selected = sharedFilters.sensingTech.includes(tech);
+                return (
+                  <button
+                    key={tech}
+                    onClick={() =>
+                      updateSharedFilters((prev) => ({
+                        ...prev,
+                        sensingTech: toggleFilter(prev.sensingTech, tech),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-emerald-500 border-emerald-500 text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {formatEnumLabel(tech)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
@@ -161,72 +260,87 @@ export const TechStackExplorer = function TechStackExplorer({
           </div>
         </div>
 
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Form Factor
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {options.formFactors.map((factor) => {
-              const selected = formFactors.includes(factor);
-              return (
-                <button
-                  key={factor}
-                  onClick={() => setFormFactors((prev) => toggleFilter(prev, factor))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-blue-500 border-blue-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                >
-                  {formatEnumLabel(factor)}
-                </button>
-              );
-            })}
+        {showSharedFilters && (
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Form Factor
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {options.formFactors.map((factor) => {
+                const selected = sharedFilters.formFactors.includes(factor);
+                return (
+                  <button
+                    key={factor}
+                    onClick={() =>
+                      updateSharedFilters((prev) => ({
+                        ...prev,
+                        formFactors: toggleFilter(prev.formFactors, factor),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-blue-500 border-blue-500 text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {formatEnumLabel(factor)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Use Case
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {options.useCases.map((useCase) => {
-              const selected = useCases.includes(useCase);
-              return (
-                <button
-                  key={useCase}
-                  onClick={() => setUseCases((prev) => toggleFilter(prev, useCase))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-amber-500 border-amber-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
-                >
-                  {formatEnumLabel(useCase)}
-                </button>
-              );
-            })}
+        {showSharedFilters && (
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Use Case
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {options.useCases.map((useCase) => {
+                const selected = sharedFilters.useCases.includes(useCase);
+                return (
+                  <button
+                    key={useCase}
+                    onClick={() =>
+                      updateSharedFilters((prev) => ({
+                        ...prev,
+                        useCases: toggleFilter(prev.useCases, useCase),
+                      }))
+                    }
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-amber-500 border-amber-500 text-white"
+                        : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {formatEnumLabel(useCase)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="mt-4">
         <div className="flex flex-wrap items-center gap-2">
-          {activeFilters.map((filter) => (
+          {visibleActiveFilters.map((filter) => (
             <button
               key={`${filter.category}-${filter.value}`}
               onClick={() => handleRemoveFilter(filter)}
               className="px-3 py-1 text-xs rounded-full border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
             >
-              {filter.category}: {filter.value}
+              {filter.category}:{" "}
+              {filter.category === "AI" ? filter.value : formatEnumLabel(String(filter.value))}
             </button>
           ))}
-          {activeFilters.length > 0 && (
+          {visibleActiveFilters.length > 0 && (
             <button
               onClick={clearFilters}
               className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
             >
-              Clear all
+              {showSharedFilters ? "Clear all" : "Clear AI filters"}
             </button>
           )}
         </div>

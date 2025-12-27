@@ -2,6 +2,9 @@ import { useCallback } from 'react';
 
 interface UrlState {
   tab?: string;
+  techStack?: boolean;
+  filtersOpen?: boolean;
+  companiesOpen?: boolean;
   search?: string;
   type?: string;
   country?: string;
@@ -18,6 +21,15 @@ export function useUrlState() {
 
     const tab = params.get('tab');
     if (tab) state.tab = tab;
+
+    const techStack = params.get('techStack');
+    if (techStack) state.techStack = techStack === '1' || techStack === 'true' || techStack === 'open';
+
+    const filters = params.get('filters');
+    if (filters) state.filtersOpen = !(filters === '0' || filters === 'false' || filters === 'closed');
+
+    const companies = params.get('companies');
+    if (companies) state.companiesOpen = !(companies === '0' || companies === 'false' || companies === 'closed');
 
     const search = params.get('search');
     if (search) state.search = search;
@@ -47,6 +59,9 @@ export function useUrlState() {
     const params = new URLSearchParams();
 
     if (state.tab && state.tab !== 'landscape') params.set('tab', state.tab);
+    if (state.techStack) params.set('techStack', '1');
+    if (state.filtersOpen === false) params.set('filters', '0');
+    if (state.companiesOpen === false) params.set('companies', '0');
     if (state.search) params.set('search', state.search);
     if (state.type && state.type !== 'All') params.set('type', state.type);
     if (state.country && state.country !== 'All') params.set('country', state.country);
@@ -67,6 +82,9 @@ export function useUrlState() {
     const params = new URLSearchParams();
 
     if (state.tab && state.tab !== 'landscape') params.set('tab', state.tab);
+    if (state.techStack) params.set('techStack', '1');
+    if (state.filtersOpen === false) params.set('filters', '0');
+    if (state.companiesOpen === false) params.set('companies', '0');
     if (state.search) params.set('search', state.search);
     if (state.type && state.type !== 'All') params.set('type', state.type);
     if (state.country && state.country !== 'All') params.set('country', state.country);

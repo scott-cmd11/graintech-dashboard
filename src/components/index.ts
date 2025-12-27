@@ -8,6 +8,7 @@ export { CompareModal } from './CompareModal';
 export { Pagination } from './Pagination';
 export { WorldMap } from './WorldMap';
 export { GrainLandscapeMap } from './GrainLandscapeMap';
+export { GrainLandscapeFilters } from './GrainLandscapeFilters';
 export { TechStackExplorer } from './TechStackExplorer';
 export { GrainComparisonMatrix } from './GrainComparisonMatrix';
 export { GrainAdoptionTimeline } from './GrainAdoptionTimeline';

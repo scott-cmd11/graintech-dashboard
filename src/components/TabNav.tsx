@@ -8,7 +8,6 @@ import {
   TrendingUp,
   Newspaper,
   Globe,
-  Layers3,
   Table2,
   Calendar,
   Wand2,
@@ -17,7 +16,6 @@ import type { TabId, TabConfig } from '../types';
 
 const tabs: TabConfig[] = [
   { id: 'ai-landscape', label: 'Landscape', icon: <Globe className="w-4 h-4" /> },
-  { id: 'tech-stack', label: 'Tech Stack', icon: <Layers3 className="w-4 h-4" /> },
   { id: 'comparison', label: 'Comparison', icon: <Table2 className="w-4 h-4" /> },
   { id: 'timeline', label: 'Timeline', icon: <Calendar className="w-4 h-4" /> },
   { id: 'scenarios', label: 'Scenarios', icon: <Wand2 className="w-4 h-4" /> },
