@@ -14,9 +14,6 @@ import {
   Network,
   Sprout,
   Printer,
-  Layers3,
-  ChevronDown,
-  ChevronUp,
   Filter,
 } from 'lucide-react';
 
@@ -52,7 +49,6 @@ import {
   TechnologyRadar,
   NewsFeed,
   ShareButton,
-  GrainLandscapeFilters,
   GrainLandscapeMap,
   TechStackExplorer,
   GrainComparisonMatrix,
@@ -123,6 +119,33 @@ function Header() {
   );
 }
 
+// View Toggle Component
+function ViewToggle({
+  activeView,
+  onViewChange
+}: {
+  activeView: 'map' | 'table' | 'stack';
+  onViewChange: (view: 'map' | 'table' | 'stack') => void;
+}) {
+  return (
+    <div className="flex items-center gap-2 border border-gray-200 dark:border-gray-600 rounded-lg p-1">
+      {(['map', 'table', 'stack'] as const).map((view) => (
+        <button
+          key={view}
+          onClick={() => onViewChange(view)}
+          className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+            activeView === view
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+          }`}
+        >
+          {view === 'map' ? 'Map' : view === 'table' ? 'Table' : 'Tech Stack'}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // Main Dashboard Component
 function Dashboard() {
   const { getStateFromUrl, setUrlState } = useUrlState();
@@ -140,11 +163,12 @@ function Dashboard() {
 
   // Selection State
   const [expandedDataset, setExpandedDataset] = useState<number | null>(null);
-  const [techStackOpen, setTechStackOpen] = useState(
-    () => urlState.tab === 'tech-stack' || Boolean(urlState.techStack)
-  );
-  const [filtersOpen, setFiltersOpen] = useState(() => urlState.filtersOpen === true);
-  const [companiesOpen, setCompaniesOpen] = useState(() => urlState.companiesOpen === true);
+  const [landscapeView, setLandscapeView] = useState<'map' | 'table' | 'stack'>(() => {
+    if (urlState.tab === 'tech-stack') return 'stack';
+    return 'map';
+  });
+  const [companiesOpen, setCompaniesOpen] = useState(() => urlState.companiesOpen !== false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [landscapeFilters, setLandscapeFilters] = useState({
     regions: [] as Region[],
     sensing: [] as SensingTech[],
@@ -154,19 +178,11 @@ function Dashboard() {
 
   // Update URL when state changes
   useEffect(() => {
-    if (urlState.tab === 'landscape' || urlState.tab === 'tech-stack') {
-      setActiveTab('ai-landscape');
-    }
-    if (urlState.tab === 'tech-stack') {
-      setTechStackOpen(true);
-    }
     setUrlState({
       tab: activeTab,
-      techStack: activeTab === 'ai-landscape' && techStackOpen,
-      filtersOpen,
       companiesOpen,
     });
-  }, [activeTab, setUrlState, urlState.tab, techStackOpen, filtersOpen, companiesOpen]);
+  }, [activeTab, setUrlState, companiesOpen]);
 
   const handleToggleDataset = useCallback((index: number) => {
     setExpandedDataset((prev) => (prev === index ? null : index));
@@ -229,87 +245,60 @@ function Dashboard() {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 lg:flex lg:gap-6">
-        <aside className="lg:w-60 shrink-0 mb-6 lg:mb-0">
-          <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="flex gap-6 h-[calc(100vh-200px)] overflow-hidden">
+        {/* Sidebar Navigation & Filters */}
+        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} shrink-0 overflow-y-auto bg-gray-50 dark:bg-gray-900/50 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 lg:flex flex-col hidden`}>
+          <div className="p-6 space-y-6">
+            <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+          </div>
         </aside>
-        <main className="flex-1">
-        {activeTab === 'ai-landscape' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <GrainLandscapeMap
-              grainSolutions={grainSolutions}
-              filters={landscapeFilters}
-              onFiltersChange={setLandscapeFilters}
-              showFilters={false}
-              companiesOpen={companiesOpen}
-              onCompaniesToggle={() => setCompaniesOpen((prev) => !prev)}
-            />
-            <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setFiltersOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
-                aria-expanded={filtersOpen}
-                aria-controls="landscape-filters-panel"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 text-emerald-600 dark:text-emerald-400">
-                    <Filter className="w-5 h-5" />
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                      Landscape Filters
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Apply once to update the map and technology stack view.
-                    </p>
-                  </div>
-                </div>
-                <span className="text-gray-400 dark:text-gray-500">
-                  {filtersOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </span>
-              </button>
-              {filtersOpen && (
-                <div className="px-6 pb-6">
-                  <GrainLandscapeFilters
+
+        {/* Hamburger Menu Button */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="lg:hidden fixed bottom-6 right-6 z-40 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+          title="Toggle sidebar"
+        >
+          <Filter className="w-6 h-6" />
+        </button>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 py-8 pb-24">
+          {activeTab === 'ai-landscape' && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              {/* View Toggle */}
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Grain Technology Landscape</h2>
+                <ViewToggle activeView={landscapeView} onViewChange={setLandscapeView} />
+              </div>
+
+              {/* Map View */}
+              {landscapeView === 'map' && (
+                <div className="space-y-6">
+                  <GrainLandscapeMap
                     grainSolutions={grainSolutions}
                     filters={landscapeFilters}
                     onFiltersChange={setLandscapeFilters}
-                    variant="embedded"
+                    showFilters={true}
+                    companiesOpen={companiesOpen}
+                    onCompaniesToggle={() => setCompaniesOpen((prev) => !prev)}
                   />
                 </div>
               )}
-            </section>
-            <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setTechStackOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
-                aria-expanded={techStackOpen}
-                aria-controls="tech-stack-panel"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 text-emerald-600 dark:text-emerald-400">
-                    <Layers3 className="w-5 h-5" />
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                      Technology Stack Explorer
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Drill into sensing, AI layers, form factors, and use cases.
-                    </p>
-                  </div>
+
+              {/* Table View */}
+              {landscapeView === 'table' && (
+                <div className="space-y-6">
+                  <GrainComparisonMatrix grainSolutions={grainSolutions} />
                 </div>
-                <span className="text-gray-400 dark:text-gray-500">
-                  {techStackOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </span>
-              </button>
-              {techStackOpen && (
-                <div id="tech-stack-panel" className="px-6 pb-6">
+              )}
+
+              {/* Tech Stack View */}
+              {landscapeView === 'stack' && (
+                <div className="space-y-6">
                   <TechStackExplorer
                     grainSolutions={grainSolutions}
-                    variant="embedded"
+                    variant="standalone"
                     filters={{
                       regions: landscapeFilters.regions,
                       sensingTech: landscapeFilters.sensing,
@@ -325,35 +314,35 @@ function Dashboard() {
                         useCases: next.useCases,
                       }))
                     }
-                    showSharedFilters={false}
+                    showSharedFilters={true}
                   />
                 </div>
               )}
-            </section>
-          </div>
-        )}
+            </div>
+          )}
 
-        {activeTab === 'comparison' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <GrainComparisonMatrix grainSolutions={grainSolutions} />
-          </div>
-        )}
+          {activeTab === 'comparison' && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Comparison Matrix</h2>
+              <GrainComparisonMatrix grainSolutions={grainSolutions} />
+            </div>
+          )}
 
-        {activeTab === 'timeline' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <GrainAdoptionTimeline adoptionEvents={adoptionEvents} grainSolutions={grainSolutions} />
-          </div>
-        )}
+          {activeTab === 'timeline' && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <GrainAdoptionTimeline adoptionEvents={adoptionEvents} grainSolutions={grainSolutions} />
+            </div>
+          )}
 
-        {activeTab === 'scenarios' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <ScenarioExplorer />
-          </div>
-        )}
+          {activeTab === 'scenarios' && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <ScenarioExplorer />
+            </div>
+          )}
 
-        {/* Analytics Tab */}
-        {activeTab === 'insights' && (
-          <div className="space-y-8 animate-in fade-in duration-500">
+          {/* Analytics Tab */}
+          {activeTab === 'insights' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
             {/* Stats Cards at top */}
             <div className="grid md:grid-cols-4 gap-4">
               <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
@@ -443,11 +432,11 @@ function Dashboard() {
               </div>
             </div>
           </div>
-        )}
+          )}
 
-        {/* Datasets Tab */}
-        {activeTab === 'datasets' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
+          {/* Datasets Tab */}
+          {activeTab === 'datasets' && (
+            <div className="space-y-6 animate-in fade-in duration-500">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
               <div className="flex items-center gap-3 mb-3">
                 <Database className="w-8 h-8 text-amber-600 dark:text-amber-400" />
@@ -475,11 +464,11 @@ function Dashboard() {
               )}
             </div>
           </div>
-        )}
+          )}
 
-        {/* AI Research Tab */}
-        {activeTab === 'research' && (
-          <div className="space-y-8 animate-in fade-in duration-500">
+          {/* AI Research Tab */}
+          {activeTab === 'research' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center gap-3 mb-4">
                 <BrainCircuit className="w-8 h-8 text-blue-600 dark:text-blue-400" />
@@ -609,11 +598,11 @@ function Dashboard() {
               </div>
             </div>
           </div>
-        )}
+          )}
 
-        {/* Regulations Tab */}
-        {activeTab === 'regulations' && (
-          <div className="space-y-8 animate-in fade-in duration-500">
+          {/* Regulations Tab */}
+          {activeTab === 'regulations' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Gavel className="w-8 h-8 text-blue-700 dark:text-blue-400" />
