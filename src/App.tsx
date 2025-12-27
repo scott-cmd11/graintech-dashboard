@@ -54,6 +54,7 @@ import {
   GrainComparisonMatrix,
   GrainAdoptionTimeline,
   ScenarioExplorer,
+  GitHubReposExplorer,
 } from './components';
 
 // Utils
@@ -849,6 +850,13 @@ function Dashboard() {
         {activeTab === 'news' && (
           <div className="space-y-6 animate-in fade-in duration-500">
             <NewsFeed />
+          </div>
+        )}
+
+        {/* GitHub Repos Tab */}
+        {activeTab === 'github-repos' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <GitHubReposExplorer />
           </div>
         )}
         </main>

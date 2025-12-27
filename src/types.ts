@@ -145,6 +145,19 @@ export interface DonutChartData {
   color: string;
 }
 
+// GitHub Repo Types
+export interface GitHubRepo {
+  id: number;
+  name: string;
+  description: string | null;
+  url: string;
+  language: string | null;
+  stars: number;
+  forks: number;
+  updated_at: string;
+  topics: string[];
+}
+
 // Tab Types
 export type TabId =
   | 'ai-landscape'
@@ -157,7 +170,8 @@ export type TabId =
   | 'regulations'
   | 'history'
   | 'trends'
-  | 'news';
+  | 'news'
+  | 'github-repos';
 
 export interface TabConfig {
   id: TabId;

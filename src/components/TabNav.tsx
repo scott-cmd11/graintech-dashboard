@@ -11,6 +11,7 @@ import {
   Table2,
   Calendar,
   Wand2,
+  Github,
 } from 'lucide-react';
 import type { TabId, TabConfig } from '../types';
 
@@ -26,6 +27,7 @@ const tabs: TabConfig[] = [
   { id: 'history', label: 'History', icon: <History className="w-4 h-4" /> },
   { id: 'trends', label: 'Trends', icon: <TrendingUp className="w-4 h-4" /> },
   { id: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
+  { id: 'github-repos', label: 'Resources', icon: <Github className="w-4 h-4" /> },
 ];
 
 interface TabNavProps {
