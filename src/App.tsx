@@ -14,10 +14,6 @@ import {
   ScrollText,
   Network,
   Sprout,
-  Wand2,
-  Calculator,
-  FolderOpen,
-  StickyNote,
   Printer,
 } from 'lucide-react';
 
@@ -46,7 +42,6 @@ import {
 
 // Components
 import {
-  SimpleBarChart,
   SimpleHorizontalBarChart,
   SimpleDonutChart,
   TabNav,
@@ -59,10 +54,6 @@ import {
   WorldMap,
   AdvancedFilters,
   KeyboardShortcuts,
-  ROICalculator,
-  DecisionWizard,
-  NotesPanel,
-  Collections,
   FundingTimeline,
   TechnologyRadar,
   NewsFeed,
@@ -71,24 +62,6 @@ import {
 
 // Utils
 import { exportCompanies, exportFavorites } from './utils/export';
-
-// Collection type
-interface Collection {
-  id: string;
-  name: string;
-  companyIds: number[];
-  createdAt: string;
-}
-
-// Note type
-interface Note {
-  id: string;
-  companyId: number;
-  companyName: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 // Header Component
 function Header() {
@@ -204,21 +177,6 @@ function Dashboard() {
   const [compareIds, setCompareIds] = useState<number[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // Collections (persisted)
-  const [collections, setCollections] = useLocalStorage<Collection[]>('graintech-collections', []);
-  const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
-  const [showCollections, setShowCollections] = useState(false);
-
-  // Notes (persisted)
-  const [notes, setNotes] = useLocalStorage<Note[]>('graintech-notes', []);
-  const [showNotes, setShowNotes] = useState(false);
-  const [noteCompanyId, setNoteCompanyId] = useState<number | undefined>();
-  const [noteCompanyName, setNoteCompanyName] = useState<string | undefined>();
-
-  // Modal States
-  const [showROICalculator, setShowROICalculator] = useState(false);
-  const [showDecisionWizard, setShowDecisionWizard] = useState(false);
-
   // Focused company for keyboard navigation
   const [focusedIndex, setFocusedIndex] = useState(0);
 
@@ -230,9 +188,8 @@ function Dashboard() {
       type: filterType,
       sort: sortField,
       company: selectedCompany?.id,
-      collection: selectedCollectionId || undefined,
     });
-  }, [activeTab, searchTerm, filterType, sortField, selectedCompany, selectedCollectionId, setUrlState]);
+  }, [activeTab, searchTerm, filterType, sortField, selectedCompany, setUrlState]);
 
   // Handle sort toggle
   const handleSortChange = useCallback(
@@ -273,12 +230,7 @@ function Dashboard() {
       const matchesTypes =
         advancedFilters.types.length === 0 || advancedFilters.types.includes(c.type);
 
-      // Collection filter
-      const matchesCollection =
-        !selectedCollectionId ||
-        collections.find((col) => col.id === selectedCollectionId)?.companyIds.includes(c.id);
-
-      return matchesSearch && matchesType && matchesFavorites && matchesCrops && matchesCountries && matchesTypes && matchesCollection;
+      return matchesSearch && matchesType && matchesFavorites && matchesCrops && matchesCountries && matchesTypes;
     });
 
     // Sort
@@ -295,7 +247,7 @@ function Dashboard() {
     });
 
     return result;
-  }, [searchTerm, filterType, showFavoritesOnly, favorites, sortField, sortDirection, advancedFilters, selectedCollectionId, collections]);
+  }, [searchTerm, filterType, showFavoritesOnly, favorites, sortField, sortDirection, advancedFilters]);
 
   // Pagination
   const pagination = usePagination<Company>({
@@ -307,75 +259,6 @@ function Dashboard() {
     () => pagination.paginateItems(filteredCompanies),
     [pagination, filteredCompanies]
   );
-
-  // Collection handlers
-  const handleCreateCollection = useCallback((name: string) => {
-    const newCollection: Collection = {
-      id: Date.now().toString(),
-      name,
-      companyIds: [],
-      createdAt: new Date().toISOString(),
-    };
-    setCollections((prev) => [...prev, newCollection]);
-  }, [setCollections]);
-
-  const handleDeleteCollection = useCallback((id: string) => {
-    setCollections((prev) => prev.filter((c) => c.id !== id));
-    if (selectedCollectionId === id) {
-      setSelectedCollectionId(null);
-    }
-  }, [setCollections, selectedCollectionId]);
-
-  const handleRenameCollection = useCallback((id: string, name: string) => {
-    setCollections((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, name } : c))
-    );
-  }, [setCollections]);
-
-  const handleAddToCollection = useCallback((collectionId: string, companyId: number) => {
-    setCollections((prev) =>
-      prev.map((c) =>
-        c.id === collectionId && !c.companyIds.includes(companyId)
-          ? { ...c, companyIds: [...c.companyIds, companyId] }
-          : c
-      )
-    );
-  }, [setCollections]);
-
-  const handleRemoveFromCollection = useCallback((collectionId: string, companyId: number) => {
-    setCollections((prev) =>
-      prev.map((c) =>
-        c.id === collectionId
-          ? { ...c, companyIds: c.companyIds.filter((id) => id !== companyId) }
-          : c
-      )
-    );
-  }, [setCollections]);
-
-  // Notes handlers
-  const handleAddNote = useCallback((companyId: number, companyName: string, content: string) => {
-    const newNote: Note = {
-      id: Date.now().toString(),
-      companyId,
-      companyName,
-      content,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    setNotes((prev) => [...prev, newNote]);
-  }, [setNotes]);
-
-  const handleUpdateNote = useCallback((noteId: string, content: string) => {
-    setNotes((prev) =>
-      prev.map((n) =>
-        n.id === noteId ? { ...n, content, updatedAt: new Date().toISOString() } : n
-      )
-    );
-  }, [setNotes]);
-
-  const handleDeleteNote = useCallback((noteId: string) => {
-    setNotes((prev) => prev.filter((n) => n.id !== noteId));
-  }, [setNotes]);
 
   // Handlers
   const handleToggleFavorite = useCallback(
@@ -530,44 +413,6 @@ function Dashboard() {
       />
 
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* Quick Action Bar */}
-      <div className="max-w-6xl mx-auto px-6 py-4 no-print">
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => setShowDecisionWizard(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
-          >
-            <Wand2 className="w-4 h-4" />
-            Find Solution
-          </button>
-          <button
-            onClick={() => setShowROICalculator(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
-          >
-            <Calculator className="w-4 h-4" />
-            ROI Calculator
-          </button>
-          <button
-            onClick={() => setShowCollections(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-          >
-            <FolderOpen className="w-4 h-4" />
-            Collections ({collections.length})
-          </button>
-          <button
-            onClick={() => {
-              setNoteCompanyId(undefined);
-              setNoteCompanyName(undefined);
-              setShowNotes(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-200 dark:hover:bg-yellow-900/50 transition-colors"
-          >
-            <StickyNote className="w-4 h-4" />
-            Notes ({notes.length})
-          </button>
-        </div>
-      </div>
 
       <main className="max-w-6xl mx-auto px-6 py-8 pb-24">
         {/* Companies Tab */}
@@ -1235,53 +1080,6 @@ function Dashboard() {
           companies={compareCompanies}
           onClose={() => setShowCompare(false)}
           onRemove={handleRemoveFromCompare}
-        />
-      )}
-
-      {showROICalculator && (
-        <ROICalculator
-          isOpen={showROICalculator}
-          onClose={() => setShowROICalculator(false)}
-        />
-      )}
-
-      {showDecisionWizard && (
-        <DecisionWizard
-          companies={companiesData}
-          isOpen={showDecisionWizard}
-          onClose={() => setShowDecisionWizard(false)}
-          onSelectCompany={(company) => {
-            setSelectedCompany(company);
-            setShowDecisionWizard(false);
-          }}
-        />
-      )}
-
-      {showCollections && (
-        <Collections
-          collections={collections}
-          onCreateCollection={handleCreateCollection}
-          onDeleteCollection={handleDeleteCollection}
-          onRenameCollection={handleRenameCollection}
-          onAddToCollection={handleAddToCollection}
-          onRemoveFromCollection={handleRemoveFromCollection}
-          onSelectCollection={setSelectedCollectionId}
-          selectedCollectionId={selectedCollectionId}
-          isOpen={showCollections}
-          onClose={() => setShowCollections(false)}
-        />
-      )}
-
-      {showNotes && (
-        <NotesPanel
-          notes={notes}
-          onAddNote={handleAddNote}
-          onUpdateNote={handleUpdateNote}
-          onDeleteNote={handleDeleteNote}
-          selectedCompanyId={noteCompanyId}
-          selectedCompanyName={noteCompanyName}
-          isOpen={showNotes}
-          onClose={() => setShowNotes(false)}
         />
       )}
     </>

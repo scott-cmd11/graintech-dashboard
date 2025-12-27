@@ -221,19 +221,19 @@ export const WorldMap = memo(function WorldMap({
       {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-6 mt-4 text-sm text-gray-600 dark:text-gray-400">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-green-500" />
+          <div className="w-2 h-2 rounded-full bg-green-500" />
           <span>1 company</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-green-500" />
+          <div className="w-3 h-3 rounded-full bg-green-500" />
           <span>2-3</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-full bg-green-500" />
+          <div className="w-4 h-4 rounded-full bg-green-500" />
           <span>4-5</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-green-500" />
+          <div className="w-5 h-5 rounded-full bg-green-500" />
           <span>6+</span>
         </div>
         <div className="flex items-center gap-2 pl-4 border-l border-gray-300 dark:border-gray-600">
