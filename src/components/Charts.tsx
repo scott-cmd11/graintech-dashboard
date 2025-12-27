@@ -177,4 +177,98 @@ export const SimpleDonutChart = memo(function SimpleDonutChart({
   );
 });
 
-export default { SimpleBarChart, SimpleHorizontalBarChart, SimpleDonutChart };
+interface SimpleLineChartProps {
+  data: BarChartData[];
+  color?: string;
+  className?: string;
+}
+
+export const SimpleLineChart = memo(function SimpleLineChart({
+  data,
+  color = 'stroke-emerald-500',
+  className = '',
+}: SimpleLineChartProps) {
+  const max = useMemo(() => Math.max(...data.map(d => d.value)), [data]);
+  const min = useMemo(() => Math.min(...data.map(d => d.value)), [data]);
+  const range = max - min || 1;
+  const height = 160;
+  const padding = 20;
+  const width = 100; // percentage
+
+  const points = useMemo(() => {
+    return data.map((d, i) => {
+      const x = (i / (data.length - 1 || 1)) * (width - padding * 2) + padding;
+      const y = height - padding - ((d.value - min) / range) * (height - padding * 2);
+      return { x, y, value: d.value, label: d.label };
+    });
+  }, [data, range, min]);
+
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+
+  return (
+    <div className={`w-full ${className}`} role="img" aria-label="Line chart">
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="w-full h-40"
+        preserveAspectRatio="none"
+        style={{ overflow: 'visible' }}
+      >
+        {/* Grid lines */}
+        {[0, 1, 2, 3, 4].map((i) => {
+          const y = padding + (i / 4) * (height - padding * 2);
+          return (
+            <line
+              key={`grid-${i}`}
+              x1="0"
+              y1={y}
+              x2={width}
+              y2={y}
+              stroke="currentColor"
+              strokeWidth="0.5"
+              className="text-gray-200 dark:text-gray-700"
+              opacity="0.5"
+            />
+          );
+        })}
+
+        {/* Line */}
+        <path
+          d={pathD}
+          className={`${color} fill-none`}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Fill under line */}
+        <path
+          d={`${pathD} L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`}
+          className={`${color} opacity-10`}
+          fill="currentColor"
+        />
+
+        {/* Dots */}
+        {points.map((p, i) => (
+          <circle
+            key={`dot-${i}`}
+            cx={p.x}
+            cy={p.y}
+            r="2.5"
+            className={`${color} fill-current`}
+          />
+        ))}
+      </svg>
+
+      {/* Labels */}
+      <div className="flex justify-between mt-2 px-4 text-xs text-gray-500 dark:text-gray-400">
+        {data.map((d, i) => (
+          <span key={i} className={i === 0 || i === data.length - 1 ? 'block' : 'hidden sm:block'}>
+            {d.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+});
+
+export default { SimpleBarChart, SimpleHorizontalBarChart, SimpleDonutChart, SimpleLineChart };
