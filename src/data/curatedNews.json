@@ -1,82 +1,98 @@
 [
   {
     "id": "1",
-    "title": "FOSS Analytical Solutions for Grain Quality Testing",
+    "title": "FOSS: EyeFoss grain testing",
     "source": "FOSS",
     "date": "2024-12-20",
-    "summary": "FOSS provides rapid analytical solutions for grain testing, including NIR technology for protein, moisture, and oil content analysis.",
-    "url": "https://www.fossanalytics.com/en/industries/grain",
+    "summary": "FOSS offers image-based grain testing through its EyeFoss system.",
+    "url": "https://www.fossanalytics.com/en/products/eyefoss",
     "category": "company",
-    "citations": ["https://www.fossanalytics.com/en/industries/grain"]
+    "citations": [
+      "https://www.fossanalytics.com/en/products/eyefoss"
+    ]
   },
   {
     "id": "2",
-    "title": "GrainSense: Portable Grain Analyzer Technology",
-    "source": "GrainSense",
+    "title": "Cgrain Value for grain grading",
+    "source": "Cgrain",
     "date": "2024-12-18",
-    "summary": "GrainSense offers handheld NIR analyzers for instant protein, moisture, and oil measurements directly in the field.",
-    "url": "https://grainsense.com/",
+    "summary": "Cgrain Value uses imaging and AI to grade grain samples.",
+    "url": "https://www.cgrain.ai/products/",
     "category": "company",
-    "citations": ["https://grainsense.com/"]
+    "citations": [
+      "https://www.cgrain.ai/products/"
+    ]
   },
   {
     "id": "3",
-    "title": "Cgrain Value: AI-Powered Grain Quality Analysis",
-    "source": "Cgrain",
+    "title": "Videometer multispectral analysis",
+    "source": "Videometer",
     "date": "2024-12-15",
-    "summary": "Cgrain Value uses computer vision and AI to analyze grain samples for quality parameters including damaged kernels and foreign matter.",
-    "url": "https://cgrain.com/",
+    "summary": "Videometer provides multispectral imaging for seed and grain analysis.",
+    "url": "https://videometer.com/",
     "category": "company",
-    "citations": ["https://cgrain.com/"]
+    "citations": [
+      "https://videometer.com/"
+    ]
   },
   {
     "id": "4",
-    "title": "Global Wheat Head Detection Dataset",
-    "source": "Global Wheat Challenge",
-    "date": "2024-12-10",
-    "summary": "The Global Wheat Head Detection dataset provides annotated images for developing AI models for wheat phenotyping.",
-    "url": "http://www.global-wheat.com/",
-    "category": "dataset",
-    "citations": ["http://www.global-wheat.com/"]
+    "title": "QualySense QSorter",
+    "source": "QualySense",
+    "date": "2024-12-12",
+    "summary": "QualySense QSorter performs single-kernel analysis and sorting.",
+    "url": "https://www.qualysense.com/",
+    "category": "company",
+    "citations": [
+      "https://www.qualysense.com/"
+    ]
   },
   {
     "id": "5",
-    "title": "Videometer Multispectral Imaging for Seed Analysis",
-    "source": "Videometer",
-    "date": "2024-12-08",
-    "summary": "Videometer offers multispectral imaging solutions for seed quality assessment, variety identification, and disease detection.",
-    "url": "https://videometer.com/",
+    "title": "GrainSense handheld analyzer",
+    "source": "GrainSense",
+    "date": "2024-12-10",
+    "summary": "GrainSense offers handheld NIR analyzers for field testing.",
+    "url": "https://grainsense.com/",
     "category": "company",
-    "citations": ["https://videometer.com/"]
+    "citations": [
+      "https://grainsense.com/"
+    ]
   },
   {
     "id": "6",
-    "title": "QualySense: High-Speed Grain Sorting Technology",
-    "source": "QualySense",
-    "date": "2024-12-05",
-    "summary": "QualySense QSorter provides single-kernel analysis and sorting for seeds and grains using advanced sensor technology.",
-    "url": "https://www.qualysense.com/",
+    "title": "ZoomAgri AI inspection",
+    "source": "ZoomAgri",
+    "date": "2024-12-08",
+    "summary": "ZoomAgri provides AI inspection for grain and seed samples.",
+    "url": "https://zoomagri.com/en/home/",
     "category": "company",
-    "citations": ["https://www.qualysense.com/"]
+    "citations": [
+      "https://zoomagri.com/en/home/"
+    ]
   },
   {
     "id": "7",
-    "title": "Intello Labs: AI-Powered Crop Quality Assessment",
-    "source": "Intello Labs",
-    "date": "2024-12-01",
-    "summary": "Intello Labs uses smartphone-based AI to assess grain and produce quality, making testing accessible to farmers.",
-    "url": "https://www.intello.ai/",
-    "category": "company",
-    "citations": ["https://www.intello.ai/"]
+    "title": "Global Wheat Head Detection dataset",
+    "source": "Global Wheat Challenge",
+    "date": "2024-12-05",
+    "summary": "GWHD provides annotated images for wheat head detection.",
+    "url": "http://www.global-wheat.com/",
+    "category": "dataset",
+    "citations": [
+      "http://www.global-wheat.com/"
+    ]
   },
   {
     "id": "8",
-    "title": "GrainSet: Benchmark Dataset for Grain Analysis",
+    "title": "GrainSet dataset",
     "source": "Research",
-    "date": "2024-11-28",
-    "summary": "Repository for the GrainSet dataset and its Nature Scientific Data paper.",
+    "date": "2024-12-02",
+    "summary": "GrainSet is a public dataset for grain image analysis.",
     "url": "https://github.com/hellodfan/GrainSet",
     "category": "dataset",
-    "citations": ["https://github.com/hellodfan/GrainSet"]
+    "citations": [
+      "https://github.com/hellodfan/GrainSet"
+    ]
   }
 ]

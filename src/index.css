@@ -2,6 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --font-body: "Aptos", "Segoe UI", "Arial", sans-serif;
+    --font-display: "Aptos", "Segoe UI", "Arial", sans-serif;
+    --ink-900: #0f172a;
+    --ink-700: #334155;
+    --ink-500: #64748b;
+    --brand-amber: #b45309;
+    --brand-teal: #0f766e;
+    --paper: #f7f3eb;
+    --card: #ffffff;
+    --card-border: #e7e5e4;
+  }
+
+  .dark {
+    --ink-900: #e2e8f0;
+    --ink-700: #cbd5f5;
+    --ink-500: #94a3b8;
+    --brand-amber: #f59e0b;
+    --brand-teal: #14b8a6;
+    --paper: #0f172a;
+    --card: #0b1220;
+    --card-border: #1f2937;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--ink-900);
+    background: var(--paper);
+  }
+}
+
+/* App shell and headings */
+.app-shell {
+  background:
+    radial-gradient(1200px circle at 10% -10%, rgba(180, 83, 9, 0.12), transparent 45%),
+    radial-gradient(900px circle at 90% 0%, rgba(15, 118, 110, 0.12), transparent 45%),
+    linear-gradient(180deg, #f8fafc 0%, #f7f3eb 100%);
+}
+
+.dark .app-shell {
+  background:
+    radial-gradient(1000px circle at 10% -10%, rgba(20, 184, 166, 0.12), transparent 45%),
+    radial-gradient(900px circle at 90% 0%, rgba(245, 158, 11, 0.12), transparent 45%),
+    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+}
+
+.brand-hero {
+  background: linear-gradient(120deg, var(--brand-amber), var(--brand-teal));
+}
+
+.display-font {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.section-lead {
+  color: var(--ink-700);
+}
+
 /* Custom scrollbar styles */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {

@@ -104,7 +104,7 @@ export const companiesData: Company[] = [
     country: "Argentina/Spain",
     type: "Benchtop",
     tech: "Computer vision scanner",
-    description: "Scanner-based AI for varietal purity and grading parameters.",
+    description: "Scanner-based AI for variety purity and grading measures.",
     funding: "$6M Series A (2024)",
     crops: ["Barley", "Wheat", "Corn", "Soy"],
     speed: "",
@@ -174,7 +174,7 @@ export const companiesData: Company[] = [
     country: "USA/Israel",
     type: "Benchtop",
     tech: "AI image analysis",
-    description: "Digital grain analysis with per-kernel metrics.",
+    description: "Digital grain analysis with per-kernel measures.",
     funding: "",
     crops: [],
     speed: "Under 1 minute",
@@ -538,8 +538,8 @@ export const aiResearchData: AIResearchData = {
     {
       crop: "Barley",
       focus: "Variety ID",
-      detail: "Scanner-based AI used for varietal purity assessment in malting barley programs.",
-      accuracy: "96–98% (reported)",
+      detail: "Scanner-based AI used for variety purity assessment in malting barley programs.",
+      accuracy: "96-98% (reported)",
       url: "https://grainswest.com/2025/09/ai-revolution-improves-analysis/",
       citations: ["https://grainswest.com/2025/09/ai-revolution-improves-analysis/"]
     },
@@ -554,16 +554,16 @@ export const aiResearchData: AIResearchData = {
     {
       crop: "Rice/Pulses",
       focus: "Kernel Metrics",
-      detail: "QM3i provides rapid, digitized grain analysis with per-kernel metrics.",
+      detail: "QM3i provides rapid, digital grain analysis with per-kernel measures.",
       accuracy: "99.5% (reported)",
       url: "https://www.vibeia.com/",
       citations: ["https://www.vibeia.com/"]
     }
   ],
   futureTrends: [
-    { title: "Sovereign Grading", desc: "Exporting regions invest in domestic grading tech to protect varietal integrity." },
-    { title: "Edge Grading", desc: "Smartphone and portable devices shift grading to farm gate and receival sites." },
-    { title: "Spectral + Robotics", desc: "Multispectral imaging paired with automated sorting becomes production-ready." }
+    { title: "Local control", desc: "Exporting regions invest in local grading tech to protect variety purity." },
+    { title: "On-site grading", desc: "Phones and portable devices bring grading to farm gates and receival sites." },
+    { title: "Spectral imaging and robotics", desc: "Multispectral imaging with automated sorting is moving into production." }
   ]
 };
 
@@ -617,7 +617,7 @@ export const regulatoryData: RegulatoryData = {
       name: "Europe / UK",
       agency: "EU Commission",
       legislation: "Ecodesign Regulation (ESPR)",
-      keyChange: "Ecodesign framework introducing digital product passports (future phases).",
+      keyChange: "EU rules for digital product passports (future phases).",
       driver: "Sustainability",
       status: "Regulation in force",
       icon: React.createElement(BookOpen, { className: "w-6 h-6 text-indigo-600" }),

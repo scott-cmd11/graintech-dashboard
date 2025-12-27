@@ -71,6 +71,32 @@ interface HubData {
   companies: string[];
 }
 
+const COMPANY_SIZE_BUCKETS = [
+  { id: '1', min: 1, max: 1, label: '1 company' },
+  { id: '2-3', min: 2, max: 3, label: '2-3' },
+  { id: '4-5', min: 4, max: 5, label: '4-5' },
+  { id: '6+', min: 6, max: Number.POSITIVE_INFINITY, label: '6+' },
+] as const;
+
+const BUCKET_RADIUS: Record<(typeof COMPANY_SIZE_BUCKETS)[number]['id'], number> = {
+  '1': 6,
+  '2-3': 10,
+  '4-5': 14,
+  '6+': 18,
+};
+
+function getBucketId(count: number): (typeof COMPANY_SIZE_BUCKETS)[number]['id'] {
+  const bucket =
+    COMPANY_SIZE_BUCKETS.find((b) => count >= b.min && count <= b.max) ??
+    COMPANY_SIZE_BUCKETS[COMPANY_SIZE_BUCKETS.length - 1];
+  return bucket.id;
+}
+
+function getMarkerRadius(count: number): number {
+  if (!count) return 0;
+  return BUCKET_RADIUS[getBucketId(count)];
+}
+
 export const WorldMap = memo(function WorldMap({
   companies,
   onCountryClick,
@@ -107,14 +133,6 @@ export const WorldMap = memo(function WorldMap({
 
     return Object.values(hubs);
   }, [companies]);
-
-  // Calculate marker radius based on company count
-  const getRadius = (count: number): number => {
-    if (count >= 6) return 20;
-    if (count >= 4) return 16;
-    if (count >= 2) return 12;
-    return 8;
-  };
 
   // Get marker color
   const getColor = (country: string): string => {
@@ -175,7 +193,7 @@ export const WorldMap = memo(function WorldMap({
               <CircleMarker
                 key={hub.country}
                 center={[hub.lat, hub.lng]}
-                radius={getRadius(hub.count)}
+                radius={getMarkerRadius(hub.count)}
                 pathOptions={{
                   fillColor: getColor(hub.country),
                   color: '#ffffff',
@@ -213,29 +231,26 @@ export const WorldMap = memo(function WorldMap({
           </MapContainer>
         ) : (
           <div className="h-full flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
-            No verified location data yet. Add citations to populate this map.
+            No location data yet. Add sources to show this map.
           </div>
         )}
       </div>
 
       {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-6 mt-4 text-sm text-gray-600 dark:text-gray-400">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-green-500" />
-          <span>1 company</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span>2-3</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-green-500" />
-          <span>4-5</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-full bg-green-500" />
-          <span>6+</span>
-        </div>
+        {COMPANY_SIZE_BUCKETS.map((bucket) => {
+          const radius = BUCKET_RADIUS[bucket.id];
+          const diameter = radius * 2;
+          return (
+            <div key={bucket.id} className="flex items-center gap-2">
+              <div
+                className="rounded-full bg-green-500"
+                style={{ width: `${diameter}px`, height: `${diameter}px` }}
+              />
+              <span>{bucket.label}</span>
+            </div>
+          );
+        })}
         <div className="flex items-center gap-2 pl-4 border-l border-gray-300 dark:border-gray-600">
           <div className="w-4 h-4 rounded-full bg-amber-500" />
           <span>Selected</span>
@@ -243,7 +258,7 @@ export const WorldMap = memo(function WorldMap({
       </div>
 
       <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-3">
-        Click on a marker to see companies • Scroll to zoom • Drag to pan
+        Click a marker to see companies | Scroll to zoom | Drag to pan
       </p>
     </div>
   );

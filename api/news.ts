@@ -9,6 +9,24 @@ const RSS_FEEDS = [
   'https://www.google.ca/alerts/feeds/03030665084568507357/7719612955356284469',
 ];
 
+const WHITELISTED_HOSTS = new Set([
+  'www.fossanalytics.com',
+  'fossanalytics.com',
+  'www.cgrain.ai',
+  'cgrain.ai',
+  'www.videometer.com',
+  'videometer.com',
+  'www.qualysense.com',
+  'qualysense.com',
+  'www.grainsense.com',
+  'grainsense.com',
+  'www.zoomagri.com',
+  'zoomagri.com',
+  'www.global-wheat.com',
+  'global-wheat.com',
+  'github.com',
+]);
+
 interface NewsItem {
   id: string;
   title: string;
@@ -31,6 +49,15 @@ function decodeHtmlEntities(text: string): string {
 function extractUrl(content: string): string {
   const match = content.match(/href="([^"]+)"/);
   return match ? match[1] : '';
+}
+
+function isWhitelisted(url: string): boolean {
+  try {
+    const host = new URL(url).hostname;
+    return WHITELISTED_HOSTS.has(host);
+  } catch {
+    return false;
+  }
 }
 
 async function fetchFeed(url: string): Promise<NewsItem[]> {
@@ -68,7 +95,7 @@ async function fetchFeed(url: string): Promise<NewsItem[]> {
       const sourceMatch = content.match(/^([^-]+)-/);
       const source = sourceMatch ? sourceMatch[1].trim() : 'Google Alerts';
 
-      if (title && url) {
+      if (title && url && isWhitelisted(url)) {
         items.push({
           id: `alert-${index++}`,
           title: title.substring(0, 200),

@@ -28,7 +28,6 @@ export const NewsFeed = memo(function NewsFeed() {
         if (data.articles && data.articles.length > 0) {
           setNews(data.articles);
         } else {
-          // Fallback to curated news if no alerts
           setNews(curatedNews);
           setShowCurated(true);
         }
@@ -66,12 +65,12 @@ export const NewsFeed = memo(function NewsFeed() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <Newspaper className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Industry News</h3>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 display-font">Industry news</h3>
         </div>
         {!loading && !showCurated && (
           <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
             <RefreshCw className="w-3 h-3" />
-            Live from Google Alerts
+            Live (whitelisted sources)
           </span>
         )}
       </div>
@@ -86,67 +85,65 @@ export const NewsFeed = memo(function NewsFeed() {
           ))}
         </div>
       ) : (
-        <>
-          <div className="space-y-4">
-            {displayedNews.map((item) => (
-              <article
-                key={item.id}
-                className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+      <div className="space-y-4">
+        {displayedNews.map((item) => (
+          <article
+            key={item.id}
+            className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                  {item.source}
+                </span>
+                <span className="text-gray-300 dark:text-gray-600">|</span>
+                <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                  <Clock className="w-3 h-3" />
+                  {formatDate(item.date)}
+                </span>
+              </div>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
+                {item.title}
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+                {item.summary}
+              </p>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium"
               >
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
-                      {item.source}
-                    </span>
-                    <span className="text-gray-300 dark:text-gray-600">•</span>
-                    <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                      <Clock className="w-3 h-3" />
-                      {formatDate(item.date)}
-                    </span>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-                    {item.title}
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
-                    {item.summary}
-                  </p>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium"
-                  >
-                    Read Article
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+                Read article
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+      )}
 
-          {news.length > 5 && (
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="w-full mt-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
-            >
-              {showAll ? (
-                <>
-                  <ChevronUp className="w-4 h-4" />
-                  Show Less
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" />
-                  Show All ({news.length} articles)
-                </>
-              )}
-            </button>
+      {news.length > 5 && !loading && (
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="w-full mt-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp className="w-4 h-4" />
+              Show less
+            </>
+          ) : (
+            <>
+              <ChevronDown className="w-4 h-4" />
+              Show all ({news.length} articles)
+            </>
           )}
-        </>
+        </button>
       )}
 
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 text-center">
-        {showCurated ? 'Curated industry resources' : 'Powered by Google Alerts • Updates automatically'}
+        {showCurated ? 'Curated industry resources from verified sources.' : 'Live feed from whitelisted sources.'}
       </p>
     </div>
   );

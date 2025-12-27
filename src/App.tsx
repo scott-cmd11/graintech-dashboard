@@ -69,23 +69,23 @@ function Header() {
   const { getShareableUrl } = useUrlState();
 
   return (
-    <header className="bg-gradient-to-r from-amber-600 to-green-700 dark:from-amber-800 dark:to-green-900 text-white py-10 px-6 shadow-lg no-print">
+    <header className="brand-hero text-white py-10 px-6 shadow-lg no-print">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Cpu className="w-10 h-10 text-amber-200" aria-hidden="true" />
-              <h1 className="text-3xl font-bold tracking-tight">GrainTech Intelligence</h1>
+              <h1 className="text-3xl font-bold tracking-tight display-font">GrainTech Intelligence</h1>
             </div>
             <p className="text-amber-100 text-lg max-w-xl">
-              The Digital Transformation of Grain Quality Assessment
+              How grain quality checks are going digital
             </p>
             <div className="flex gap-4 mt-4 text-xs font-medium uppercase tracking-wider text-amber-200/80">
               <span>{companiesData.length} Companies</span>
-              <span>•</span>
+              <span>|</span>
               <span>{datasetsData.length} Datasets</span>
-              <span>•</span>
-              <span>Global Scope</span>
+              <span>|</span>
+              <span>Global</span>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ function Header() {
                 ))
               ) : (
                 <div className="col-span-3 text-center text-xs text-amber-100/80">
-                  Verified market stats pending sources.
+                  Market stats need sources.
                 </div>
               )}
             </div>
@@ -452,7 +452,7 @@ function Dashboard() {
                 <div className="flex items-center gap-3">
                   <GitCompare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <span className="text-blue-800 dark:text-blue-200 font-medium">
-                    {compareIds.length} companies selected for comparison
+                    {compareIds.length} companies selected to compare
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -517,7 +517,7 @@ function Dashboard() {
 
             {paginatedCompanies.length === 0 && (
               <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                No companies found matching your criteria.
+                No companies match your filters.
               </div>
             )}
 
@@ -589,21 +589,21 @@ function Dashboard() {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6 text-center">
-                  Technology Breakdown
+                  Technology breakdown
                 </h3>
                 <SimpleDonutChart data={techStats} />
                 <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-                  Computer Vision leads, followed by Spectroscopy solutions
+                  Computer vision leads, followed by spectroscopy.
                 </p>
               </div>
 
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 text-center">
-                  Device Types Distribution
+                  Device type breakdown
                 </h3>
                 <SimpleHorizontalBarChart data={deviceTypeStats} color="bg-blue-500" />
                 <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-                  Benchtop and Mobile solutions dominate the market
+                  Benchtop and mobile tools are most common.
                 </p>
               </div>
             </div>
@@ -614,14 +614,11 @@ function Dashboard() {
               <FundingTimeline companies={companiesData} />
             </div>
 
-            {/* News Feed */}
-            <NewsFeed />
-
-            {/* Top Crops Covered */}
+            {/* Top crops */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <Sprout className="w-5 h-5 text-green-600 dark:text-green-400" />
-                Top Crops Covered
+                Top crops
               </h3>
               <div className="flex flex-wrap gap-2">
                 {allCrops.slice(0, 15).map((crop) => {
@@ -649,10 +646,10 @@ function Dashboard() {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
               <div className="flex items-center gap-3 mb-3">
                 <Database className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Open Research Datasets</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Open datasets</h2>
               </div>
-              <p className="text-gray-600 dark:text-gray-400">
-                Curated collection of publicly available datasets for training grain quality AI models
+              <p className="text-gray-600 dark:text-gray-400 section-lead">
+                Public datasets for training grain quality models.
               </p>
             </div>
 
@@ -668,7 +665,7 @@ function Dashboard() {
                 ))
               ) : (
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                  No verified datasets available yet. Add citations to populate this section.
+                  No verified datasets yet.
                 </div>
               )}
             </div>
@@ -682,11 +679,11 @@ function Dashboard() {
               <div className="flex items-center gap-3 mb-4">
                 <BrainCircuit className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    AI in Grain Metrology: 2024-2025 Review
+                  <h2 className="text-2xl font-bold section-title text-gray-900 dark:text-gray-100">
+                    AI in grain grading: 2024-2025 review
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    State-of-the-art developments in Deep Learning and Computer Vision for agriculture
+                  <p className="text-gray-600 dark:text-gray-400 section-lead">
+                    Recent work in deep learning and computer vision for agriculture.
                   </p>
                 </div>
               </div>
@@ -707,7 +704,7 @@ function Dashboard() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                          title="Read Paper"
+                          title="Read paper"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </a>
@@ -721,7 +718,7 @@ function Dashboard() {
                   ))
                 ) : (
                   <div className="md:col-span-4 bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 text-center text-sm text-gray-500 dark:text-gray-400">
-                    No verified AI research entries yet. Add citations to populate this section.
+                    No verified AI research entries yet.
                   </div>
                 )}
               </div>
@@ -731,7 +728,7 @@ function Dashboard() {
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <Sprout className="w-5 h-5 text-green-600 dark:text-green-400" />
-                  Crop-Specific Breakthroughs
+                  Crop-specific results
                 </h3>
                 <div className="space-y-4">
                   {aiResearchData.cropDeepDives.length > 0 ? (
@@ -767,7 +764,7 @@ function Dashboard() {
                     ))
                   ) : (
                     <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                      No verified crop deep-dives yet. Add citations to populate this section.
+                      No verified crop deep-dives yet.
                     </div>
                   )}
                 </div>
@@ -777,7 +774,7 @@ function Dashboard() {
                 <div className="bg-gradient-to-br from-indigo-900 to-slate-800 rounded-xl p-6 text-white shadow-xl">
                   <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                     <Network className="w-5 h-5 text-indigo-400" />
-                    Emerging Horizons
+                    What's next
                   </h3>
                   <div className="space-y-3">
                     {aiResearchData.futureTrends.length > 0 ? (
@@ -792,18 +789,16 @@ function Dashboard() {
                       ))
                     ) : (
                       <div className="text-xs text-indigo-100/80 text-center">
-                        No verified trend notes yet. Add citations to populate this section.
+                        No verified trend notes yet.
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6 border border-orange-100 dark:border-orange-800">
-                  <h3 className="text-lg font-bold text-orange-900 dark:text-orange-200 mb-2">Why it matters?</h3>
+                  <h3 className="text-lg font-bold text-orange-900 dark:text-orange-200 mb-2">Why it matters</h3>
                   <p className="text-sm text-orange-800 dark:text-orange-300 leading-relaxed">
-                    We are moving from "feature engineering" (humans defining rules) to "feature learning" (AI
-                    discovering patterns). This enables the shift to <strong>Digital Grain</strong>, where every kernel
-                    is profiled in real-time, enabling true Identity Preservation at industrial scale.
+                    AI is moving from hand-built rules to models that learn patterns. This can track grain quality in real time and support identity preservation at scale.
                   </p>
                 </div>
               </div>
@@ -818,18 +813,16 @@ function Dashboard() {
               <div className="flex items-center gap-3 mb-4">
                 <Gavel className="w-8 h-8 text-blue-700 dark:text-blue-400" />
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    The Digitization of Regulation
+                  <h2 className="text-2xl font-bold section-title text-gray-900 dark:text-gray-100">
+                    How rules are changing
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    How governments are rewriting laws to accommodate AI and digital grading.
+                  <p className="text-gray-600 dark:text-gray-400 section-lead">
+                    How governments are updating rules for AI and digital grading.
                   </p>
                 </div>
               </div>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                The global regulatory landscape is shifting from rigid visual inspection to automated, science-based
-                verification. Canada and the US are modernizing statutory frameworks, while South America utilizes
-                executive decrees for rapid digital fiscalization.
+                Rules are moving from visual checks to automated, science-based checks. Canada and the US are updating laws, while South America uses faster decrees to allow digital inspection.
               </p>
             </div>
 
@@ -873,12 +866,12 @@ function Dashboard() {
                     </div>
                     <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-xl border border-blue-100 dark:border-blue-800 text-blue-900 dark:text-blue-200">
                       <p className="text-xs text-blue-600 dark:text-blue-400 font-bold mb-1 uppercase tracking-wide">
-                        Major Shift
+                        Key change
                       </p>
                       <p className="text-sm">{region.keyChange}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mb-1">Primary Driver</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mb-1">Main driver</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{region.driver}</p>
                     </div>
                   </div>
@@ -892,29 +885,26 @@ function Dashboard() {
               </div>
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <BookOpen className="w-6 h-6 text-gray-400" />
-                The "Black Box" Liability Challenge
+                Who is responsible for AI decisions?
               </h3>
               <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-3xl relative z-10">
-                A major hurdle for regulators is the "Black Box" problem: If an AI makes a grading decision that results
-                in a financial loss, who is liable? Unlike a human inspector who follows a public visual guide, AI uses
-                proprietary algorithms.
+                A key issue is responsibility. If AI makes a grading decision that causes a loss, who is accountable? Unlike a human inspector who follows a public visual guide, AI uses private algorithms.
               </p>
               <div className="grid md:grid-cols-2 gap-4 relative z-10">
                 <div className="bg-gray-700/50 p-4 rounded-xl border border-gray-600">
                   <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1 font-bold">
-                    The US Solution
+                    US approach
                   </span>
                   <span className="text-sm font-medium text-gray-200">
-                    Strict "Inspection Technology Evaluation" (ITE) requiring re-certification if algorithms change.
+                    Strict "Inspection Technology Evaluation" (ITE) rules require re-certification when algorithms change.
                   </span>
                 </div>
                 <div className="bg-gray-700/50 p-4 rounded-xl border border-gray-600">
                   <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1 font-bold">
-                    The Australian Solution
+                    Australian approach
                   </span>
                   <span className="text-sm font-medium text-gray-200">
-                    Industry stewardship framework establishing principles for data ownership and algorithmic
-                    transparency.
+                    Industry framework sets rules for data ownership and algorithm transparency.
                   </span>
                 </div>
               </div>
@@ -929,17 +919,14 @@ function Dashboard() {
               <div className="flex items-center gap-3 mb-4">
                 <ScrollText className="w-8 h-8 text-amber-600 dark:text-amber-400" />
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">The Architecture of Trust</h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    A Global History of Grain Grading & Standardization
+                  <h2 className="text-2xl font-bold section-title text-gray-900 dark:text-gray-100">How grading built trust</h2>
+                  <p className="text-gray-600 dark:text-gray-400 section-lead">
+                    A short history of grain grading and standards
                   </p>
                 </div>
               </div>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                The history of grain grading is the history of civilization attempting to impose order on nature. What
-                began as simple visual inspection in ancient markets has evolved into a complex global system of
-                chemical analysis and artificial intelligence. The goal remains the same: translating a biological
-                product into an economic asset.
+                Grain grading has always tried to bring order to a natural product. It started with visual checks in markets and grew into lab tests and AI. The goal is the same: turn a biological product into a tradable asset.
               </p>
             </div>
 
@@ -975,7 +962,7 @@ function Dashboard() {
             <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-8 text-white mt-12 shadow-xl">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Globe className="w-6 h-6 text-amber-400" />
-                Global Grading Philosophies
+                How grading works around the world
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {globalGradingPhilosophies.map((philosophy, i) => (
@@ -988,7 +975,7 @@ function Dashboard() {
                     <div className="space-y-2 text-xs text-slate-300 border-t border-white/10 pt-3">
                       <div>
                         <span className="block text-slate-500 uppercase tracking-wider font-bold mb-0.5">
-                          Key Metric
+                          Key measure
                         </span>
                         {philosophy.metric}
                       </div>
@@ -1009,38 +996,38 @@ function Dashboard() {
         {/* Trends Tab */}
         {activeTab === 'trends' && (
           <div className="space-y-6 animate-in fade-in duration-500">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Market Trends & Outlook</h2>
+            <h2 className="text-2xl font-bold section-title text-gray-900 dark:text-gray-100 mb-4">Market trends and outlook</h2>
 
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">European Vanguard</h3>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">Europe leads</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
-                  Lab-grade automation led by FOSS, Cgrain, Videometer, and Zeutec continues to set precision benchmarks.
+                  Lab systems from FOSS, Cgrain, Videometer, and Zeutec set the bar for accuracy.
                 </p>
                 <div className="mt-4 flex items-center text-green-600 dark:text-green-400 font-bold text-sm relative z-10">
-                  <TrendingUp className="w-4 h-4 mr-1" /> High Precision
+                  <TrendingUp className="w-4 h-4 mr-1" /> High accuracy
                 </div>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
                 <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">
-                  Edge Grading
+                  On-site grading
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
-                  Smartphone and portable tools push grading to farm gates and receival points.
+                  Phones and portable tools bring grading to farm gates and receival points.
                 </p>
                 <div className="mt-4 flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm relative z-10">
-                  <TrendingUp className="w-4 h-4 mr-1" /> Rapid Adoption
+                  <TrendingUp className="w-4 h-4 mr-1" /> Fast adoption
                 </div>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
                 <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2 relative z-10">
-                  Sovereign Grading
+                  Local control
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">
-                  Exporting regions invest in domestic grading tech to protect varietal integrity.
+                  Exporting regions invest in local grading tech to protect variety purity.
                 </p>
                 <div className="mt-4 flex items-center text-amber-600 dark:text-amber-400 font-bold text-sm relative z-10">
-                  <TrendingUp className="w-4 h-4 mr-1" /> Strategic Priority
+                  <TrendingUp className="w-4 h-4 mr-1" /> Strategic focus
                 </div>
               </div>
             </div>
@@ -1048,19 +1035,26 @@ function Dashboard() {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                 <div className="text-3xl mb-2">Data</div>
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Dataset Infrastructure</h3>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Training data</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Large-scale datasets such as GrainSpace, GrainSet, and GWHD are foundational to model accuracy.
+                  Large datasets like GrainSpace, GrainSet, and GWHD help models learn.
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                 <div className="text-3xl mb-2">Ops</div>
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Automation in Bulk Handling</h3>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Automation in bulk handling</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Automated inspection lines and inline sorting are expanding in major storage and export hubs.
+                  Automated inspection lines and inline sorting are growing in major storage and export hubs.
                 </p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* News Tab */}
+        {activeTab === 'news' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <NewsFeed />
           </div>
         )}
       </main>
@@ -1091,9 +1085,9 @@ function Footer() {
   return (
     <footer className="bg-gray-800 dark:bg-gray-900 text-gray-400 py-6 mt-12 no-print">
       <div className="max-w-6xl mx-auto px-6 text-center text-sm">
-        <p>GrainTech Intelligence Report - Research compiled December 2025</p>
+        <p>GrainTech Intelligence Report - Research compiled in December 2025</p>
         <p className="text-gray-500 mt-1">
-          Data sourced from the citations listed in the dataset
+          Data comes from the citations listed in the dataset
         </p>
         <p className="text-gray-500 mt-1">
           {companiesData.length} Companies - {datasetsData.length} Datasets Tracked
@@ -1110,7 +1104,7 @@ function Footer() {
 export default function App() {
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 relative font-sans transition-colors duration-300">
+      <div className="min-h-screen app-shell transition-colors duration-300">
         <Header />
         <Dashboard />
         <Footer />

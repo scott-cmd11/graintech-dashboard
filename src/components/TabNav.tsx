@@ -7,6 +7,7 @@ import {
   Scale,
   History,
   TrendingUp,
+  Newspaper,
 } from 'lucide-react';
 import type { TabId, TabConfig } from '../types';
 
@@ -18,6 +19,7 @@ const tabs: TabConfig[] = [
   { id: 'regulations', label: 'Regulations', icon: <Scale className="w-4 h-4" /> },
   { id: 'history', label: 'History', icon: <History className="w-4 h-4" /> },
   { id: 'trends', label: 'Trends', icon: <TrendingUp className="w-4 h-4" /> },
+  { id: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
 ];
 
 interface TabNavProps {

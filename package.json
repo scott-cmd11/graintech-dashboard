@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "type": "module",
   "private": true,
-  "description": "GrainTech Intelligence Dashboard - The Digital Transformation of Grain Quality Assessment",
+  "description": "GrainTech Intelligence Dashboard - How grain quality checks are going digital",
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
     "build": "tsc && vite build",

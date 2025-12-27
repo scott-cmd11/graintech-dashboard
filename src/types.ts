@@ -153,7 +153,8 @@ export type TabId =
   | 'research'
   | 'regulations'
   | 'history'
-  | 'trends';
+  | 'trends'
+  | 'news';
 
 export interface TabConfig {
   id: TabId;
