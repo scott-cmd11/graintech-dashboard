@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, Filter } from "lucide-react";
 import type { FormFactor, GrainSolution, Region, SensingTech, UseCase } from "../data/grainTechEntities";
 import { getGrainFilterOptions } from "../utils/grainFilters";
 import { formatEnumLabel } from "../utils/formatLabels";
+import { sensingColors } from "../constants/grainTechColors";
 
 interface GrainLandscapeFiltersProps {
   grainSolutions: GrainSolution[];
@@ -27,16 +28,6 @@ interface GrainLandscapeFiltersProps {
 
 const chipBase =
   "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500";
-
-const sensingColors: Record<SensingTech, string> = {
-  RGB: "#22c55e",
-  NIR: "#3b82f6",
-  HSI: "#8b5cf6",
-  SpectralImaging: "#f59e0b",
-  Terahertz: "#ef4444",
-  XRay: "#0ea5e9",
-  DroneImaging: "#14b8a6",
-};
 
 function toggleFilter<T>(items: T[], value: T): T[] {
   return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
