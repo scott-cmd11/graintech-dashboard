@@ -391,7 +391,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
           {Object.entries(sensingColors).map(([tech, color]) => (
             <div key={tech} className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-[11px] sm:text-xs">{tech}</span>
+              <span className="text-[11px] sm:text-xs">{formatEnumLabel(tech as SensingTech)}</span>
             </div>
           ))}
         </div>
