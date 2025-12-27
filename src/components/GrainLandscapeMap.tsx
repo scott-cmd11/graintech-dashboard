@@ -82,7 +82,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
   onCompaniesToggle,
   defaultCompaniesOpen = true,
 }: GrainLandscapeMapProps) {
-  const isControlled = Boolean(filters && onFiltersChange);
+  const isControlled = Boolean(onFiltersChange);
   const [localRegions, setLocalRegions] = useState<Region[]>([]);
   const [localSensing, setLocalSensing] = useState<SensingTech[]>([]);
   const [localFormFactors, setLocalFormFactors] = useState<FormFactor[]>([]);
@@ -98,14 +98,14 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
     setLocalCompaniesOpen((prev) => !prev);
   };
 
-  const activeFilters = isControlled
-    ? filters
-    : {
-        regions: localRegions,
-        sensing: localSensing,
-        formFactors: localFormFactors,
-        useCases: localUseCases,
-      };
+  const fallbackFilters = {
+    regions: localRegions,
+    sensing: localSensing,
+    formFactors: localFormFactors,
+    useCases: localUseCases,
+  };
+
+  const activeFilters = filters ?? fallbackFilters;
 
   const updateFilters = (
     updater:

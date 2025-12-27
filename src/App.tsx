@@ -34,7 +34,6 @@ import { useUrlState } from './hooks/useUrlState';
 import {
   companiesData,
   datasetsData,
-  techCategories,
   historyData,
   globalGradingPhilosophies,
   aiResearchData,
