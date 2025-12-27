@@ -3,6 +3,13 @@ import {
   Download,
   ExternalLink,
   Table2,
+  Search,
+  X,
+  Share2,
+  CheckSquare,
+  Square,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import type {
   GrainSolution,
@@ -16,6 +23,7 @@ import { exportGrainSolutions } from "../utils/export";
 import type { ExportFormat } from "../types";
 import { formatCompanyUrl, getCompanyUrl } from "../utils/companyLookup";
 import { formatEnumLabel, formatEnumList } from "../utils/formatLabels";
+import { sensingColors } from "../constants/grainTechColors";
 
 interface GrainComparisonMatrixProps {
   grainSolutions: GrainSolution[];
@@ -75,6 +83,33 @@ function toggleFilter<T>(items: T[], value: T): T[] {
   return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
 }
 
+function getPerformanceColor(value: number | undefined, column: "accuracy" | "throughput" | "duration"): string {
+  if (value === undefined) return "text-gray-700 dark:text-gray-200";
+
+  if (column === "accuracy") {
+    if (value >= 95) return "text-green-700 dark:text-green-400 font-semibold";
+    if (value >= 90) return "text-emerald-700 dark:text-emerald-400";
+    if (value >= 85) return "text-yellow-700 dark:text-yellow-400";
+    return "text-orange-700 dark:text-orange-400";
+  }
+
+  if (column === "throughput") {
+    if (value >= 1000) return "text-green-700 dark:text-green-400 font-semibold";
+    if (value >= 100) return "text-emerald-700 dark:text-emerald-400";
+    if (value >= 50) return "text-yellow-700 dark:text-yellow-400";
+    return "text-orange-700 dark:text-orange-400";
+  }
+
+  if (column === "duration") {
+    if (value <= 30) return "text-green-700 dark:text-green-400 font-semibold";
+    if (value <= 60) return "text-emerald-700 dark:text-emerald-400";
+    if (value <= 120) return "text-yellow-700 dark:text-yellow-400";
+    return "text-orange-700 dark:text-orange-400";
+  }
+
+  return "text-gray-700 dark:text-gray-200";
+}
+
 function formatShortList(values: string[], max = 2): string {
   return formatEnumList(values, max);
 }
@@ -117,24 +152,38 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
   const [sensing, setSensing] = useState<SensingTech[]>([]);
   const [formFactors, setFormFactors] = useState<FormFactor[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<ColumnKey[]>(defaultColumns);
   const [compactView, setCompactView] = useState(false);
   const [sortKey, setSortKey] = useState<ColumnKey>("company");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [pinnedColumn, setPinnedColumn] = useState<ColumnKey | "none">("company");
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const [filterSummaryOpen, setFilterSummaryOpen] = useState(true);
 
   const options = useMemo(() => {
     return getGrainFilterOptions(grainSolutions);
   }, [grainSolutions]);
 
   const filteredSolutions = useMemo(() => {
-    return filterGrainSolutions(grainSolutions, {
+    let results = filterGrainSolutions(grainSolutions, {
       regions,
       sensing,
       formFactors,
       useCases,
     });
-  }, [grainSolutions, regions, sensing, formFactors, useCases]);
+
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      results = results.filter(
+        (solution) =>
+          solution.company.toLowerCase().includes(term) ||
+          solution.productName.toLowerCase().includes(term)
+      );
+    }
+
+    return results;
+  }, [grainSolutions, regions, sensing, formFactors, useCases, searchTerm]);
 
   const sortedSolutions = useMemo(() => {
     const sorted = [...filteredSolutions];
@@ -203,6 +252,62 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
     exportGrainSolutions(sortedSolutions, format);
   };
 
+  const shareFilters = async () => {
+    const filterParams = new URLSearchParams();
+    if (searchTerm) filterParams.set("search", searchTerm);
+    if (regions.length > 0) filterParams.set("regions", regions.join(","));
+    if (sensing.length > 0) filterParams.set("sensing", sensing.join(","));
+    if (formFactors.length > 0) filterParams.set("formFactors", formFactors.join(","));
+    if (useCases.length > 0) filterParams.set("useCases", useCases.join(","));
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}?${filterParams.toString()}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Grain Comparison Filter",
+          text: `View my filtered grain solutions comparison (${filteredSolutions.length} results)`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        // User cancelled share
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert("Filter URL copied to clipboard!");
+    }
+  };
+
+  const toggleRowSelection = (solutionId: string) => {
+    const newSelection = new Set(selectedRows);
+    if (newSelection.has(solutionId)) {
+      newSelection.delete(solutionId);
+    } else {
+      newSelection.add(solutionId);
+    }
+    setSelectedRows(newSelection);
+  };
+
+  const toggleAllRows = () => {
+    if (selectedRows.size === sortedSolutions.length) {
+      setSelectedRows(new Set());
+    } else {
+      setSelectedRows(new Set(sortedSolutions.map((s) => s.id)));
+    }
+  };
+
+  const getSelectedSolutions = () => {
+    return sortedSolutions.filter((s) => selectedRows.has(s.id));
+  };
+
+  const maturityBreakdown = useMemo(() => {
+    return {
+      Commercial: filteredSolutions.filter((s) => s.maturityLevel === "Commercial").length,
+      Pilot: filteredSolutions.filter((s) => s.maturityLevel === "Pilot").length,
+      Experimental: filteredSolutions.filter((s) => s.maturityLevel === "Experimental").length,
+    };
+  }, [filteredSolutions]);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -212,12 +317,51 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               Grain Comparison Matrix
             </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Compare solutions across sensing, hardware, use cases, and performance metrics.
-            </p>
+            <div className="flex flex-col gap-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Compare solutions across sensing, hardware, use cases, and performance metrics.
+              </p>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400 space-y-0.5">
+                <span>
+                  {filteredSolutions.length} of {grainSolutions.length} solutions
+                  {maturityBreakdown.Commercial > 0 && (
+                    <>
+                      {" • "}
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">{maturityBreakdown.Commercial}</span> Commercial
+                    </>
+                  )}
+                  {maturityBreakdown.Pilot > 0 && (
+                    <>
+                      {" • "}
+                      <span className="font-semibold text-blue-600 dark:text-blue-400">{maturityBreakdown.Pilot}</span> Pilot
+                    </>
+                  )}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {selectedRows.size > 0 && (
+            <button
+              onClick={() => {
+                const selected = getSelectedSolutions();
+                console.log("Comparing:", selected);
+                alert(`Ready to compare ${selected.length} solutions. (Modal integration coming soon)`);
+              }}
+              className="px-3 py-2 text-xs rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors inline-flex items-center gap-2"
+            >
+              <CheckSquare className="w-4 h-4" />
+              Compare ({selectedRows.size})
+            </button>
+          )}
+          <button
+            onClick={shareFilters}
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            title="Share filtered view"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
           <button
             onClick={() => setCompactView((prev) => !prev)}
             className="px-3 py-2 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -244,6 +388,116 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {(searchTerm || regions.length > 0 || sensing.length > 0 || formFactors.length > 0 || useCases.length > 0) && (
+        <div className="mb-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setFilterSummaryOpen(!filterSummaryOpen)}
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 mb-2 w-full"
+          >
+            <span>Active Filters</span>
+            {filterSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          {filterSummaryOpen && (
+            <div className="flex flex-wrap gap-2">
+              {searchTerm && (
+                <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs">
+                  <span>Search: {searchTerm}</span>
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="hover:text-blue-900 dark:hover:text-blue-200"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+              {regions.map((region) => (
+                <div
+                  key={region}
+                  className="flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-xs"
+                >
+                  <span>{formatEnumLabel(region)}</span>
+                  <button
+                    onClick={() => setRegions((prev) => prev.filter((r) => r !== region))}
+                    className="hover:text-emerald-900 dark:hover:text-emerald-200"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {sensing.map((tech) => (
+                <div
+                  key={tech}
+                  className="flex items-center gap-2 px-3 py-1 rounded-full text-xs text-white"
+                  style={{ backgroundColor: sensingColors[tech] }}
+                >
+                  <span>{formatEnumLabel(tech)}</span>
+                  <button
+                    onClick={() => setSensing((prev) => prev.filter((s) => s !== tech))}
+                    className="hover:opacity-75"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {formFactors.map((factor) => (
+                <div
+                  key={factor}
+                  className="flex items-center gap-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1 rounded-full text-xs"
+                >
+                  <span>{formatEnumLabel(factor)}</span>
+                  <button
+                    onClick={() => setFormFactors((prev) => prev.filter((f) => f !== factor))}
+                    className="hover:text-indigo-900 dark:hover:text-indigo-200"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {useCases.map((useCase) => (
+                <div
+                  key={useCase}
+                  className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs"
+                >
+                  <span>{formatEnumLabel(useCase)}</span>
+                  <button
+                    onClick={() => setUseCases((prev) => prev.filter((u) => u !== useCase))}
+                    className="hover:text-amber-900 dark:hover:text-amber-200"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="mb-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+          Search
+        </p>
+        <div className="relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+            <Search className="w-4 h-4" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search companies or products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -462,6 +716,19 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
         <table className="min-w-[900px] w-full border-collapse">
           <thead className="sticky top-0 z-10 bg-white dark:bg-gray-800">
             <tr className="border-b border-gray-200 dark:border-gray-700">
+              <th className="text-left text-xs font-semibold uppercase tracking-wide px-3 py-2 text-gray-500 dark:text-gray-400 w-12">
+                <button
+                  onClick={toggleAllRows}
+                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                  title={selectedRows.size === sortedSolutions.length ? "Deselect all" : "Select all"}
+                >
+                  {selectedRows.size === sortedSolutions.length ? (
+                    <CheckSquare className="w-4 h-4 text-amber-600" />
+                  ) : (
+                    <Square className="w-4 h-4" />
+                  )}
+                </button>
+              </th>
               {activeColumns.map((column, index) => {
                 const isSortable = numericColumns.includes(column) || column === "company" || column === "product" || column === "maturity";
                 const isActiveSort = sortKey === column;
@@ -472,7 +739,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                       isSortable ? "cursor-pointer hover:text-gray-700 dark:hover:text-gray-200" : ""
                     } ${
                       index === 0 && pinnedColumn !== "none"
-                        ? "sticky left-0 bg-white dark:bg-gray-800 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
+                        ? "sticky left-12 bg-white dark:bg-gray-800 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
                         : ""
                     }`}
                     onClick={() => {
@@ -495,17 +762,32 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
           <tbody>
             {sortedSolutions.map((solution) => {
               const companyUrl = getCompanyUrl(solution.company);
+              const isSelected = selectedRows.has(solution.id);
               return (
               <tr
                 key={solution.id}
-                className="group border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/40"
+                className={`group border-b border-gray-100 dark:border-gray-700 ${
+                  isSelected ? "bg-amber-50 dark:bg-amber-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700/40"
+                }`}
               >
+                <td className="px-3 py-3 w-12 text-center">
+                  <button
+                    onClick={() => toggleRowSelection(solution.id)}
+                    className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                  >
+                    {isSelected ? (
+                      <CheckSquare className="w-4 h-4 text-amber-600" />
+                    ) : (
+                      <Square className="w-4 h-4 text-gray-400" />
+                    )}
+                  </button>
+                </td>
                 {activeColumns.map((column, index) => (
                   <td
                     key={`${solution.id}-${column}`}
                     className={`px-3 py-3 text-sm text-gray-700 dark:text-gray-200 align-top ${
                       index === 0 && pinnedColumn !== "none"
-                        ? "sticky left-0 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/40 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
+                        ? "sticky left-12 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/40 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
                         : ""
                     }`}
                   >
@@ -547,6 +829,15 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                           </span>
                         ))}
                       </div>
+                    ) : column === "accuracy" || column === "throughput" || column === "duration" ? (
+                      <span
+                        className={`text-sm ${getPerformanceColor(
+                          getCellValue(solution, column) as number | undefined,
+                          column as "accuracy" | "throughput" | "duration"
+                        )}`}
+                      >
+                        {getCellValue(solution, column) || "—"}
+                      </span>
                     ) : (
                       <span className="text-sm text-gray-700 dark:text-gray-200">
                         {getCellValue(solution, column) || "—"}
