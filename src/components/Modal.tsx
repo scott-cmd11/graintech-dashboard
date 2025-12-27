@@ -86,14 +86,14 @@ export const Modal = memo(function Modal({
         className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-200 focus:outline-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
           {/* Header */}
-          <div className="flex justify-between items-start mb-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
             <div>
-              <h2 id="modal-title" className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              <h2 id="modal-title" className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {company.name}
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mt-1">{company.product}</p>
+              <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 mt-1">{company.product}</p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -119,7 +119,7 @@ export const Modal = memo(function Modal({
           </div>
 
           {/* Info Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {company.country && (
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600">
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold uppercase">

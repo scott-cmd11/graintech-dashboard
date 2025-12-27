@@ -1,0 +1,567 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  Download,
+  ExternalLink,
+  Table2,
+} from "lucide-react";
+import type {
+  GrainSolution,
+  Region,
+  FormFactor,
+  SensingTech,
+  UseCase,
+} from "../data/grainTechEntities";
+import { filterGrainSolutions, getGrainFilterOptions } from "../utils/grainFilters";
+import { exportGrainSolutions } from "../utils/export";
+import type { ExportFormat } from "../types";
+import { formatCompanyUrl, getCompanyUrl } from "../utils/companyLookup";
+import { formatEnumLabel, formatEnumList } from "../utils/formatLabels";
+
+interface GrainComparisonMatrixProps {
+  grainSolutions: GrainSolution[];
+}
+
+type ColumnKey =
+  | "company"
+  | "product"
+  | "regions"
+  | "sensingTech"
+  | "formFactors"
+  | "useCases"
+  | "accuracy"
+  | "throughput"
+  | "duration"
+  | "maturity";
+
+type SortDirection = "asc" | "desc";
+
+const columnLabels: Record<ColumnKey, string> = {
+  company: "Company",
+  product: "Product",
+  regions: "Regions",
+  sensingTech: "Primary Tech",
+  formFactors: "Form Factors",
+  useCases: "Primary Use Cases",
+  accuracy: "Accuracy (%)",
+  throughput: "Throughput (samples/hr)",
+  duration: "Test Duration (sec)",
+  maturity: "Maturity",
+};
+
+const numericColumns: ColumnKey[] = ["accuracy", "throughput", "duration"];
+const defaultColumns: ColumnKey[] = [
+  "company",
+  "product",
+  "regions",
+  "sensingTech",
+  "formFactors",
+  "useCases",
+  "accuracy",
+  "throughput",
+  "duration",
+  "maturity",
+];
+const compactColumns: ColumnKey[] = ["company", "product", "sensingTech", "maturity"];
+const presetColumns: Record<"performance" | "stack" | "business", ColumnKey[]> = {
+  performance: ["company", "product", "accuracy", "throughput", "duration", "maturity"],
+  stack: ["company", "product", "sensingTech", "formFactors", "useCases", "regions", "maturity"],
+  business: ["company", "product", "regions", "formFactors", "useCases", "maturity"],
+};
+
+const chipBase =
+  "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500";
+
+function toggleFilter<T>(items: T[], value: T): T[] {
+  return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
+}
+
+function formatShortList(values: string[], max = 2): string {
+  return formatEnumList(values, max);
+}
+
+function getPrimaryTech(solution: GrainSolution): string {
+  return solution.sensingTech[0] ?? "RGB";
+}
+
+function getCellValue(solution: GrainSolution, column: ColumnKey): string | number {
+  switch (column) {
+    case "company":
+      return solution.company;
+    case "product":
+      return solution.productName;
+    case "regions":
+      return formatShortList(solution.regions);
+    case "sensingTech":
+      return formatEnumLabel(getPrimaryTech(solution));
+    case "formFactors":
+      return formatEnumList(solution.formFactors);
+    case "useCases":
+      return formatShortList(solution.useCases);
+    case "accuracy":
+      return solution.accuracyPercent ?? "";
+    case "throughput":
+      return solution.throughputSamplesPerHour ?? "";
+    case "duration":
+      return solution.avgTestDurationSeconds ?? "";
+    case "maturity":
+      return solution.maturityLevel ?? "";
+    default:
+      return "";
+  }
+}
+
+export const GrainComparisonMatrix = function GrainComparisonMatrix({
+  grainSolutions,
+}: GrainComparisonMatrixProps) {
+  const [regions, setRegions] = useState<Region[]>([]);
+  const [sensing, setSensing] = useState<SensingTech[]>([]);
+  const [formFactors, setFormFactors] = useState<FormFactor[]>([]);
+  const [useCases, setUseCases] = useState<UseCase[]>([]);
+  const [visibleColumns, setVisibleColumns] = useState<ColumnKey[]>(defaultColumns);
+  const [compactView, setCompactView] = useState(false);
+  const [sortKey, setSortKey] = useState<ColumnKey>("company");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [pinnedColumn, setPinnedColumn] = useState<ColumnKey | "none">("company");
+
+  const options = useMemo(() => {
+    return getGrainFilterOptions(grainSolutions);
+  }, [grainSolutions]);
+
+  const filteredSolutions = useMemo(() => {
+    return filterGrainSolutions(grainSolutions, {
+      regions,
+      sensing,
+      formFactors,
+      useCases,
+    });
+  }, [grainSolutions, regions, sensing, formFactors, useCases]);
+
+  const sortedSolutions = useMemo(() => {
+    const sorted = [...filteredSolutions];
+    const isNumeric = numericColumns.includes(sortKey);
+    sorted.sort((a, b) => {
+      const aVal = getCellValue(a, sortKey);
+      const bVal = getCellValue(b, sortKey);
+
+      if (isNumeric) {
+        const aNum = typeof aVal === "number" ? aVal : Number.NaN;
+        const bNum = typeof bVal === "number" ? bVal : Number.NaN;
+        if (Number.isNaN(aNum) && Number.isNaN(bNum)) return 0;
+        if (Number.isNaN(aNum)) return 1;
+        if (Number.isNaN(bNum)) return -1;
+        return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
+      }
+
+      const aStr = String(aVal);
+      const bStr = String(bVal);
+      return sortDirection === "asc" ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
+    });
+    return sorted;
+  }, [filteredSolutions, sortKey, sortDirection]);
+
+  const baseColumns = compactView ? compactColumns : visibleColumns;
+  const activeColumns =
+    pinnedColumn !== "none" && baseColumns.includes(pinnedColumn)
+      ? [pinnedColumn, ...baseColumns.filter((column) => column !== pinnedColumn)]
+      : baseColumns;
+
+  const activeFilters = [
+    ...regions.map((value) => ({ category: "Region", value })),
+    ...sensing.map((value) => ({ category: "Sensing", value })),
+    ...formFactors.map((value) => ({ category: "FormFactor", value })),
+    ...useCases.map((value) => ({ category: "UseCase", value })),
+  ];
+
+  const toggleSort = (column: ColumnKey) => {
+    if (sortKey === column) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortKey(column);
+    setSortDirection("asc");
+  };
+
+  const clearFilters = () => {
+    setRegions([]);
+    setSensing([]);
+    setFormFactors([]);
+    setUseCases([]);
+  };
+
+  const applyPreset = (preset: keyof typeof presetColumns) => {
+    setVisibleColumns(presetColumns[preset]);
+    setCompactView(false);
+  };
+
+  useEffect(() => {
+    if (pinnedColumn !== "none" && !baseColumns.includes(pinnedColumn)) {
+      setPinnedColumn("none");
+    }
+  }, [baseColumns, pinnedColumn]);
+
+  const handleExport = (format: ExportFormat) => {
+    exportGrainSolutions(sortedSolutions, format);
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3">
+          <Table2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+              Grain Comparison Matrix
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Compare solutions across sensing, hardware, use cases, and performance metrics.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setCompactView((prev) => !prev)}
+            className="px-3 py-2 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            {compactView ? "Expanded view" : "Compact view"}
+          </button>
+          <div className="relative group">
+            <button className="px-3 py-2 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              Export
+            </button>
+            <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10">
+              <button
+                onClick={() => handleExport("csv")}
+                className="w-full px-3 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-t-lg"
+              >
+                Export CSV
+              </button>
+              <button
+                onClick={() => handleExport("json")}
+                className="w-full px-3 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-b-lg"
+              >
+                Export JSON
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+            Regions
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {options.regions.map((region) => {
+              const selected = regions.includes(region);
+              return (
+                <button
+                  key={region}
+                  onClick={() => setRegions((prev) => toggleFilter(prev, region))}
+                  className={`${chipBase} ${
+                    selected
+                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                  }`}
+                >
+                  {formatEnumLabel(region)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+            Sensing Tech
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {options.sensing.map((tech) => {
+              const selected = sensing.includes(tech);
+              return (
+                <button
+                  key={tech}
+                  onClick={() => setSensing((prev) => toggleFilter(prev, tech))}
+                  className={`${chipBase} ${
+                    selected
+                      ? "bg-blue-500 border-blue-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                  }`}
+                >
+                  {formatEnumLabel(tech)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+            Form Factors
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {options.formFactors.map((factor) => {
+              const selected = formFactors.includes(factor);
+              return (
+                <button
+                  key={factor}
+                  onClick={() => setFormFactors((prev) => toggleFilter(prev, factor))}
+                  className={`${chipBase} ${
+                    selected
+                      ? "bg-indigo-500 border-indigo-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                  }`}
+                >
+                  {formatEnumLabel(factor)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+            Use Cases
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {options.useCases.map((useCase) => {
+              const selected = useCases.includes(useCase);
+              return (
+                <button
+                  key={useCase}
+                  onClick={() => setUseCases((prev) => toggleFilter(prev, useCase))}
+                  className={`${chipBase} ${
+                    selected
+                      ? "bg-amber-500 border-amber-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                  }`}
+                >
+                  {formatEnumLabel(useCase)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        {activeFilters.map((filter) => (
+          <button
+            key={`${filter.category}-${filter.value}`}
+            onClick={() => {
+              if (filter.category === "Region") {
+                setRegions((prev) => prev.filter((item) => item !== filter.value));
+                return;
+              }
+              if (filter.category === "Sensing") {
+                setSensing((prev) => prev.filter((item) => item !== filter.value));
+                return;
+              }
+              if (filter.category === "FormFactor") {
+                setFormFactors((prev) => prev.filter((item) => item !== filter.value));
+                return;
+              }
+              setUseCases((prev) => prev.filter((item) => item !== filter.value));
+            }}
+            className="px-3 py-1 text-xs rounded-full border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+          >
+            {filter.category}: {filter.value}
+          </button>
+        ))}
+        {activeFilters.length > 0 && (
+          <button
+            onClick={clearFilters}
+            className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+          >
+            Clear all
+          </button>
+        )}
+      </div>
+
+      <div className="mt-6">
+        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-xl p-4 border border-gray-100 dark:border-gray-700 space-y-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Presets
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => applyPreset("performance")}
+                className="px-3 py-1 text-xs rounded-full border border-indigo-200 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50"
+              >
+                Performance Only
+              </button>
+              <button
+                onClick={() => applyPreset("stack")}
+                className="px-3 py-1 text-xs rounded-full border border-emerald-200 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+              >
+                Stack Only
+              </button>
+              <button
+                onClick={() => applyPreset("business")}
+                className="px-3 py-1 text-xs rounded-full border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+              >
+                Business Only
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Pinned column
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {(["none", ...baseColumns] as const).map((column) => {
+                const selected = pinnedColumn === column;
+                const label = column === "none" ? "None" : columnLabels[column];
+                return (
+                  <button
+                    key={column}
+                    onClick={() => setPinnedColumn(column)}
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
+                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+              Columns
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {defaultColumns.map((column) => {
+                const selected = visibleColumns.includes(column);
+                return (
+                  <button
+                    key={column}
+                    onClick={() => setVisibleColumns((prev) => toggleFilter(prev, column))}
+                    className={`${chipBase} ${
+                      selected
+                        ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
+                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {columnLabels[column]}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 overflow-x-auto">
+        <table className="min-w-[900px] w-full border-collapse">
+          <thead className="sticky top-0 z-10 bg-white dark:bg-gray-800">
+            <tr className="border-b border-gray-200 dark:border-gray-700">
+              {activeColumns.map((column, index) => {
+                const isSortable = numericColumns.includes(column) || column === "company" || column === "product" || column === "maturity";
+                const isActiveSort = sortKey === column;
+                return (
+                  <th
+                    key={column}
+                    className={`text-left text-xs font-semibold uppercase tracking-wide px-3 py-2 text-gray-500 dark:text-gray-400 ${
+                      isSortable ? "cursor-pointer hover:text-gray-700 dark:hover:text-gray-200" : ""
+                    } ${
+                      index === 0 && pinnedColumn !== "none"
+                        ? "sticky left-0 bg-white dark:bg-gray-800 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      if (isSortable) {
+                        toggleSort(column);
+                      }
+                    }}
+                  >
+                    {columnLabels[column]}
+                    {isActiveSort && (
+                      <span className="ml-1 text-[10px]">
+                        {sortDirection === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {sortedSolutions.map((solution) => {
+              const companyUrl = getCompanyUrl(solution.company);
+              return (
+              <tr
+                key={solution.id}
+                className="group border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/40"
+              >
+                {activeColumns.map((column, index) => (
+                  <td
+                    key={`${solution.id}-${column}`}
+                    className={`px-3 py-3 text-sm text-gray-700 dark:text-gray-200 align-top ${
+                      index === 0 && pinnedColumn !== "none"
+                        ? "sticky left-0 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/40 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
+                        : ""
+                    }`}
+                  >
+                    {column === "company" ? (
+                      companyUrl ? (
+                        <a
+                          href={formatCompanyUrl(companyUrl)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                        >
+                          {solution.company}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span className="text-sm text-gray-700 dark:text-gray-200">
+                          {solution.company}
+                        </span>
+                      )
+                    ) : column === "formFactors" ? (
+                      <div className="flex flex-wrap gap-1">
+                        {solution.formFactors.map((factor) => (
+                          <span
+                            key={`${solution.id}-${factor}`}
+                            className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
+                          >
+                            {formatEnumLabel(factor)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : column === "useCases" ? (
+                      <div className="flex flex-wrap gap-1">
+                        {solution.useCases.map((useCase) => (
+                          <span
+                            key={`${solution.id}-${useCase}`}
+                            className="text-[10px] px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-700"
+                          >
+                            {formatEnumLabel(useCase)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-700 dark:text-gray-200">
+                        {getCellValue(solution, column) || "—"}
+                      </span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default GrainComparisonMatrix;

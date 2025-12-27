@@ -149,14 +149,14 @@ export const WorldMap = memo(function WorldMap({
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <MapPin className="w-6 h-6 text-green-600 dark:text-green-400" />
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
             Global Innovation Hubs
           </h3>
         </div>
-        <div className="flex gap-4 text-sm">
+        <div className="flex flex-wrap gap-3 text-xs sm:text-sm">
           <div className="text-center">
             <span className="font-bold text-gray-900 dark:text-gray-100">{totalCountries}</span>
             <span className="text-gray-500 dark:text-gray-400 ml-1">countries</span>
@@ -173,11 +173,11 @@ export const WorldMap = memo(function WorldMap({
         </p>
       )}
 
-      <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700" style={{ height: '400px' }}>
+      <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 h-[320px] sm:h-[380px] lg:h-[400px]">
         {hubData.length > 0 ? (
           <MapContainer
-            center={[20, 0]}
-            zoom={2}
+            center={[15, 0]}
+            zoom={2.5}
             minZoom={1}
             maxZoom={10}
             scrollWheelZoom={true}
@@ -203,6 +203,22 @@ export const WorldMap = memo(function WorldMap({
                 }}
                 eventHandlers={{
                   click: () => onCountryClick(hub.country),
+                  mouseover: (event) => {
+                    const target = event.target as {
+                      setStyle: (style: Record<string, string | number>) => void;
+                      openPopup: () => void;
+                    };
+                    target.setStyle({ fillColor: '#f59e0b', fillOpacity: 0.95 });
+                    target.openPopup();
+                  },
+                  mouseout: (event) => {
+                    const target = event.target as {
+                      setStyle: (style: Record<string, string | number>) => void;
+                      closePopup: () => void;
+                    };
+                    target.setStyle({ fillColor: getColor(hub.country), fillOpacity: 0.8 });
+                    target.closePopup();
+                  },
                 }}
               >
                 <Popup>
@@ -237,7 +253,7 @@ export const WorldMap = memo(function WorldMap({
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-6 mt-4 text-sm text-gray-600 dark:text-gray-400">
+      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
         {COMPANY_SIZE_BUCKETS.map((bucket) => {
           const radius = BUCKET_RADIUS[bucket.id];
           const diameter = radius * 2;
@@ -257,7 +273,7 @@ export const WorldMap = memo(function WorldMap({
         </div>
       </div>
 
-      <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-3">
+      <p className="text-center text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 mt-3">
         Click a marker to see companies | Scroll to zoom | Drag to pan
       </p>
     </div>

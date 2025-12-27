@@ -321,6 +321,34 @@ export const companiesData: Company[] = [
     url: "www.indyn.com.au",
     citations: ["https://www.growag.com/article/platypus-machine-billed-future-grain-and-cereal-imaging", "https://www.queenslandcountrylife.com.au/story/8830175/innovative-puggle-machine-brings-accuracy-to-grain-analysis/"],
   },
+  {
+    id: 22,
+    name: "Upjao",
+    product: "Upjao Grain Quality AI",
+    country: "India",
+    type: "Mobile",
+    tech: "Smartphone imaging + AI",
+    description: "Mobile grain quality assessment for farm and procurement workflows.",
+    funding: "",
+    crops: ["Wheat", "Rice", "Pulses"],
+    speed: "",
+    url: "upjao.ai",
+    citations: ["https://upjao.ai/"],
+  },
+  {
+    id: 23,
+    name: "Grainkart Private Limited",
+    product: "GrainScope AI",
+    country: "India",
+    type: "Mobile + Device",
+    tech: "Smartphone imaging + AI",
+    description: "Grain quality inspection using mobile workflows for procurement.",
+    funding: "",
+    crops: ["Wheat", "Rice"],
+    speed: "",
+    url: "www.grainscope.ai",
+    citations: ["https://www.grainscope.ai/"],
+  },
 ];
 
 export const datasetsData: Dataset[] = [
@@ -646,3 +674,6 @@ export const typeColors: Record<string, string> = {
   "In-line": "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200",
   "Unknown": "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
 };
+
+export * from "./grainTechEntities";
+export * from "./adoptionTimeline";

@@ -147,7 +147,11 @@ export interface DonutChartData {
 
 // Tab Types
 export type TabId =
-  | 'landscape'
+  | 'ai-landscape'
+  | 'tech-stack'
+  | 'comparison'
+  | 'timeline'
+  | 'scenarios'
   | 'insights'
   | 'datasets'
   | 'research'

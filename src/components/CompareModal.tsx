@@ -126,8 +126,8 @@ export const CompareModal = memo(function CompareModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
-          <h2 id="compare-modal-title" className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
+          <h2 id="compare-modal-title" className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
             Compare Companies ({companies.length})
           </h2>
           <button
@@ -141,17 +141,17 @@ export const CompareModal = memo(function CompareModal({
 
         {/* Content */}
         <div className="overflow-auto flex-1">
-          <table className="w-full">
+          <table className="w-full min-w-[720px]">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-900/50">
-                <th className="text-left p-4 font-semibold text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wide w-32">
+                <th className="text-left p-4 font-semibold text-gray-500 dark:text-gray-400 text-xs sm:text-sm uppercase tracking-wide w-32">
                   Attribute
                 </th>
                 {companies.map((company) => (
                   <th key={company.id} className="p-4 text-left min-w-[200px]">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">
+                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base sm:text-lg">
                           {company.name}
                         </h3>
                         <a
@@ -186,11 +186,11 @@ export const CompareModal = memo(function CompareModal({
                       : 'bg-gray-50/50 dark:bg-gray-900/30'
                   }
                 >
-                  <td className="p-4 font-medium text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wide align-top">
+                  <td className="p-4 font-medium text-gray-500 dark:text-gray-400 text-xs sm:text-sm uppercase tracking-wide align-top">
                     {row.label}
                   </td>
                   {companies.map((company) => (
-                    <td key={company.id} className="p-4 text-gray-900 dark:text-gray-100 align-top">
+                    <td key={company.id} className="p-4 text-gray-900 dark:text-gray-100 text-sm align-top">
                       {row.render ? (
                         row.render(company[row.key], company)
                       ) : row.key === 'tech' ? (
@@ -208,7 +208,7 @@ export const CompareModal = memo(function CompareModal({
 
               {/* Description Row */}
               <tr className="bg-white dark:bg-gray-800">
-                <td className="p-4 font-medium text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wide align-top">
+                <td className="p-4 font-medium text-gray-500 dark:text-gray-400 text-xs sm:text-sm uppercase tracking-wide align-top">
                   Description
                 </td>
                 {companies.map((company) => (

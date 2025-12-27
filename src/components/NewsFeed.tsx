@@ -62,7 +62,7 @@ export const NewsFeed = memo(function NewsFeed() {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
         <div className="flex items-center gap-3">
           <Newspaper className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 display-font">Industry news</h3>

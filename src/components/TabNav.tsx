@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
 import {
-  Building2,
   PieChart,
   Database,
   BrainCircuit,
@@ -8,11 +7,20 @@ import {
   History,
   TrendingUp,
   Newspaper,
+  Globe,
+  Layers3,
+  Table2,
+  Calendar,
+  Wand2,
 } from 'lucide-react';
 import type { TabId, TabConfig } from '../types';
 
 const tabs: TabConfig[] = [
-  { id: 'landscape', label: 'Companies', icon: <Building2 className="w-4 h-4" /> },
+  { id: 'ai-landscape', label: 'Landscape', icon: <Globe className="w-4 h-4" /> },
+  { id: 'tech-stack', label: 'Tech Stack', icon: <Layers3 className="w-4 h-4" /> },
+  { id: 'comparison', label: 'Comparison', icon: <Table2 className="w-4 h-4" /> },
+  { id: 'timeline', label: 'Timeline', icon: <Calendar className="w-4 h-4" /> },
+  { id: 'scenarios', label: 'Scenarios', icon: <Wand2 className="w-4 h-4" /> },
   { id: 'insights', label: 'Analytics', icon: <PieChart className="w-4 h-4" /> },
   { id: 'datasets', label: 'Datasets', icon: <Database className="w-4 h-4" /> },
   { id: 'research', label: 'AI Progress', icon: <BrainCircuit className="w-4 h-4" /> },
@@ -52,11 +60,11 @@ export const TabNav = memo(function TabNav({ activeTab, onTabChange }: TabNavPro
 
   return (
     <nav
-      className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40 border-b border-gray-100 dark:border-gray-700"
+      className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl lg:sticky lg:top-24 z-30"
       aria-label="Main navigation"
     >
       <div
-        className="max-w-6xl mx-auto flex gap-1 p-2 overflow-x-auto"
+        className="flex gap-1 p-2 overflow-x-auto no-scrollbar lg:flex-col lg:overflow-visible"
         role="tablist"
         aria-label="Dashboard sections"
       >
@@ -72,7 +80,7 @@ export const TabNav = memo(function TabNav({ activeTab, onTabChange }: TabNavPro
               aria-selected={isActive}
               aria-controls={`${tab.id}-panel`}
               tabIndex={isActive ? 0 : -1}
-              className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all whitespace-nowrap text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:justify-start lg:w-full ${
                 isActive
                   ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-700'
                   : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200'

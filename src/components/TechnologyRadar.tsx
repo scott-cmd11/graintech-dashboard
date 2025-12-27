@@ -119,7 +119,7 @@ export const TechnologyRadar = memo(function TechnologyRadar({ companies }: Tech
 
       {/* Radar Chart */}
       <div className="relative">
-        <svg viewBox="0 0 300 300" className="w-full max-w-md mx-auto">
+        <svg viewBox="0 0 300 300" className="w-full max-w-[320px] sm:max-w-md mx-auto">
           {/* Rings */}
           {[0, 1, 2, 3].map((ring) => (
             <circle
@@ -149,7 +149,7 @@ export const TechnologyRadar = memo(function TechnologyRadar({ companies }: Tech
                 x={x}
                 y={y}
                 textAnchor="middle"
-                className="text-xs fill-gray-500 dark:fill-gray-400"
+                className="text-[9px] sm:text-xs fill-gray-500 dark:fill-gray-400"
               >
                 {name}
               </text>
@@ -190,7 +190,7 @@ export const TechnologyRadar = memo(function TechnologyRadar({ companies }: Tech
       </div>
 
       {/* Tech List */}
-      <div className="mt-6 grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
         {filteredItems.slice(0, 12).map((item) => (
           <div
             key={item.name}

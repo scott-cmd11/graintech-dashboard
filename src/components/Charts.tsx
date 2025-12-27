@@ -74,7 +74,7 @@ export const SimpleHorizontalBarChart = memo(function SimpleHorizontalBarChart({
   return (
     <div className={`space-y-3 ${className}`} role="img" aria-label="Horizontal bar chart">
       {data.map((item, i) => (
-        <div key={i} className="grid grid-cols-[140px_1fr_40px] items-center gap-3">
+        <div key={i} className="grid grid-cols-[100px_1fr_32px] sm:grid-cols-[140px_1fr_40px] items-center gap-3">
           <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate">
             {item.label}
           </span>
@@ -137,7 +137,7 @@ export const SimpleDonutChart = memo(function SimpleDonutChart({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="w-48 h-48 mx-auto">
+      <div className="w-40 h-40 sm:w-48 sm:h-48 mx-auto">
         <svg
           viewBox="0 0 100 100"
           className="transform -rotate-90"

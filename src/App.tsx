@@ -6,7 +6,6 @@ import {
   Globe,
   ExternalLink,
   TrendingUp,
-  GitCompare,
   Database,
   BrainCircuit,
   Gavel,
@@ -18,14 +17,12 @@ import {
 } from 'lucide-react';
 
 // Types
-import type { TabId, FilterType, SortOption, SortDirection, Company, ExportFormat } from './types';
+import type { TabId } from './types';
 
 // Context
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
 // Hooks
-import { useLocalStorage } from './hooks/useLocalStorage';
-import { usePagination } from './hooks/usePagination';
 import { useUrlState } from './hooks/useUrlState';
 
 // Data
@@ -38,6 +35,8 @@ import {
   aiResearchData,
   regulatoryData,
   marketStats,
+  grainSolutions,
+  adoptionEvents,
 } from './data';
 
 // Components
@@ -45,42 +44,37 @@ import {
   SimpleHorizontalBarChart,
   SimpleDonutChart,
   TabNav,
-  CompanyCard,
-  Modal,
   DatasetCard,
-  SearchFilter,
-  CompareModal,
-  Pagination,
-  WorldMap,
-  AdvancedFilters,
-  KeyboardShortcuts,
   FundingTimeline,
   TechnologyRadar,
   NewsFeed,
   ShareButton,
+  GrainLandscapeMap,
+  TechStackExplorer,
+  GrainComparisonMatrix,
+  GrainAdoptionTimeline,
+  ScenarioExplorer,
 } from './components';
 
 // Utils
-import { exportCompanies, exportFavorites } from './utils/export';
-
 // Header Component
 function Header() {
   const { toggleTheme, isDark } = useTheme();
   const { getShareableUrl } = useUrlState();
 
   return (
-    <header className="brand-hero text-white py-10 px-6 shadow-lg no-print">
+    <header className="brand-hero text-white py-8 sm:py-10 px-4 sm:px-6 shadow-lg no-print">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Cpu className="w-10 h-10 text-amber-200" aria-hidden="true" />
-              <h1 className="text-3xl font-bold tracking-tight display-font">GrainTech Intelligence</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight display-font">GrainTech Intelligence</h1>
             </div>
-            <p className="text-amber-100 text-lg max-w-xl">
+            <p className="text-amber-100 text-sm sm:text-lg max-w-xl">
               How grain quality checks are going digital
             </p>
-            <div className="flex gap-4 mt-4 text-xs font-medium uppercase tracking-wider text-amber-200/80">
+            <div className="flex flex-wrap gap-2 sm:gap-4 mt-4 text-[10px] sm:text-xs font-medium uppercase tracking-wider text-amber-200/80">
               <span>{companiesData.length} Companies</span>
               <span>|</span>
               <span>{datasetsData.length} Datasets</span>
@@ -89,14 +83,14 @@ function Header() {
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-3 sm:gap-4 w-full lg:w-auto">
             {/* Share Button */}
             <ShareButton url={getShareableUrl({})} title="GrainTech Intelligence Dashboard" />
 
             {/* Print Button */}
             <button
               onClick={() => window.print()}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-colors w-full sm:w-auto"
               title="Print"
             >
               <Printer className="w-4 h-4" />
@@ -107,17 +101,17 @@ function Header() {
             <button
               onClick={toggleTheme}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 w-full sm:w-auto"
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
             {/* Market Stats */}
-            <div className="grid grid-cols-3 gap-2 md:gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 w-full sm:w-auto">
               {marketStats.length > 0 ? (
                 marketStats.map((stat, i) => (
                   <div key={i} className="text-center">
-                    <p className="text-white font-bold text-lg md:text-xl">{stat.value}</p>
+                    <p className="text-white font-bold text-base sm:text-lg md:text-xl">{stat.value}</p>
                     <p className="text-amber-200 text-[10px] md:text-xs uppercase">{stat.label}</p>
                     <p className="text-green-300 text-xs font-bold">{stat.growth}</p>
                   </div>
@@ -143,206 +137,35 @@ function Header() {
 
 // Main Dashboard Component
 function Dashboard() {
-  const { toggleTheme } = useTheme();
   const { getStateFromUrl, setUrlState } = useUrlState();
 
   // Initialize state from URL
   const urlState = getStateFromUrl();
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<TabId>((urlState.tab as TabId) || 'landscape');
-
-  // Search & Filter State
-  const [searchTerm, setSearchTerm] = useState(urlState.search || '');
-  const [filterType, setFilterType] = useState<FilterType>((urlState.type as FilterType) || 'All');
-  const [sortField, setSortField] = useState<SortOption>((urlState.sort as SortOption) || 'name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-
-  // Advanced Filters
-  const [advancedFilters, setAdvancedFilters] = useState({
-    crops: [] as string[],
-    countries: [] as string[],
-    types: [] as string[],
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+    if (urlState.tab === 'landscape') {
+      return 'ai-landscape';
+    }
+    return (urlState.tab as TabId) || 'ai-landscape';
   });
 
   // Selection State
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [expandedDataset, setExpandedDataset] = useState<number | null>(null);
-
-  // Favorites (persisted)
-  const [favorites, setFavorites] = useLocalStorage<number[]>('graintech-favorites', []);
-
-  // Compare State
-  const [compareIds, setCompareIds] = useState<number[]>([]);
-  const [showCompare, setShowCompare] = useState(false);
-
-  // Focused company for keyboard navigation
-  const [focusedIndex, setFocusedIndex] = useState(0);
 
   // Update URL when state changes
   useEffect(() => {
+    if (urlState.tab === 'landscape') {
+      setActiveTab('ai-landscape');
+    }
     setUrlState({
       tab: activeTab,
-      search: searchTerm,
-      type: filterType,
-      sort: sortField,
-      company: selectedCompany?.id,
     });
-  }, [activeTab, searchTerm, filterType, sortField, selectedCompany, setUrlState]);
-
-  // Handle sort toggle
-  const handleSortChange = useCallback(
-    (field: SortOption) => {
-      if (sortField === field) {
-        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-      } else {
-        setSortField(field);
-        setSortDirection('asc');
-      }
-    },
-    [sortField]
-  );
-
-  // Filtered and sorted companies
-  const filteredCompanies = useMemo(() => {
-    let result = companiesData.filter((c) => {
-      const matchesSearch =
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.product.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.crops.some((crop) => crop.toLowerCase().includes(searchTerm.toLowerCase()));
-
-      const matchesType =
-        filterType === 'All' ||
-        c.type === filterType ||
-        (filterType === 'In-line' && c.type.includes('In-line')) ||
-        (filterType === 'Mobile' && c.type.includes('Mobile'));
-
-      const matchesFavorites = !showFavoritesOnly || favorites.includes(c.id);
-
-      // Advanced filters
-      const matchesCrops =
-        advancedFilters.crops.length === 0 ||
-        c.crops.some((crop) => advancedFilters.crops.includes(crop));
-      const matchesCountries =
-        advancedFilters.countries.length === 0 ||
-        advancedFilters.countries.some((country) => c.country.includes(country));
-      const matchesTypes =
-        advancedFilters.types.length === 0 || advancedFilters.types.includes(c.type);
-
-      return matchesSearch && matchesType && matchesFavorites && matchesCrops && matchesCountries && matchesTypes;
-    });
-
-    // Sort
-    result.sort((a, b) => {
-      let aVal = a[sortField];
-      let bVal = b[sortField];
-
-      if (typeof aVal === 'string' && typeof bVal === 'string') {
-        const comparison = aVal.localeCompare(bVal);
-        return sortDirection === 'asc' ? comparison : -comparison;
-      }
-
-      return 0;
-    });
-
-    return result;
-  }, [searchTerm, filterType, showFavoritesOnly, favorites, sortField, sortDirection, advancedFilters]);
-
-  // Pagination
-  const pagination = usePagination<Company>({
-    totalItems: filteredCompanies.length,
-    initialItemsPerPage: 9,
-  });
-
-  const paginatedCompanies = useMemo(
-    () => pagination.paginateItems(filteredCompanies),
-    [pagination, filteredCompanies]
-  );
-
-  // Handlers
-  const handleToggleFavorite = useCallback(
-    (companyId: number) => {
-      setFavorites((prev) =>
-        prev.includes(companyId) ? prev.filter((id) => id !== companyId) : [...prev, companyId]
-      );
-    },
-    [setFavorites]
-  );
-
-  const handleToggleCompare = useCallback((companyId: number) => {
-    setCompareIds((prev) =>
-      prev.includes(companyId) ? prev.filter((id) => id !== companyId) : [...prev, companyId]
-    );
-  }, []);
-
-  const handleRemoveFromCompare = useCallback((companyId: number) => {
-    setCompareIds((prev) => prev.filter((id) => id !== companyId));
-  }, []);
-
-  const handleExport = useCallback(
-    (format: ExportFormat) => {
-      if (showFavoritesOnly && favorites.length > 0) {
-        exportFavorites(companiesData, favorites, format);
-      } else {
-        exportCompanies(filteredCompanies, format);
-      }
-    },
-    [showFavoritesOnly, favorites, filteredCompanies]
-  );
+  }, [activeTab, setUrlState, urlState.tab]);
 
   const handleToggleDataset = useCallback((index: number) => {
     setExpandedDataset((prev) => (prev === index ? null : index));
   }, []);
-
-  // Keyboard navigation handlers
-  const handleNavigateNext = useCallback(() => {
-    setFocusedIndex((prev) => Math.min(prev + 1, paginatedCompanies.length - 1));
-  }, [paginatedCompanies.length]);
-
-  const handleNavigatePrev = useCallback(() => {
-    setFocusedIndex((prev) => Math.max(prev - 1, 0));
-  }, []);
-
-  const handleToggleFocusedFavorite = useCallback(() => {
-    if (paginatedCompanies[focusedIndex]) {
-      handleToggleFavorite(paginatedCompanies[focusedIndex].id);
-    }
-  }, [paginatedCompanies, focusedIndex, handleToggleFavorite]);
-
-  const handleToggleFocusedCompare = useCallback(() => {
-    if (paginatedCompanies[focusedIndex]) {
-      handleToggleCompare(paginatedCompanies[focusedIndex].id);
-    }
-  }, [paginatedCompanies, focusedIndex, handleToggleCompare]);
-
-  const handleViewFocusedDetails = useCallback(() => {
-    if (paginatedCompanies[focusedIndex]) {
-      setSelectedCompany(paginatedCompanies[focusedIndex]);
-    }
-  }, [paginatedCompanies, focusedIndex]);
-
-  // Focus search
-  const handleFocusSearch = useCallback(() => {
-    const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-    searchInput?.focus();
-  }, []);
-
-  // Map country click handler
-  const handleCountryClick = useCallback((country: string) => {
-    setAdvancedFilters((prev) => ({
-      ...prev,
-      countries: prev.countries.includes(country)
-        ? prev.countries.filter((c) => c !== country)
-        : [...prev.countries, country],
-    }));
-  }, []);
-
-  // Companies to compare
-  const compareCompanies = useMemo(
-    () => companiesData.filter((c) => compareIds.includes(c.id)),
-    [compareIds]
-  );
 
   // Chart data
   const techStats = useMemo(() => {
@@ -401,148 +224,38 @@ function Dashboard() {
 
   return (
     <>
-      {/* Keyboard Shortcuts */}
-      <KeyboardShortcuts
-        onNavigateNext={handleNavigateNext}
-        onNavigatePrev={handleNavigatePrev}
-        onToggleFavorite={handleToggleFocusedFavorite}
-        onToggleCompare={handleToggleFocusedCompare}
-        onViewDetails={handleViewFocusedDetails}
-        onFocusSearch={handleFocusSearch}
-        onToggleDarkMode={toggleTheme}
-      />
-
-      <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-      <main className="max-w-6xl mx-auto px-6 py-8 pb-24">
-        {/* Companies Tab */}
-        {activeTab === 'landscape' && (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 lg:flex lg:gap-6">
+        <aside className="lg:w-60 shrink-0 mb-6 lg:mb-0">
+          <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+        </aside>
+        <main className="flex-1">
+        {activeTab === 'ai-landscape' && (
           <div className="space-y-6 animate-in fade-in duration-500">
-            <SearchFilter
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              filterType={filterType}
-              onFilterChange={setFilterType}
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSortChange={handleSortChange}
-              showFavoritesOnly={showFavoritesOnly}
-              onToggleFavorites={() => setShowFavoritesOnly((p) => !p)}
-              favoritesCount={favorites.length}
-              onExport={handleExport}
-            />
+            <GrainLandscapeMap grainSolutions={grainSolutions} />
+          </div>
+        )}
 
-            {/* Advanced Filters */}
-            <AdvancedFilters
-              crops={allCrops}
-              countries={allCountries}
-              types={allTypes}
-              selectedCrops={advancedFilters.crops}
-              selectedCountries={advancedFilters.countries}
-              selectedTypes={advancedFilters.types}
-              onCropsChange={(crops) => setAdvancedFilters((p) => ({ ...p, crops }))}
-              onCountriesChange={(countries) => setAdvancedFilters((p) => ({ ...p, countries }))}
-              onTypesChange={(types) => setAdvancedFilters((p) => ({ ...p, types }))}
-              onReset={() => setAdvancedFilters({ crops: [], countries: [], types: [] })}
-            />
+        {activeTab === 'tech-stack' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <TechStackExplorer grainSolutions={grainSolutions} />
+          </div>
+        )}
 
-            {/* Compare Bar */}
-            {compareIds.length > 0 && (
-              <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <GitCompare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-blue-800 dark:text-blue-200 font-medium">
-                    {compareIds.length} companies selected to compare
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowCompare(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                  >
-                    Compare Now
-                  </button>
-                  <button
-                    onClick={() => setCompareIds([])}
-                    className="px-4 py-2 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
-                  >
-                    Clear
-                  </button>
-                </div>
-              </div>
-            )}
+        {activeTab === 'comparison' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <GrainComparisonMatrix grainSolutions={grainSolutions} />
+          </div>
+        )}
 
-            {/* World Map */}
-            <WorldMap
-              companies={companiesData}
-              onCountryClick={handleCountryClick}
-              selectedCountries={advancedFilters.countries}
-            />
+        {activeTab === 'timeline' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <GrainAdoptionTimeline adoptionEvents={adoptionEvents} grainSolutions={grainSolutions} />
+          </div>
+        )}
 
-            {/* Tech Categories */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-              {techCategories.map((cat, i) => (
-                <div
-                  key={i}
-                  className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-amber-200 dark:hover:border-amber-700 transition-colors"
-                >
-                  <div className="flex items-start gap-2 text-amber-700 dark:text-amber-400 mb-2">
-                    <div className="shrink-0 p-1.5 bg-amber-50 dark:bg-amber-900/30 rounded-md">
-                      {cat.icon}
-                    </div>
-                    <span className="font-semibold text-sm leading-tight break-words pt-1">
-                      {cat.name}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{cat.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Company Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {paginatedCompanies.map((company) => (
-                <CompanyCard
-                  key={company.id}
-                  company={company}
-                  isFavorite={favorites.includes(company.id)}
-                  isSelected={compareIds.includes(company.id)}
-                  onSelect={setSelectedCompany}
-                  onToggleFavorite={handleToggleFavorite}
-                  onToggleCompare={handleToggleCompare}
-                  compareCount={compareIds.length}
-                />
-              ))}
-            </div>
-
-            {paginatedCompanies.length === 0 && (
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                No companies match your filters.
-              </div>
-            )}
-
-            <Pagination
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              pageNumbers={pagination.pageNumbers}
-              hasNextPage={pagination.hasNextPage}
-              hasPrevPage={pagination.hasPrevPage}
-              itemsPerPage={pagination.itemsPerPage}
-              totalItems={filteredCompanies.length}
-              startIndex={pagination.startIndex}
-              endIndex={pagination.endIndex}
-              onPageChange={pagination.setCurrentPage}
-              onItemsPerPageChange={pagination.setItemsPerPage}
-              onNextPage={pagination.goToNextPage}
-              onPrevPage={pagination.goToPrevPage}
-              onFirstPage={pagination.goToFirstPage}
-              onLastPage={pagination.goToLastPage}
-            />
-
-            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-              Showing {paginatedCompanies.length} of {filteredCompanies.length} companies
-              {filteredCompanies.length < companiesData.length && ` (filtered from ${companiesData.length})`}
-            </p>
+        {activeTab === 'scenarios' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <ScenarioExplorer />
           </div>
         )}
 
@@ -1057,25 +770,9 @@ function Dashboard() {
             <NewsFeed />
           </div>
         )}
-      </main>
+        </main>
+      </div>
 
-      {/* Modals */}
-      {selectedCompany && (
-        <Modal
-          company={selectedCompany}
-          isFavorite={favorites.includes(selectedCompany.id)}
-          onClose={() => setSelectedCompany(null)}
-          onToggleFavorite={handleToggleFavorite}
-        />
-      )}
-
-      {showCompare && compareCompanies.length > 0 && (
-        <CompareModal
-          companies={compareCompanies}
-          onClose={() => setShowCompare(false)}
-          onRemove={handleRemoveFromCompare}
-        />
-      )}
     </>
   );
 }

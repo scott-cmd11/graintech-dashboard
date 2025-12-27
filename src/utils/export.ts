@@ -1,4 +1,5 @@
 import type { Company, Dataset, ExportFormat } from '../types';
+import type { GrainSolution } from '../data/grainTechEntities';
 
 // Helper to escape CSV values
 function escapeCSVValue(value: unknown): string {
@@ -96,6 +97,54 @@ function datasetsToCSV(datasets: Dataset[]): string {
   return csvContent;
 }
 
+// Convert grain solutions to CSV
+function grainSolutionsToCSV(solutions: GrainSolution[]): string {
+  const headers = [
+    'ID',
+    'Company',
+    'Product',
+    'Regions',
+    'Form Factors',
+    'Sensing Tech',
+    'Use Cases',
+    'User Segments',
+    'Throughput Samples Per Hour',
+    'Avg Test Duration Seconds',
+    'Accuracy Percent',
+    'Sample Size Grams',
+    'Maturity Level',
+    'Notes',
+    'Primary Lat',
+    'Primary Lng',
+  ];
+
+  const rows = solutions.map(solution => [
+    solution.id,
+    solution.company,
+    solution.productName,
+    solution.regions,
+    solution.formFactors,
+    solution.sensingTech,
+    solution.useCases,
+    solution.userSegments,
+    solution.throughputSamplesPerHour ?? '',
+    solution.avgTestDurationSeconds ?? '',
+    solution.accuracyPercent ?? '',
+    solution.sampleSizeGrams ?? '',
+    solution.maturityLevel ?? '',
+    solution.notes ?? '',
+    solution.primaryLat ?? '',
+    solution.primaryLng ?? '',
+  ]);
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(escapeCSVValue).join(',')),
+  ].join('\n');
+
+  return csvContent;
+}
+
 // Download file helper
 function downloadFile(content: string, filename: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType });
@@ -177,4 +226,19 @@ export function exportFavorites(
 ): void {
   const favorites = companies.filter(c => favoriteIds.includes(c.id));
   exportCompanies(favorites, format, filename);
+}
+
+// Export grain solutions
+export function exportGrainSolutions(
+  solutions: GrainSolution[],
+  format: ExportFormat,
+  filename = 'graintech-solutions'
+): void {
+  if (format === 'csv') {
+    const csv = grainSolutionsToCSV(solutions);
+    downloadFile(csv, `${filename}.csv`, 'text/csv;charset=utf-8;');
+  } else {
+    const json = JSON.stringify(solutions, null, 2);
+    downloadFile(json, `${filename}.json`, 'application/json');
+  }
 }

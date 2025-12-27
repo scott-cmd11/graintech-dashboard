@@ -72,14 +72,14 @@ export const CompanyCard = memo(function CompanyCard({
           : 'border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1'
       }`}
     >
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex justify-between items-start mb-3 gap-2">
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-gray-900 dark:text-gray-100 truncate text-lg group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 truncate text-base sm:text-lg group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">
               {company.name}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{company.product}</p>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">{company.product}</p>
           </div>
           <span
             className={`text-[10px] px-2 py-1 rounded-full shrink-0 whitespace-nowrap font-medium uppercase tracking-wide ${colorClass}`}
@@ -118,9 +118,9 @@ export const CompanyCard = memo(function CompanyCard({
 
         {/* Tech & Actions */}
         <div className="pt-3 border-t border-gray-50 dark:border-gray-700 flex justify-between items-center">
-          <p className="text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+          <p className="text-[11px] sm:text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
             <Zap className="w-3 h-3" aria-hidden="true" />
-            <span className="truncate max-w-[150px]">{company.tech}</span>
+            <span className="truncate max-w-[110px] sm:max-w-[150px]">{company.tech}</span>
           </p>
 
           <div className="flex items-center gap-1">

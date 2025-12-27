@@ -78,9 +78,9 @@ export const SearchFilter = memo(function SearchFilter({
   );
 
   return (
-    <div className="flex flex-wrap gap-4 items-center bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+    <div className="flex flex-col lg:flex-row lg:items-center gap-3 sm:gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
       {/* Search Input */}
-      <div className="relative flex-1 min-w-64">
+      <div className="relative w-full lg:flex-1 min-w-0 sm:min-w-64">
         <Search
           className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"
           aria-hidden="true"
@@ -105,13 +105,13 @@ export const SearchFilter = memo(function SearchFilter({
       </div>
 
       {/* Filter Dropdown */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full sm:w-auto">
         <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
         <select
           value={filterType}
           onChange={handleFilterChange}
           aria-label="Filter by type"
-          className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="w-full sm:w-auto px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         >
           {filterOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -122,13 +122,13 @@ export const SearchFilter = memo(function SearchFilter({
       </div>
 
       {/* Sort Dropdown */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full sm:w-auto">
         <ArrowUpDown className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
         <select
           value={sortField}
           onChange={handleSortChange}
           aria-label="Sort by"
-          className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="w-full sm:w-auto px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         >
           {sortOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -143,7 +143,7 @@ export const SearchFilter = memo(function SearchFilter({
         onClick={onToggleFavorites}
         aria-label={showFavoritesOnly ? 'Show all companies' : 'Show favorites only'}
         aria-pressed={showFavoritesOnly}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 w-full sm:w-auto ${
           showFavoritesOnly
             ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400'
             : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -156,16 +156,16 @@ export const SearchFilter = memo(function SearchFilter({
       </button>
 
       {/* Export Dropdown */}
-      <div className="relative group">
+      <div className="relative group w-full sm:w-auto">
         <button
           aria-label="Export data"
           aria-haspopup="true"
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 w-full sm:w-auto"
         >
           <Download className="w-4 h-4" />
           <span className="text-sm font-medium">Export</span>
         </button>
-        <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+        <div className="absolute left-0 sm:left-auto sm:right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10">
           <button
             onClick={() => onExport('csv')}
             className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-t-lg"
