@@ -103,9 +103,9 @@ export const adoptionEvents: AdoptionEvent[] = [
     relatedCompanyIds: ["ZoomAgri"],
   },
   {
-    id: "2023-agsure-mandi",
+    id: "2023-agsure-wholesale",
     year: 2023,
-    title: "Mandi procurement pilots",
+    title: "Wholesale grain trading pilots",
     description: "Mobile + attachment grading is tested in procurement centers.",
     region: "India",
     category: "Pilot",

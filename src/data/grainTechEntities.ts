@@ -30,7 +30,7 @@ export type UseCase =
   | "OnFarmPreGrading"
   | "ElevatorGrading"
   | "RegulatoryExport"
-  | "MandiProcurement"
+  | "WholesaleGrainTrading"
   | "BreedingSeedLab"
   | "FoodSafetyMycotoxins"
   | "Traceability";
@@ -216,7 +216,7 @@ export const grainSolutions: GrainSolution[] = [
     regions: ["India"],
     formFactors: ["Benchtop"],
     sensingTech: ["RGB"],
-    useCases: ["MandiProcurement", "OnFarmPreGrading"],
+    useCases: ["WholesaleGrainTrading", "OnFarmPreGrading"],
     userSegments: ["Farmer", "Trader/Exporter", "Regulator"],
     throughputSamplesPerHour: 60,
     avgTestDurationSeconds: 60,
@@ -306,7 +306,7 @@ export const grainSolutions: GrainSolution[] = [
     regions: ["North America"],
     formFactors: ["Smartphone"],
     sensingTech: ["RGB"],
-    useCases: ["OnFarmPreGrading", "MandiProcurement"],
+    useCases: ["OnFarmPreGrading", "WholesaleGrainTrading"],
     userSegments: ["Farmer", "Trader/Exporter"],
     throughputSamplesPerHour: 120,
     avgTestDurationSeconds: 30,
@@ -342,7 +342,7 @@ export const grainSolutions: GrainSolution[] = [
     regions: ["India"],
     formFactors: ["Smartphone", "Other"],
     sensingTech: ["RGB"],
-    useCases: ["MandiProcurement", "OnFarmPreGrading"],
+    useCases: ["WholesaleGrainTrading", "OnFarmPreGrading"],
     userSegments: ["Farmer", "Trader/Exporter", "Regulator"],
     throughputSamplesPerHour: 120,
     avgTestDurationSeconds: 45,
@@ -414,7 +414,7 @@ export const grainSolutions: GrainSolution[] = [
     regions: ["North America"],
     formFactors: ["Smartphone"],
     sensingTech: ["RGB"],
-    useCases: ["MandiProcurement", "Traceability", "OnFarmPreGrading"],
+    useCases: ["WholesaleGrainTrading", "Traceability", "OnFarmPreGrading"],
     userSegments: ["Trader/Exporter", "Farmer"],
     throughputSamplesPerHour: 120,
     avgTestDurationSeconds: 30,
@@ -432,7 +432,7 @@ export const grainSolutions: GrainSolution[] = [
     regions: ["India"],
     formFactors: ["Smartphone"],
     sensingTech: ["RGB"],
-    useCases: ["OnFarmPreGrading", "MandiProcurement"],
+    useCases: ["OnFarmPreGrading", "WholesaleGrainTrading"],
     userSegments: ["Farmer", "Trader/Exporter"],
     throughputSamplesPerHour: 120,
     avgTestDurationSeconds: 30,
@@ -450,7 +450,7 @@ export const grainSolutions: GrainSolution[] = [
     regions: ["India"],
     formFactors: ["Smartphone", "Other"],
     sensingTech: ["RGB"],
-    useCases: ["MandiProcurement", "OnFarmPreGrading"],
+    useCases: ["WholesaleGrainTrading", "OnFarmPreGrading"],
     userSegments: ["Farmer", "Trader/Exporter"],
     throughputSamplesPerHour: 100,
     avgTestDurationSeconds: 45,

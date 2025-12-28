@@ -542,7 +542,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       regions: activeFilters.regions,
                       sensing: activeFilters.sensing,
                       formFactors: activeFilters.formFactors,
-                      useCases: ["OnFarmPreGrading" as UseCase, "MandiProcurement" as UseCase],
+                      useCases: ["OnFarmPreGrading" as UseCase, "WholesaleGrainTrading" as UseCase],
                     })
                   }
                   className="px-3 py-1.5 text-xs rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-700 font-medium"
