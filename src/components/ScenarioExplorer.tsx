@@ -97,14 +97,14 @@ function getConfidenceLevel(score: number): { level: string; badge: string; icon
 
 export const ScenarioExplorer = function ScenarioExplorer() {
   const [region, setRegion] = useState<Region>("Global");
-  const [onFarmAdoption, setOnFarmAdoption] = useState(25);
-  const [elevatorAdoption, setElevatorAdoption] = useState(25);
-  const [regulatoryAdoption, setRegulatoryAdoption] = useState(10);
+  const [onFarmAdoption, setOnFarmAdoption] = useState(0);
+  const [elevatorAdoption, setElevatorAdoption] = useState(0);
+  const [regulatoryAdoption, setRegulatoryAdoption] = useState(0);
 
-  // Track baseline for comparison
-  const [baselineOnFarm] = useState(25);
-  const [baselineElevator] = useState(25);
-  const [baselineRegulatory] = useState(10);
+  // Track baseline for comparison (starting at 0)
+  const [baselineOnFarm] = useState(0);
+  const [baselineElevator] = useState(0);
+  const [baselineRegulatory] = useState(0);
 
   const outputs = useMemo(
     () =>
@@ -196,10 +196,38 @@ export const ScenarioExplorer = function ScenarioExplorer() {
             Scenario Explorer
           </h3>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-          Explore how adoption levels influence value capture, time saved, and risk reduction. The model
-          is illustrative and based on simplified assumptions.
-        </p>
+
+        {/* Detailed Explanation Section */}
+        <div className="mb-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+          <div className="space-y-3">
+            <div>
+              <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-2">What This Tool Does</h4>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                This scenario explorer models the potential economic and operational impact of adopting AI-powered grain quality inspection technology across different parts of the supply chain. You control adoption rates and see how the market responds in terms of value creation, labor savings, and quality assurance.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-2">The Three Adoption Categories</h4>
+              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 ml-4 list-disc">
+                <li><strong>On-farm adoption:</strong> Farmers using mobile or handheld grain testing at harvest</li>
+                <li><strong>Elevator adoption:</strong> Grain elevators and storage facilities deploying automated grading systems</li>
+                <li><strong>Regulatory adoption:</strong> Government export agencies and food safety regulators using AI inspection for certification</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-2">Key Assumptions</h4>
+              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 ml-4 list-disc">
+                <li>Value is measured as time savings, quality consistency, and reduced grain loss</li>
+                <li>Technology adoption is gradual and depends on regional market maturity</li>
+                <li>Higher adoption in one area (e.g., regulatory) can unlock value in other areas (e.g., elevator)</li>
+                <li>Regional market size, crop types, and regulatory environment significantly affect outcomes</li>
+                <li>This is an illustrative model based on industry trends and pilot data—actual results will vary by implementation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
         {/* QUICK PRESETS */}
         <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
