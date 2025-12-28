@@ -8,8 +8,8 @@ import {
   Newspaper,
   RefreshCw,
   User,
+  AlertCircle,
 } from 'lucide-react';
-import curatedNews from '../data/curatedNews.json';
 
 interface NewsItem {
   id: string;
@@ -20,37 +20,119 @@ interface NewsItem {
   url: string;
   imageUrl?: string;
   category?: string;
-  citations?: string[];
+}
+
+// Google Alerts RSS Feed URLs
+const RSS_FEEDS = [
+  {
+    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/5452083690063778198',
+    name: 'Grain Quality',
+  },
+  {
+    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/6657544371106105633',
+    name: 'Grain Technology',
+  },
+  {
+    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/17711904352499016105',
+    name: 'Agricultural Innovation',
+  },
+  {
+    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/7719612955356284469',
+    name: 'Grain Inspection',
+  },
+];
+
+// Helper function to fetch and parse RSS feed
+async function fetchRSSFeed(feedUrl: string, feedName: string): Promise<NewsItem[]> {
+  try {
+    // Use a CORS proxy to fetch the RSS feed
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}&json`;
+    const response = await fetch(proxyUrl);
+    const data = await response.json();
+
+    if (!data.contents) {
+      return [];
+    }
+
+    // Parse the XML response
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+
+    if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+      console.error(`Failed to parse RSS feed: ${feedName}`);
+      return [];
+    }
+
+    const items = xmlDoc.getElementsByTagName('item');
+    const newsItems: NewsItem[] = [];
+
+    Array.from(items).forEach((item, index) => {
+      const title = item.getElementsByTagName('title')[0]?.textContent || 'No title';
+      const link = item.getElementsByTagName('link')[0]?.textContent || '';
+      const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || new Date().toISOString();
+      const description = item.getElementsByTagName('description')[0]?.textContent || '';
+
+      // Clean up HTML from description
+      const cleanDescription = description
+        .replace(/<[^>]*>/g, '')
+        .substring(0, 150)
+        .trim();
+
+      newsItems.push({
+        id: `${feedName}-${index}`,
+        title,
+        source: feedName,
+        date: pubDate,
+        summary: cleanDescription || 'No summary available',
+        url: link,
+      });
+    });
+
+    return newsItems;
+  } catch (error) {
+    console.error(`Error fetching RSS feed ${feedName}:`, error);
+    return [];
+  }
 }
 
 export const NewsFeed = memo(function NewsFeed() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
-  const [showCurated, setShowCurated] = useState(false);
 
   useEffect(() => {
-    async function fetchNews() {
+    async function fetchAllFeeds() {
       try {
-        const response = await fetch('/api/news');
-        const data = await response.json();
+        setLoading(true);
+        setError(null);
 
-        if (data.articles && data.articles.length > 0) {
-          setNews(data.articles);
+        // Fetch all RSS feeds in parallel
+        const feedPromises = RSS_FEEDS.map((feed) =>
+          fetchRSSFeed(feed.url, feed.name)
+        );
+
+        const allFeeds = await Promise.all(feedPromises);
+
+        // Combine all feeds and sort by date (newest first)
+        const combinedNews = allFeeds
+          .flat()
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        if (combinedNews.length > 0) {
+          setNews(combinedNews);
         } else {
-          setNews(curatedNews);
-          setShowCurated(true);
+          setError('No news articles found. Please check back later.');
         }
       } catch (error) {
-        console.error('Error fetching news:', error);
-        setNews(curatedNews);
-        setShowCurated(true);
+        console.error('Error fetching news feeds:', error);
+        setError('Failed to load news feeds. Please try again later.');
       } finally {
         setLoading(false);
       }
     }
 
-    fetchNews();
+    fetchAllFeeds();
   }, []);
 
   const displayedNews = showAll ? news : news.slice(0, 5);
@@ -106,10 +188,10 @@ export const NewsFeed = memo(function NewsFeed() {
           <Newspaper className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 display-font">Industry news</h3>
         </div>
-        {!loading && !showCurated && (
+        {!loading && news.length > 0 && (
           <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
             <RefreshCw className="w-3 h-3" />
-            Live (whitelisted sources)
+            From Google Alerts
           </span>
         )}
       </div>
@@ -127,6 +209,18 @@ export const NewsFeed = memo(function NewsFeed() {
               </div>
             </div>
           ))}
+        </div>
+      ) : error ? (
+        <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-semibold text-amber-900 dark:text-amber-300">Unable to load news</h4>
+            <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">{error}</p>
+          </div>
+        </div>
+      ) : news.length === 0 ? (
+        <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 p-4 text-center">
+          <p className="text-gray-600 dark:text-gray-400">No news articles available at the moment.</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -227,7 +321,7 @@ export const NewsFeed = memo(function NewsFeed() {
       )}
 
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 text-center">
-        {showCurated ? 'Curated industry resources from verified sources.' : 'Live feed from whitelisted sources.'}
+        News curated from Google Alerts feeds. Updated daily.
       </p>
     </div>
   );
