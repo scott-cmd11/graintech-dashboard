@@ -1,9 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
 import { glossaryTerms } from '../data/glossary';
 
 export function GlossaryTab() {
   const [searchQuery, setSearchQuery] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleTermClick = (term: string) => {
+    setSearchQuery(term);
+    // Scroll to top
+    containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   // Filter terms by search query
   const filteredTerms = useMemo(() => {
@@ -28,7 +35,7 @@ export function GlossaryTab() {
   }, [filteredTerms]);
 
   return (
-    <div className="space-y-24 animate-in fade-in duration-500">
+    <div ref={containerRef} className="space-y-24 animate-in fade-in duration-500">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-24">
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-16 mb-24">
@@ -76,17 +83,17 @@ export function GlossaryTab() {
 
       {/* Quick Index of All Terms */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-24">
-        <h3 className="text-heading-2 font-bold text-gray-900 dark:text-gray-100 mb-20">
+        <h3 className="text-heading-2 font-bold text-gray-900 dark:text-gray-100 mb-16">
           All Terms
         </h3>
-        <div className="flex flex-wrap gap-8">
+        <div className="flex flex-wrap gap-4">
           {glossaryTerms.map((term) => (
             <button
               key={term.term}
-              onClick={() => setSearchQuery(term.term)}
-              className="text-body-sm bg-growth-green/10 text-growth-green hover:bg-growth-green/20
+              onClick={() => handleTermClick(term.term)}
+              className="text-sm bg-growth-green/10 text-growth-green hover:bg-growth-green/20
                          dark:bg-growth-green/20 dark:text-growth-green-light dark:hover:bg-growth-green/30
-                         px-16 py-8 rounded-lg transition-colors font-medium"
+                         px-10 py-4 rounded transition-colors font-medium"
               title={`Search for "${term.term}"`}
             >
               {term.term}
