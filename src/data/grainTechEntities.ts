@@ -60,6 +60,7 @@ export interface GrainSolution {
   sampleSizeGrams?: number;
   maturityLevel?: MaturityLevel;
   notes?: string;
+  url?: string;
   primaryLat?: number;
   primaryLng?: number;
 }
@@ -206,6 +207,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 500,
     maturityLevel: "Commercial",
     notes: "Sample size and timing inferred from field reports.",
+    url: "https://deimos.com.au/projects/visual-analysis-device/",
     primaryLat: -31.9523,
     primaryLng: 115.8613,
   },
