@@ -161,7 +161,6 @@ export interface GitHubRepo {
 // Tab Types
 export type TabId =
   | 'ai-landscape'
-  | 'comparison'
   | 'timeline'
   | 'scenarios'
   | 'insights'

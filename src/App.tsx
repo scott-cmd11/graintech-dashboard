@@ -322,13 +322,6 @@ function Dashboard() {
             </div>
           )}
 
-          {activeTab === 'comparison' && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Comparison Matrix</h2>
-              <GrainComparisonMatrix grainSolutions={grainSolutions} />
-            </div>
-          )}
-
           {activeTab === 'timeline' && (
             <div className="space-y-6 animate-in fade-in duration-500">
               <GrainAdoptionTimeline adoptionEvents={adoptionEvents} grainSolutions={grainSolutions} />
