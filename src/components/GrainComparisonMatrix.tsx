@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import {
   Download,
   ExternalLink,
@@ -164,6 +164,21 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
   const [pinnedColumn, setPinnedColumn] = useState<ColumnKey | "none">("company");
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [filterSummaryOpen, setFilterSummaryOpen] = useState(true);
+
+  const topScrollRef = useRef<HTMLDivElement>(null);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleTableScroll = () => {
+    if (tableContainerRef.current && topScrollRef.current) {
+      topScrollRef.current.scrollLeft = tableContainerRef.current.scrollLeft;
+    }
+  };
+
+  const handleTopScroll = () => {
+    if (topScrollRef.current && tableContainerRef.current) {
+      tableContainerRef.current.scrollLeft = topScrollRef.current.scrollLeft;
+    }
+  };
 
   const options = useMemo(() => {
     return getGrainFilterOptions(grainSolutions);
@@ -716,7 +731,17 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto">
+      {/* Top scroll bar container */}
+      <div
+        ref={topScrollRef}
+        onScroll={handleTopScroll}
+        className="mt-6 overflow-x-auto border-b border-gray-200 dark:border-gray-700"
+      >
+        <div className="min-w-[900px]" style={{ height: "8px" }} />
+      </div>
+
+      {/* Table container with synchronized scrolling */}
+      <div ref={tableContainerRef} onScroll={handleTableScroll} className="overflow-x-auto">
         <table className="min-w-[900px] w-full border-collapse">
           <thead className="sticky top-0 z-10 bg-white dark:bg-gray-800">
             <tr className="border-b border-gray-200 dark:border-gray-700">
