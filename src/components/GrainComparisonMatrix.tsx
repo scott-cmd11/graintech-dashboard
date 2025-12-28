@@ -71,6 +71,7 @@ const defaultColumns: ColumnKey[] = [
   "throughput",
   "duration",
   "maturity",
+  "video",
 ];
 const compactColumns: ColumnKey[] = ["company", "product", "sensingTech", "maturity"];
 const presetColumns: Record<"performance" | "stack" | "business", ColumnKey[]> = {
