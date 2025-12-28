@@ -171,6 +171,56 @@ html {
   color: #FFFFFF;
 }
 
+/* Table top scrollbar styling */
+.table-top-scrollbar {
+  height: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background-color: var(--card);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.dark .table-top-scrollbar {
+  background-color: var(--card);
+  border-bottom-color: var(--card-border);
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.table-top-scrollbar::-webkit-scrollbar {
+  height: 10px;
+}
+
+.table-top-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-top-scrollbar::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 5px;
+}
+
+.table-top-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+.dark .table-top-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark .table-top-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748B;
+}
+
+/* Firefox */
+.table-top-scrollbar {
+  scrollbar-color: #CBD5E1 transparent;
+  scrollbar-width: thin;
+}
+
+.dark .table-top-scrollbar {
+  scrollbar-color: #475569 transparent;
+}
+
 /* Print-friendly styles */
 @media print {
   /* Hide non-essential elements */
