@@ -10,6 +10,7 @@ import {
   Square,
   ChevronUp,
   ChevronDown,
+  Play,
 } from "lucide-react";
 import type {
   GrainSolution,
@@ -39,7 +40,8 @@ type ColumnKey =
   | "accuracy"
   | "throughput"
   | "duration"
-  | "maturity";
+  | "maturity"
+  | "video";
 
 type SortDirection = "asc" | "desc";
 
@@ -54,6 +56,7 @@ const columnLabels: Record<ColumnKey, string> = {
   throughput: "Throughput (samples/hr)",
   duration: "Test Duration (sec)",
   maturity: "Maturity",
+  video: "Demo Video",
 };
 
 const numericColumns: ColumnKey[] = ["accuracy", "throughput", "duration"];
@@ -838,6 +841,21 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                       >
                         {getCellValue(solution, column) || "—"}
                       </span>
+                    ) : column === "video" ? (
+                      solution.videoUrl ? (
+                        <a
+                          href={solution.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                          title="Watch demo video"
+                        >
+                          <Play className="w-4 h-4" />
+                          <span className="text-sm">Watch</span>
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 dark:text-gray-500">—</span>
+                      )
                     ) : (
                       <span className="text-sm text-gray-700 dark:text-gray-200">
                         {getCellValue(solution, column) || "—"}

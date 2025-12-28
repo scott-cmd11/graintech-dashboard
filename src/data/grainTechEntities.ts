@@ -61,6 +61,7 @@ export interface GrainSolution {
   maturityLevel?: MaturityLevel;
   notes?: string;
   url?: string;
+  videoUrl?: string;
   primaryLat?: number;
   primaryLng?: number;
 }
@@ -81,6 +82,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 250,
     maturityLevel: "Commercial",
     notes: "Approximate throughput and accuracy based on typical benchtop workflows.",
+    videoUrl: "https://www.youtube.com/watch?v=RecXYeI7T9k",
     primaryLat: 59.3293,
     primaryLng: 18.0686,
   },
@@ -117,6 +119,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 200,
     maturityLevel: "Commercial",
     notes: "Seed lab throughput is approximate and depends on sorting configuration.",
+    videoUrl: "https://www.youtube.com/@Videometer/videos",
     primaryLat: 55.6761,
     primaryLng: 12.5683,
   },
@@ -171,6 +174,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 300,
     maturityLevel: "Pilot",
     notes: "Metrics estimated from similar benchtop analyzers.",
+    videoUrl: "https://www.realagriculture.com/2025/08/machine-vision-and-ai-take-the-guess-work-out-of-grain-grading/",
     primaryLat: 50.4452,
     primaryLng: -104.6189,
   },
@@ -226,6 +230,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 150,
     maturityLevel: "Commercial",
     notes: "Assumes ~1 minute runs per public demos.",
+    videoUrl: "https://www.youtube.com/watch?v=UU4PXeahFhc",
     primaryLat: 28.6139,
     primaryLng: 77.209,
   },
@@ -316,6 +321,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 20,
     maturityLevel: "Commercial",
     notes: "Smartphone app estimates; accuracy varies by crop.",
+    videoUrl: "https://sga.ai/products/videos/",
     primaryLat: 52.1332,
     primaryLng: -106.6700,
   },
@@ -334,6 +340,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 200,
     maturityLevel: "Commercial",
     notes: "Performance is assumed from public claims; verify for each crop.",
+    videoUrl: "https://www.youtube.com/watch?v=WkYYcfMUVyU",
     primaryLat: 32.0853,
     primaryLng: 34.7818,
   },
@@ -352,6 +359,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 30,
     maturityLevel: "Commercial",
     notes: "Assumes smartphone + scanner accessory workflow.",
+    videoUrl: "https://www.youtube.com/watch?v=8u44mBWCbz0",
     primaryLat: 12.9716,
     primaryLng: 77.5946,
   },
@@ -460,6 +468,7 @@ export const grainSolutions: GrainSolution[] = [
     sampleSizeGrams: 30,
     maturityLevel: "Pilot",
     notes: "Assumed metrics for mobile + accessory workflow; verify against product specs.",
+    videoUrl: "https://www.youtube.com/watch?v=TRkYnCmfCMw",
     primaryLat: 12.9716,
     primaryLng: 77.5946,
   },
