@@ -735,9 +735,9 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
       <div
         ref={topScrollRef}
         onScroll={handleTopScroll}
-        className="mt-6 overflow-x-auto border-b border-gray-200 dark:border-gray-700"
+        className="mt-6 overflow-x-auto border-b border-gray-200 dark:border-gray-700 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-700"
       >
-        <div className="min-w-[900px]" style={{ height: "8px" }} />
+        <div style={{ width: "3000px", height: "8px" }} />
       </div>
 
       {/* Table container with synchronized scrolling */}
