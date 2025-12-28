@@ -7,15 +7,42 @@ interface CategorizedRepos {
 }
 
 const SEARCH_QUERIES = [
-  { query: 'grain quality AI', category: 'AI/ML' },
-  { query: 'grain detection computer vision', category: 'Computer Vision' },
-  { query: 'crop quality assessment', category: 'Agriculture' },
-  { query: 'agriculture machine learning', category: 'AI/ML' },
-  { query: 'grain classification', category: 'Computer Vision' },
-  { query: 'agricultural automation', category: 'Agriculture' },
-  { query: 'computer vision crops', category: 'Computer Vision' },
-  { query: 'spectroscopy grain', category: 'AI/ML' },
+  { query: 'agricultural grain quality inspection', category: 'Agriculture' },
+  { query: 'grain quality assessment machine learning', category: 'AI/ML' },
+  { query: 'crop inspection computer vision', category: 'Computer Vision' },
+  { query: 'agricultural quality control AI', category: 'AI/ML' },
+  { query: 'grain classification agriculture', category: 'Computer Vision' },
+  { query: 'agricultural imaging detection', category: 'Computer Vision' },
+  { query: 'crop quality evaluation AI', category: 'AI/ML' },
+  { query: 'agricultural automation vision', category: 'Agriculture' },
 ];
+
+// Keywords to filter out non-agricultural results
+const EXCLUDE_KEYWORDS = [
+  'audio',
+  'sound',
+  'music',
+  'texture filter',
+  'image enhancement',
+  'noise reduction',
+  'webpack',
+  'graphql',
+  'database',
+  'css',
+  'web framework',
+];
+
+// Helper function to check if a repo should be excluded
+function shouldExcludeRepo(item: any): boolean {
+  const name = (item.name || '').toLowerCase();
+  const description = (item.description || '').toLowerCase();
+  const topics = (item.topics || []).map((t: string) => t.toLowerCase()).join(' ');
+  const language = (item.language || '').toLowerCase();
+
+  const fullContent = `${name} ${description} ${topics} ${language}`;
+
+  return EXCLUDE_KEYWORDS.some(keyword => fullContent.includes(keyword));
+}
 
 export const GitHubReposExplorer = function GitHubReposExplorer() {
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
@@ -49,7 +76,7 @@ export const GitHubReposExplorer = function GitHubReposExplorer() {
 
           if (data.items) {
             data.items.forEach((item: any) => {
-              if (!allRepos.has(item.id)) {
+              if (!allRepos.has(item.id) && !shouldExcludeRepo(item)) {
                 allRepos.set(item.id, {
                   id: item.id,
                   name: item.name,
