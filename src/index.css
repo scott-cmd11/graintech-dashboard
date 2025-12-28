@@ -173,11 +173,12 @@ html {
 
 /* Table top scrollbar styling */
 .table-top-scrollbar {
-  height: 12px;
+  height: 14px;
   overflow-x: auto;
   overflow-y: hidden;
   background-color: var(--card);
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 2px solid var(--card-border);
+  margin-bottom: 4px;
 }
 
 .dark .table-top-scrollbar {
