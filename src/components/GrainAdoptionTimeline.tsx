@@ -270,7 +270,7 @@ export const GrainAdoptionTimeline = function GrainAdoptionTimeline({
                   </span>
                   <div className="mt-2 space-y-2">
                     {relatedSolutions.map((solution) => {
-                      const companyUrl = getCompanyUrl(solution.company);
+                      const companyUrl = solution.url || getCompanyUrl(solution.company);
                       return (
                         <div key={solution.id} className="rounded-lg bg-white dark:bg-gray-800 p-2 border border-gray-200 dark:border-gray-700">
                           <div className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">

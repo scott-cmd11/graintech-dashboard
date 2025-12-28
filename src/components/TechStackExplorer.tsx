@@ -361,7 +361,7 @@ export const TechStackExplorer = function TechStackExplorer({
 
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {filteredSolutions.map(({ solution }) => {
-          const companyUrl = getCompanyUrl(solution.company);
+          const companyUrl = solution.url || getCompanyUrl(solution.company);
           return (
             <div
               key={solution.id}
