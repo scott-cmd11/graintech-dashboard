@@ -4,33 +4,37 @@
 
 @layer base {
   :root {
-    --font-body: "Aptos", "Segoe UI", "Arial", sans-serif;
-    --font-display: "Aptos", "Segoe UI", "Arial", sans-serif;
-    --ink-900: #0f172a;
-    --ink-700: #334155;
-    --ink-500: #64748b;
-    --brand-navy: #1e3a8a;
-    --brand-emerald: #065f46;
-    --brand-teal: #0d9488;
-    --paper: #f8fafc;
-    --card: #ffffff;
-    --card-border: #e2e8f0;
+    --font-body: "Segoe UI", system-ui, "Arial", sans-serif;
+    --font-display: "Segoe UI", system-ui, "Arial", sans-serif;
+    --grain-gold: #D4A440;
+    --growth-green: #4A7C35;
+    --soil-brown: #6B4423;
+    --sky-blue: #5B8AA6;
+    --ink-900: #2C2415;
+    --ink-700: #5A4A3A;
+    --ink-500: #8C7B6B;
+    --paper: #FDFBF7;
+    --card: #FFFFFF;
+    --card-border: #E8E3DC;
   }
 
   .dark {
-    --ink-900: #e2e8f0;
-    --ink-700: #cbd5e1;
-    --ink-500: #94a3b8;
-    --brand-navy: #3b82f6;
-    --brand-emerald: #10b981;
-    --brand-teal: #14b8a6;
-    --paper: #0f172a;
-    --card: #1f2937;
-    --card-border: #374151;
+    --grain-gold: #E8C870;
+    --growth-green: #6B9B52;
+    --soil-brown: #8D6344;
+    --sky-blue: #7FA7BE;
+    --ink-900: #F4F0EA;
+    --ink-700: #C8BDB0;
+    --ink-500: #A8998C;
+    --paper: #1A1410;
+    --card: #2A2318;
+    --card-border: #3A3228;
   }
 
   body {
     font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
     color: var(--ink-900);
     background: var(--paper);
   }
@@ -39,20 +43,20 @@
 /* App shell and headings */
 .app-shell {
   background:
-    radial-gradient(1200px circle at 10% -10%, rgba(30, 58, 138, 0.08), transparent 45%),
-    radial-gradient(900px circle at 90% 0%, rgba(13, 148, 136, 0.08), transparent 45%),
-    linear-gradient(180deg, #f8fafc 0%, #f0f4f8 100%);
+    radial-gradient(1200px circle at 10% -10%, rgba(74, 124, 53, 0.06), transparent 45%),
+    radial-gradient(900px circle at 90% 0%, rgba(212, 164, 64, 0.06), transparent 45%),
+    linear-gradient(180deg, #FDFBF7 0%, #F8F5F0 100%);
 }
 
 .dark .app-shell {
   background:
-    radial-gradient(1000px circle at 10% -10%, rgba(59, 130, 246, 0.1), transparent 45%),
-    radial-gradient(900px circle at 90% 0%, rgba(16, 185, 129, 0.1), transparent 45%),
-    linear-gradient(180deg, #0f172a 0%, #111827 100%);
+    radial-gradient(1000px circle at 10% -10%, rgba(107, 155, 82, 0.08), transparent 45%),
+    radial-gradient(900px circle at 90% 0%, rgba(232, 200, 112, 0.08), transparent 45%),
+    linear-gradient(180deg, #1A1410 0%, #22201B 100%);
 }
 
 .brand-hero {
-  background: linear-gradient(120deg, var(--brand-navy), var(--brand-teal));
+  background: linear-gradient(120deg, var(--growth-green), var(--grain-gold));
 }
 
 .display-font {
@@ -145,7 +149,7 @@
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid var(--brand-teal);
+  outline: 2px solid var(--growth-green);
   outline-offset: 2px;
 }
 
@@ -156,13 +160,13 @@ html {
 
 /* Custom selection colors */
 ::selection {
-  background-color: #a7f3d0;
-  color: #065f46;
+  background-color: #E8C870;
+  color: #355A26;
 }
 
 .dark ::selection {
-  background-color: #10b981;
-  color: #ffffff;
+  background-color: #6B9B52;
+  color: #FFFFFF;
 }
 
 /* Print-friendly styles */
