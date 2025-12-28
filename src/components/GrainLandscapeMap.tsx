@@ -337,7 +337,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
             const mainTech = solution.sensingTech[0] ?? "RGB";
             const color = sensingColors[mainTech] ?? "#22c55e";
             const radius = 4 + getDeploymentScore(solution) * 2;
-            const companyUrl = getCompanyUrl(solution.company);
+            const companyUrl = solution.url || getCompanyUrl(solution.company);
             return (
               <CircleMarker
                 key={solution.id}
@@ -981,7 +981,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {paginatedVisibleWithLocations.map((solution) => {
-                const companyUrl = getCompanyUrl(solution.company);
+                const companyUrl = solution.url || getCompanyUrl(solution.company);
                 return (
                   <div
                     key={solution.id}
@@ -1087,7 +1087,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                           typeof s.primaryLat !== "number" || typeof s.primaryLng !== "number"
                       )
                       .map((solution) => {
-                        const companyUrl = getCompanyUrl(solution.company);
+                        const companyUrl = solution.url || getCompanyUrl(solution.company);
                         return (
                           <div
                             key={solution.id}

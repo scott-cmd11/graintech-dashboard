@@ -761,7 +761,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
           </thead>
           <tbody>
             {sortedSolutions.map((solution) => {
-              const companyUrl = getCompanyUrl(solution.company);
+              const companyUrl = solution.url || getCompanyUrl(solution.company);
               const isSelected = selectedRows.has(solution.id);
               return (
               <tr
