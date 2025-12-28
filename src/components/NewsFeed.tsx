@@ -42,56 +42,116 @@ const RSS_FEEDS = [
   },
 ];
 
-// Helper function to fetch and parse RSS feed
+// CORS proxies in order of preference
+const CORS_PROXIES = [
+  (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  (url: string) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`,
+  (url: string) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&json`,
+];
+
+// Helper function to fetch RSS feed with multiple proxy fallbacks
 async function fetchRSSFeed(feedUrl: string, feedName: string): Promise<NewsItem[]> {
-  try {
-    // Use a CORS proxy to fetch the RSS feed
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}&json`;
-    const response = await fetch(proxyUrl);
-    const data = await response.json();
-
-    if (!data.contents) {
-      return [];
-    }
-
-    // Parse the XML response
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
-
-    if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
-      console.error(`Failed to parse RSS feed: ${feedName}`);
-      return [];
-    }
-
-    const items = xmlDoc.getElementsByTagName('item');
-    const newsItems: NewsItem[] = [];
-
-    Array.from(items).forEach((item, index) => {
-      const title = item.getElementsByTagName('title')[0]?.textContent || 'No title';
-      const link = item.getElementsByTagName('link')[0]?.textContent || '';
-      const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || new Date().toISOString();
-      const description = item.getElementsByTagName('description')[0]?.textContent || '';
-
-      // Clean up HTML from description
-      const cleanDescription = description
-        .replace(/<[^>]*>/g, '')
-        .substring(0, 150)
-        .trim();
-
-      newsItems.push({
-        id: `${feedName}-${index}`,
-        title,
-        source: feedName,
-        date: pubDate,
-        summary: cleanDescription || 'No summary available',
-        url: link,
+  for (let proxyIndex = 0; proxyIndex < CORS_PROXIES.length; proxyIndex++) {
+    try {
+      const proxyUrl = CORS_PROXIES[proxyIndex](feedUrl);
+      const response = await fetch(proxyUrl, {
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       });
-    });
 
-    return newsItems;
+      if (!response.ok) {
+        continue; // Try next proxy
+      }
+
+      let feedContent = '';
+
+      // Handle different proxy response formats
+      if (proxyIndex === 0 || proxyIndex === 1) {
+        feedContent = await response.text();
+      } else {
+        const data = await response.json();
+        feedContent = data.contents || '';
+      }
+
+      if (!feedContent) {
+        continue;
+      }
+
+      // Parse the XML response
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(feedContent, 'text/xml');
+
+      if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+        console.error(`Failed to parse RSS feed: ${feedName}`);
+        continue;
+      }
+
+      const items = xmlDoc.getElementsByTagName('item');
+      const newsItems: NewsItem[] = [];
+
+      Array.from(items).slice(0, 20).forEach((item, index) => {
+        const title = item.getElementsByTagName('title')[0]?.textContent || 'No title';
+        const link = item.getElementsByTagName('link')[0]?.textContent || '';
+        const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || new Date().toISOString();
+        const description = item.getElementsByTagName('description')[0]?.textContent || '';
+
+        // Clean up HTML from description
+        const cleanDescription = description
+          .replace(/<[^>]*>/g, '')
+          .substring(0, 150)
+          .trim();
+
+        if (title && link) {
+          newsItems.push({
+            id: `${feedName}-${index}-${Date.now()}`,
+            title,
+            source: feedName,
+            date: pubDate,
+            summary: cleanDescription || 'No summary available',
+            url: link,
+          });
+        }
+      });
+
+      if (newsItems.length > 0) {
+        return newsItems;
+      }
+    } catch (error) {
+      console.warn(`Proxy ${proxyIndex} failed for ${feedName}:`, error);
+      continue; // Try next proxy
+    }
+  }
+
+  console.error(`All proxies failed for RSS feed: ${feedName}`);
+  return [];
+}
+
+// Cache management functions
+function getCachedNews(): NewsItem[] {
+  try {
+    const cached = localStorage.getItem('graintech_news_cache');
+    if (!cached) return [];
+
+    const { articles, timestamp } = JSON.parse(cached);
+    const oneDayMs = 24 * 60 * 60 * 1000;
+
+    // Return cached articles if less than 24 hours old
+    if (Date.now() - timestamp < oneDayMs) {
+      return articles;
+    }
   } catch (error) {
-    console.error(`Error fetching RSS feed ${feedName}:`, error);
-    return [];
+    console.error('Error reading news cache:', error);
+  }
+  return [];
+}
+
+function setCachedNews(articles: NewsItem[]): void {
+  try {
+    localStorage.setItem('graintech_news_cache', JSON.stringify({
+      articles,
+      timestamp: Date.now(),
+    }));
+  } catch (error) {
+    console.error('Error saving news cache:', error);
   }
 }
 
@@ -100,12 +160,23 @@ export const NewsFeed = memo(function NewsFeed() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [isCached, setIsCached] = useState(false);
 
   useEffect(() => {
     async function fetchAllFeeds() {
       try {
-        setLoading(true);
-        setError(null);
+        // Load cached articles immediately
+        const cachedNews = getCachedNews();
+        if (cachedNews.length > 0) {
+          setNews(cachedNews);
+          setIsCached(true);
+          setError(null);
+        }
+
+        // Still load, but only show loading if no cache
+        if (cachedNews.length === 0) {
+          setLoading(true);
+        }
 
         // Fetch all RSS feeds in parallel
         const feedPromises = RSS_FEEDS.map((feed) =>
@@ -121,12 +192,19 @@ export const NewsFeed = memo(function NewsFeed() {
 
         if (combinedNews.length > 0) {
           setNews(combinedNews);
-        } else {
-          setError('No news articles found. Please check back later.');
+          setCachedNews(combinedNews);
+          setError(null);
+          setIsCached(false);
+        } else if (cachedNews.length === 0) {
+          // Only show error if we have no cached articles and fetch failed
+          setError('Unable to load news at the moment. Please try again later.');
         }
       } catch (error) {
         console.error('Error fetching news feeds:', error);
-        setError('Failed to load news feeds. Please try again later.');
+        // Only show error if no cached articles
+        if (news.length === 0) {
+          setError('Failed to load news feeds. Using offline cache if available.');
+        }
       } finally {
         setLoading(false);
       }
@@ -321,7 +399,7 @@ export const NewsFeed = memo(function NewsFeed() {
       )}
 
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 text-center">
-        News curated from Google Alerts feeds. Updated daily.
+        {isCached ? '📦 Cached articles (will refresh tomorrow)' : 'News curated from Google Alerts feeds. Refreshes daily.'}
       </p>
     </div>
   );
