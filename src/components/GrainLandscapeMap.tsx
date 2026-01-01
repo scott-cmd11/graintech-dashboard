@@ -44,12 +44,7 @@ const maturityScores: Record<MaturityLevel, number> = {
   NationalProgram: 4,
 };
 
-const maturityOrder: MaturityLevel[] = [
-  "Experimental",
-  "Pilot",
-  "Commercial",
-  "NationalProgram",
-];
+
 
 const chipBase =
   "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500";

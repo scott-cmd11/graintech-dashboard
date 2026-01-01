@@ -5,7 +5,6 @@ import type {
   GrainSolution,
   Region,
 } from "../data/grainTechEntities";
-import { formatCompanyUrl, getCompanyUrl } from "../utils/companyLookup";
 import { formatEnumLabel } from "../utils/formatLabels";
 
 interface GrainAdoptionTimelineProps {
