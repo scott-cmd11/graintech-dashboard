@@ -160,6 +160,8 @@ export interface GitHubRepo {
 
 // Tab Types
 export type TabId =
+  | 'about'
+  | 'glossary'
   | 'ai-landscape'
   | 'timeline'
   | 'scenarios'

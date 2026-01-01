@@ -11,10 +11,14 @@ import {
   Calendar,
   Wand2,
   Github,
+  BookOpen,
+  HelpCircle,
 } from 'lucide-react';
 import type { TabId, TabConfig } from '../types';
 
 const tabs: TabConfig[] = [
+  { id: 'about', label: 'About', icon: <BookOpen className="w-4 h-4" /> },
+  { id: 'glossary', label: 'Glossary', icon: <HelpCircle className="w-4 h-4" /> },
   { id: 'ai-landscape', label: 'Landscape', icon: <Globe className="w-4 h-4" /> },
   { id: 'timeline', label: 'Timeline', icon: <Calendar className="w-4 h-4" /> },
   { id: 'scenarios', label: 'Scenarios', icon: <Wand2 className="w-4 h-4" /> },
@@ -25,7 +29,7 @@ const tabs: TabConfig[] = [
   { id: 'history', label: 'History', icon: <History className="w-4 h-4" /> },
   { id: 'trends', label: 'Trends', icon: <TrendingUp className="w-4 h-4" /> },
   { id: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" /> },
-  { id: 'github-repos', label: 'Resources', icon: <Github className="w-4 h-4" /> },
+  { id: 'github-repos', label: 'Github Repositories', icon: <Github className="w-4 h-4" /> },
 ];
 
 interface TabNavProps {

@@ -28,6 +28,7 @@ import { sensingColors } from "../constants/grainTechColors";
 
 interface GrainComparisonMatrixProps {
   grainSolutions: GrainSolution[];
+  externalSearchTerm?: string;
 }
 
 type ColumnKey =
@@ -151,12 +152,20 @@ function getCellValue(solution: GrainSolution, column: ColumnKey): string | numb
 
 export const GrainComparisonMatrix = function GrainComparisonMatrix({
   grainSolutions,
+  externalSearchTerm = "",
 }: GrainComparisonMatrixProps) {
   const [regions, setRegions] = useState<Region[]>([]);
   const [sensing, setSensing] = useState<SensingTech[]>([]);
   const [formFactors, setFormFactors] = useState<FormFactor[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(externalSearchTerm);
+
+  // Sync external search term
+  useEffect(() => {
+    if (externalSearchTerm !== undefined) {
+      setSearchTerm(externalSearchTerm);
+    }
+  }, [externalSearchTerm]);
   const [visibleColumns, setVisibleColumns] = useState<ColumnKey[]>(defaultColumns);
   const [compactView, setCompactView] = useState(false);
   const [sortKey, setSortKey] = useState<ColumnKey>("company");
@@ -387,24 +396,28 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
           >
             {compactView ? "Expanded view" : "Compact view"}
           </button>
-          <div className="relative group">
-            <button className="px-3 py-2 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-2">
+          <div className="flex items-center border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+            <button
+              onClick={() => handleExport("csv")}
+              className="px-3 py-2 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors inline-flex items-center gap-2 border-r border-gray-200 dark:border-gray-600"
+              title="Download as CSV"
+            >
               <Download className="w-4 h-4" />
-              Export
+              Export CSV
             </button>
-            <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10">
-              <button
-                onClick={() => handleExport("csv")}
-                className="w-full px-3 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-t-lg"
-              >
-                Export CSV
+            <div className="relative group">
+              <button className="px-2 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <ChevronDown className="w-4 h-4" />
               </button>
-              <button
-                onClick={() => handleExport("json")}
-                className="w-full px-3 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-b-lg"
-              >
-                Export JSON
-              </button>
+              <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20">
+                <button
+                  onClick={() => handleExport("json")}
+                  className="w-full px-4 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg flex items-center gap-2"
+                >
+                  <Share2 className="w-3 h-3 text-gray-400" />
+                  JSON Format
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -532,11 +545,10 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                 <button
                   key={region}
                   onClick={() => setRegions((prev) => toggleFilter(prev, region))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-emerald-500 border-emerald-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                  className={`${chipBase} ${selected
+                    ? "bg-emerald-500 border-emerald-500 text-white"
+                    : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
                 >
                   {formatEnumLabel(region)}
                 </button>
@@ -556,11 +568,10 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                 <button
                   key={tech}
                   onClick={() => setSensing((prev) => toggleFilter(prev, tech))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-blue-500 border-blue-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                  className={`${chipBase} ${selected
+                    ? "bg-blue-500 border-blue-500 text-white"
+                    : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
                 >
                   {formatEnumLabel(tech)}
                 </button>
@@ -580,11 +591,10 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                 <button
                   key={factor}
                   onClick={() => setFormFactors((prev) => toggleFilter(prev, factor))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-indigo-500 border-indigo-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                  className={`${chipBase} ${selected
+                    ? "bg-indigo-500 border-indigo-500 text-white"
+                    : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
                 >
                   {formatEnumLabel(factor)}
                 </button>
@@ -604,11 +614,10 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                 <button
                   key={useCase}
                   onClick={() => setUseCases((prev) => toggleFilter(prev, useCase))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-teal-500 border-teal-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                  className={`${chipBase} ${selected
+                    ? "bg-teal-500 border-teal-500 text-white"
+                    : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                    }`}
                 >
                   {formatEnumLabel(useCase)}
                 </button>
@@ -692,11 +701,10 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                   <button
                     key={column}
                     onClick={() => setPinnedColumn(column)}
-                    className={`${chipBase} ${
-                      selected
-                        ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
-                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
+                    className={`${chipBase} ${selected
+                      ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
+                      : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                      }`}
                   >
                     {label}
                   </button>
@@ -716,11 +724,10 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                   <button
                     key={column}
                     onClick={() => setVisibleColumns((prev) => toggleFilter(prev, column))}
-                    className={`${chipBase} ${
-                      selected
-                        ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
-                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
+                    className={`${chipBase} ${selected
+                      ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
+                      : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                      }`}
                   >
                     {columnLabels[column]}
                   </button>
@@ -764,13 +771,11 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
                 return (
                   <th
                     key={column}
-                    className={`text-left text-xs font-semibold uppercase tracking-wide px-3 py-2 text-gray-500 dark:text-gray-400 ${
-                      isSortable ? "cursor-pointer hover:text-gray-700 dark:hover:text-gray-200" : ""
-                    } ${
-                      index === 0 && pinnedColumn !== "none"
+                    className={`text-left text-xs font-semibold uppercase tracking-wide px-3 py-2 text-gray-500 dark:text-gray-400 ${isSortable ? "cursor-pointer hover:text-gray-700 dark:hover:text-gray-200" : ""
+                      } ${index === 0 && pinnedColumn !== "none"
                         ? "sticky left-12 bg-white dark:bg-gray-800 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
                         : ""
-                    }`}
+                      }`}
                     onClick={() => {
                       if (isSortable) {
                         toggleSort(column);
@@ -793,103 +798,101 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
               const companyUrl = solution.url || getCompanyUrl(solution.company);
               const isSelected = selectedRows.has(solution.id);
               return (
-              <tr
-                key={solution.id}
-                className={`group border-b border-gray-100 dark:border-gray-700 ${
-                  isSelected ? "bg-teal-50 dark:bg-teal-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700/40"
-                }`}
-              >
-                <td className="px-3 py-3 w-12 text-center">
-                  <button
-                    onClick={() => toggleRowSelection(solution.id)}
-                    className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
-                  >
-                    {isSelected ? (
-                      <CheckSquare className="w-4 h-4 text-teal-600" />
-                    ) : (
-                      <Square className="w-4 h-4 text-gray-400" />
-                    )}
-                  </button>
-                </td>
-                {activeColumns.map((column, index) => (
-                  <td
-                    key={`${solution.id}-${column}`}
-                    className={`px-3 py-3 text-sm text-gray-700 dark:text-gray-200 align-top ${
-                      index === 0 && pinnedColumn !== "none"
+                <tr
+                  key={solution.id}
+                  className={`group border-b border-gray-100 dark:border-gray-700 ${isSelected ? "bg-teal-50 dark:bg-teal-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700/40"
+                    }`}
+                >
+                  <td className="px-3 py-3 w-12 text-center">
+                    <button
+                      onClick={() => toggleRowSelection(solution.id)}
+                      className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                    >
+                      {isSelected ? (
+                        <CheckSquare className="w-4 h-4 text-teal-600" />
+                      ) : (
+                        <Square className="w-4 h-4 text-gray-400" />
+                      )}
+                    </button>
+                  </td>
+                  {activeColumns.map((column, index) => (
+                    <td
+                      key={`${solution.id}-${column}`}
+                      className={`px-3 py-3 text-sm text-gray-700 dark:text-gray-200 align-top ${index === 0 && pinnedColumn !== "none"
                         ? "sticky left-12 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/40 shadow-[2px_0_0_rgba(0,0,0,0.06)]"
                         : ""
-                    }`}
-                  >
-                    {column === "company" ? (
-                      companyUrl ? (
-                        <a
-                          href={formatCompanyUrl(companyUrl)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                        }`}
+                    >
+                      {column === "company" ? (
+                        companyUrl ? (
+                          <a
+                            href={formatCompanyUrl(companyUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                          >
+                            {solution.company}
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        ) : (
+                          <span className="text-sm text-gray-700 dark:text-gray-200">
+                            {solution.company}
+                          </span>
+                        )
+                      ) : column === "formFactors" ? (
+                        <div className="flex flex-wrap gap-1">
+                          {solution.formFactors.map((factor) => (
+                            <span
+                              key={`${solution.id}-${factor}`}
+                              className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
+                            >
+                              {formatEnumLabel(factor)}
+                            </span>
+                          ))}
+                        </div>
+                      ) : column === "useCases" ? (
+                        <div className="flex flex-wrap gap-1">
+                          {solution.useCases.map((useCase) => (
+                            <span
+                              key={`${solution.id}-${useCase}`}
+                              className="text-[10px] px-2 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
+                            >
+                              {formatEnumLabel(useCase)}
+                            </span>
+                          ))}
+                        </div>
+                      ) : column === "accuracy" || column === "throughput" || column === "duration" ? (
+                        <span
+                          className={`text-sm ${getPerformanceColor(
+                            getCellValue(solution, column) as number | undefined,
+                            column as "accuracy" | "throughput" | "duration"
+                          )}`}
                         >
-                          {solution.company}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+                          {getCellValue(solution, column) || "—"}
+                        </span>
+                      ) : column === "video" ? (
+                        solution.videoUrl ? (
+                          <a
+                            href={solution.videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                            title="Watch demo video"
+                          >
+                            <Play className="w-4 h-4" />
+                            <span className="text-sm">Watch</span>
+                          </a>
+                        ) : (
+                          <span className="text-gray-400 dark:text-gray-500">—</span>
+                        )
                       ) : (
                         <span className="text-sm text-gray-700 dark:text-gray-200">
-                          {solution.company}
+                          {getCellValue(solution, column) || "—"}
                         </span>
-                      )
-                    ) : column === "formFactors" ? (
-                      <div className="flex flex-wrap gap-1">
-                        {solution.formFactors.map((factor) => (
-                          <span
-                            key={`${solution.id}-${factor}`}
-                            className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
-                          >
-                            {formatEnumLabel(factor)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : column === "useCases" ? (
-                      <div className="flex flex-wrap gap-1">
-                        {solution.useCases.map((useCase) => (
-                          <span
-                            key={`${solution.id}-${useCase}`}
-                            className="text-[10px] px-2 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
-                          >
-                            {formatEnumLabel(useCase)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : column === "accuracy" || column === "throughput" || column === "duration" ? (
-                      <span
-                        className={`text-sm ${getPerformanceColor(
-                          getCellValue(solution, column) as number | undefined,
-                          column as "accuracy" | "throughput" | "duration"
-                        )}`}
-                      >
-                        {getCellValue(solution, column) || "—"}
-                      </span>
-                    ) : column === "video" ? (
-                      solution.videoUrl ? (
-                        <a
-                          href={solution.videoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                          title="Watch demo video"
-                        >
-                          <Play className="w-4 h-4" />
-                          <span className="text-sm">Watch</span>
-                        </a>
-                      ) : (
-                        <span className="text-gray-400 dark:text-gray-500">—</span>
-                      )
-                    ) : (
-                      <span className="text-sm text-gray-700 dark:text-gray-200">
-                        {getCellValue(solution, column) || "—"}
-                      </span>
-                    )}
-                  </td>
-                ))}
-              </tr>
+                      )}
+                    </td>
+                  ))}
+                </tr>
               );
             })}
           </tbody>

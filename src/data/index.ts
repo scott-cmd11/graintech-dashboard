@@ -52,7 +52,7 @@ export const companiesData: Company[] = [
     funding: "",
     crops: ["Wheat", "Barley", "Durum"],
     speed: "",
-    url: "www.fossanalytics.com",
+    url: "https://www.fossanalytics.com/en-us",
     citations: ["https://www.fossanalytics.com/en/products/eyefoss"],
   },
   {
@@ -616,8 +616,8 @@ export const regulatoryData: RegulatoryData = {
       driver: "Standardization",
       status: "Federal law",
       icon: React.createElement(Gavel, { className: "w-6 h-6 text-blue-600" }),
-      url: "https://www.ams.usda.gov/rules-regulations/usgsa",
-      citations: ["https://www.ams.usda.gov/rules-regulations/usgsa"]
+      url: "https://www.ams.usda.gov/grades-standards/grain-standards",
+      citations: ["https://www.ams.usda.gov/grades-standards/grain-standards"]
     },
     {
       name: "Argentina",
@@ -638,8 +638,8 @@ export const regulatoryData: RegulatoryData = {
       driver: "Varietal purity for trade",
       status: "Endorsement (2025)",
       icon: React.createElement(Sprout, { className: "w-6 h-6 text-emerald-700" }),
-      url: "https://graintrade.org.au/",
-      citations: ["https://graintrade.org.au/member-update/member-update-no-25-of-2025-endorsement-of-technology-as-a-method-for-assessment-of-specific-barley-varieties/"]
+      url: "https://www.graintrade.org.au/statements/barley-variety-master-list",
+      citations: ["https://www.graintrade.org.au/statements/barley-variety-master-list"]
     },
     {
       name: "Europe / UK",
@@ -664,14 +664,14 @@ export const marketStats: MarketStat[] = [
 ];
 
 export const typeColors: Record<string, string> = {
-  "Benchtop": "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  "Mobile": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  "Handheld Light Sensor": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
-  "Software": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
-  "Mobile + Device": "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
-  "Benchtop + In-line": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
-  "In-line + Benchtop": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
-  "In-line": "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200",
+  "Benchtop": "bg-sky-blue/10 text-sky-blue border border-sky-blue/20 dark:bg-sky-blue/20 dark:text-sky-blue-light",
+  "Mobile": "bg-growth-green/10 text-growth-green border border-growth-green/20 dark:bg-growth-green/20 dark:text-growth-green-light",
+  "Handheld Light Sensor": "bg-grain-gold/10 text-grain-gold border border-grain-gold/20 dark:bg-grain-gold/20 dark:text-grain-gold-light",
+  "Software": "bg-grain-gold/10 text-grain-gold border border-grain-gold/20 dark:bg-grain-gold/20 dark:text-grain-gold-light",
+  "Mobile + Device": "bg-grain-gold/10 text-grain-gold border border-grain-gold/20 dark:bg-grain-gold/20 dark:text-grain-gold-light",
+  "Benchtop + In-line": "bg-soil-brown/10 text-soil-brown border border-soil-brown/20 dark:bg-soil-brown/20 dark:text-soil-brown-light",
+  "In-line + Benchtop": "bg-soil-brown/10 text-soil-brown border border-soil-brown/20 dark:bg-soil-brown/20 dark:text-soil-brown-light",
+  "In-line": "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200",
   "Unknown": "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
 };
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import { Globe, ExternalLink, ChevronDown, ChevronUp, Building2, Search, X, Download, Share2, Filter as FilterIcon } from "lucide-react";
 import type {
@@ -34,6 +34,7 @@ interface GrainLandscapeMapProps {
   companiesOpen?: boolean;
   onCompaniesToggle?: () => void;
   defaultCompaniesOpen?: boolean;
+  externalSearchTerm?: string;
 }
 
 const maturityScores: Record<MaturityLevel, number> = {
@@ -72,14 +73,22 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
   companiesOpen,
   onCompaniesToggle,
   defaultCompaniesOpen = true,
+  externalSearchTerm = "",
 }: GrainLandscapeMapProps) {
   const isControlled = Boolean(onFiltersChange);
   const [localRegions, setLocalRegions] = useState<Region[]>([]);
   const [localSensing, setLocalSensing] = useState<SensingTech[]>([]);
   const [localFormFactors, setLocalFormFactors] = useState<FormFactor[]>([]);
   const [localUseCases, setLocalUseCases] = useState<UseCase[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(externalSearchTerm);
   const [filterSummaryOpen, setFilterSummaryOpen] = useState(true);
+
+  // Sync external search term
+  useEffect(() => {
+    if (externalSearchTerm !== undefined) {
+      setSearchTerm(externalSearchTerm);
+    }
+  }, [externalSearchTerm]);
   const [companiesPage, setCompaniesPage] = useState(1);
   const [filterMode, setFilterMode] = useState<"or" | "and">("or");
   const [expandedFilterSections, setExpandedFilterSections] = useState({
@@ -120,24 +129,24 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
   const updateFilters = (
     updater:
       | {
+        regions: Region[];
+        sensing: SensingTech[];
+        formFactors: FormFactor[];
+        useCases: UseCase[];
+      }
+      | ((
+        prev: {
           regions: Region[];
           sensing: SensingTech[];
           formFactors: FormFactor[];
           useCases: UseCase[];
         }
-      | ((
-          prev: {
-            regions: Region[];
-            sensing: SensingTech[];
-            formFactors: FormFactor[];
-            useCases: UseCase[];
-          }
-        ) => {
-          regions: Region[];
-          sensing: SensingTech[];
-          formFactors: FormFactor[];
-          useCases: UseCase[];
-        })
+      ) => {
+        regions: Region[];
+        sensing: SensingTech[];
+        formFactors: FormFactor[];
+        useCases: UseCase[];
+      })
   ) => {
     const next = typeof updater === "function" ? updater(activeFilters) : updater;
     if (isControlled && onFiltersChange) {
@@ -580,22 +589,20 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setFilterMode("or")}
-                      className={`px-2 py-1 text-xs rounded transition-colors ${
-                        filterMode === "or"
-                          ? "bg-blue-600 text-white"
-                          : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
-                      }`}
+                      className={`px-2 py-1 text-xs rounded transition-colors ${filterMode === "or"
+                        ? "bg-blue-600 text-white"
+                        : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
+                        }`}
                       title="Show results matching any selected filter"
                     >
                       OR
                     </button>
                     <button
                       onClick={() => setFilterMode("and")}
-                      className={`px-2 py-1 text-xs rounded transition-colors ${
-                        filterMode === "and"
-                          ? "bg-blue-600 text-white"
-                          : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
-                      }`}
+                      className={`px-2 py-1 text-xs rounded transition-colors ${filterMode === "and"
+                        ? "bg-blue-600 text-white"
+                        : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900"
+                        }`}
                       title="Show results matching all selected filters"
                     >
                       AND
@@ -653,28 +660,27 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   </button>
                   {(expandedFilterSections.regions || true) && (
                     <div className="flex flex-wrap gap-2">
-                    {availableFilters.regions.map((region) => {
-                      const selected = activeFilters.regions.includes(region);
-                      return (
-                        <button
-                          key={region}
-                          onClick={() =>
-                            updateFilters((prev) => ({
-                              ...prev,
-                              regions: toggleFilter(prev.regions, region),
-                            }))
-                          }
-                          className={`${chipBase} ${
-                            selected
+                      {availableFilters.regions.map((region) => {
+                        const selected = activeFilters.regions.includes(region);
+                        return (
+                          <button
+                            key={region}
+                            onClick={() =>
+                              updateFilters((prev) => ({
+                                ...prev,
+                                regions: toggleFilter(prev.regions, region),
+                              }))
+                            }
+                            className={`${chipBase} ${selected
                               ? "bg-emerald-500 border-emerald-500 text-white"
                               : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                          }`}
-                        >
-                          {formatEnumLabel(region)}
-                        </button>
-                      );
-                    })}
-                  </div>
+                              }`}
+                          >
+                            {formatEnumLabel(region)}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
 
@@ -692,30 +698,29 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   </button>
                   {(expandedFilterSections.sensing || true) && (
                     <div className="flex flex-wrap gap-2">
-                    {availableFilters.sensing.map((tech) => {
-                      const selected = activeFilters.sensing.includes(tech);
-                      const color = sensingColors[tech];
-                      return (
-                        <button
-                          key={tech}
-                          onClick={() =>
-                            updateFilters((prev) => ({
-                              ...prev,
-                              sensing: toggleFilter(prev.sensing, tech),
-                            }))
-                          }
-                          className={`${chipBase} ${
-                            selected
+                      {availableFilters.sensing.map((tech) => {
+                        const selected = activeFilters.sensing.includes(tech);
+                        const color = sensingColors[tech];
+                        return (
+                          <button
+                            key={tech}
+                            onClick={() =>
+                              updateFilters((prev) => ({
+                                ...prev,
+                                sensing: toggleFilter(prev.sensing, tech),
+                              }))
+                            }
+                            className={`${chipBase} ${selected
                               ? "text-white"
                               : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                          }`}
-                          style={selected ? { backgroundColor: color, borderColor: color } : undefined}
-                        >
-                          {formatEnumLabel(tech)}
-                        </button>
-                      );
-                    })}
-                  </div>
+                              }`}
+                            style={selected ? { backgroundColor: color, borderColor: color } : undefined}
+                          >
+                            {formatEnumLabel(tech)}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
 
@@ -733,28 +738,27 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   </button>
                   {(expandedFilterSections.formFactors || true) && (
                     <div className="flex flex-wrap gap-2">
-                    {availableFilters.formFactors.map((factor) => {
-                      const selected = activeFilters.formFactors.includes(factor);
-                      return (
-                        <button
-                          key={factor}
-                          onClick={() =>
-                            updateFilters((prev) => ({
-                              ...prev,
-                              formFactors: toggleFilter(prev.formFactors, factor),
-                            }))
-                          }
-                          className={`${chipBase} ${
-                            selected
+                      {availableFilters.formFactors.map((factor) => {
+                        const selected = activeFilters.formFactors.includes(factor);
+                        return (
+                          <button
+                            key={factor}
+                            onClick={() =>
+                              updateFilters((prev) => ({
+                                ...prev,
+                                formFactors: toggleFilter(prev.formFactors, factor),
+                              }))
+                            }
+                            className={`${chipBase} ${selected
                               ? "bg-blue-500 border-blue-500 text-white"
                               : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                          }`}
-                        >
-                          {formatEnumLabel(factor)}
-                        </button>
-                      );
-                    })}
-                  </div>
+                              }`}
+                          >
+                            {formatEnumLabel(factor)}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
 
@@ -772,28 +776,27 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   </button>
                   {(expandedFilterSections.useCases || true) && (
                     <div className="flex flex-wrap gap-2">
-                    {availableFilters.useCases.map((useCase) => {
-                      const selected = activeFilters.useCases.includes(useCase);
-                      return (
-                        <button
-                          key={useCase}
-                          onClick={() =>
-                            updateFilters((prev) => ({
-                              ...prev,
-                              useCases: toggleFilter(prev.useCases, useCase),
-                            }))
-                          }
-                          className={`${chipBase} ${
-                            selected
+                      {availableFilters.useCases.map((useCase) => {
+                        const selected = activeFilters.useCases.includes(useCase);
+                        return (
+                          <button
+                            key={useCase}
+                            onClick={() =>
+                              updateFilters((prev) => ({
+                                ...prev,
+                                useCases: toggleFilter(prev.useCases, useCase),
+                              }))
+                            }
+                            className={`${chipBase} ${selected
                               ? "bg-teal-500 border-teal-500 text-white"
                               : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                          }`}
-                        >
-                          {formatEnumLabel(useCase)}
-                        </button>
-                      );
-                    })}
-                  </div>
+                              }`}
+                          >
+                            {formatEnumLabel(useCase)}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
 
@@ -801,13 +804,13 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                   activeFilters.sensing.length > 0 ||
                   activeFilters.formFactors.length > 0 ||
                   activeFilters.useCases.length > 0) && (
-                  <button
-                    onClick={resetFilters}
-                    className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  >
-                    Clear all filters
-                  </button>
-                )}
+                    <button
+                      onClick={resetFilters}
+                      className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                    >
+                      Clear all filters
+                    </button>
+                  )}
               </div>
             )}
 
@@ -981,62 +984,62 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {paginatedVisibleWithLocations.map((solution) => {
-                const companyUrl = solution.url || getCompanyUrl(solution.company);
-                return (
-                  <div
-                    key={solution.id}
-                    className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">{solution.company}</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{solution.productName}</p>
-                        {companyUrl && (
-                          <a
-                            href={formatCompanyUrl(companyUrl)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-1 inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
-                          >
-                            Website
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        )}
+                    const companyUrl = solution.url || getCompanyUrl(solution.company);
+                    return (
+                      <div
+                        key={solution.id}
+                        className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100">{solution.company}</h4>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{solution.productName}</p>
+                            {companyUrl && (
+                              <a
+                                href={formatCompanyUrl(companyUrl)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-1 inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+                              >
+                                Website
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                          {solution.maturityLevel && (
+                            <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
+                              {solution.maturityLevel}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                          <div>Regions: {formatEnumList(solution.regions)}</div>
+                          <div>Tech: {formatEnumList(solution.sensingTech)}</div>
+                          <div>Use cases: {formatEnumList(solution.useCases)}</div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {solution.formFactors.map((factor) => (
+                            <span
+                              key={`${solution.id}-${factor}`}
+                              className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
+                            >
+                              {formatEnumLabel(factor)}
+                            </span>
+                          ))}
+                          {solution.userSegments.map((segment: UserSegment) => (
+                            <span
+                              key={`${solution.id}-${segment}`}
+                              className="text-[10px] px-2 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
+                            >
+                              {formatEnumLabel(segment)}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                      {solution.maturityLevel && (
-                        <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
-                          {solution.maturityLevel}
-                        </span>
-                      )}
-                    </div>
-
-                  <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                    <div>Regions: {formatEnumList(solution.regions)}</div>
-                    <div>Tech: {formatEnumList(solution.sensingTech)}</div>
-                    <div>Use cases: {formatEnumList(solution.useCases)}</div>
-                  </div>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {solution.formFactors.map((factor) => (
-                        <span
-                          key={`${solution.id}-${factor}`}
-                          className="text-[10px] px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
-                        >
-                          {formatEnumLabel(factor)}
-                        </span>
-                      ))}
-                      {solution.userSegments.map((segment: UserSegment) => (
-                        <span
-                          key={`${solution.id}-${segment}`}
-                          className="text-[10px] px-2 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
-                        >
-                          {formatEnumLabel(segment)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })}
                 </div>
                 {totalPagesWithLocations > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-6">
@@ -1051,11 +1054,10 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       <button
                         key={page}
                         onClick={() => setCompaniesPage(page)}
-                        className={`px-3 py-1 text-xs rounded-lg transition-colors ${
-                          companiesPage === page
-                            ? "bg-emerald-500 text-white"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                        }`}
+                        className={`px-3 py-1 text-xs rounded-lg transition-colors ${companiesPage === page
+                          ? "bg-emerald-500 text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          }`}
                       >
                         {page}
                       </button>

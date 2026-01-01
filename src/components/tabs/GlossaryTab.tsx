@@ -1,17 +1,30 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
-import { glossaryTerms } from '../data/glossary';
+import { glossaryTerms } from '../../data/glossary';
+import { Skeleton } from '../Skeleton';
 
-export function GlossaryTab() {
-  const [searchQuery, setSearchQuery] = useState('');
+export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(searchTerm);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Sync external search term
+  useEffect(() => {
+    if (searchTerm !== undefined) {
+      setSearchQuery(searchTerm);
+    }
+  }, [searchTerm]);
 
   const handleTermClick = (term: string) => {
     setSearchQuery(term);
     // Scroll to top
     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-
   // Filter terms by search query
   const filteredTerms = useMemo(() => {
     if (!searchQuery.trim()) return glossaryTerms;
@@ -33,6 +46,24 @@ export function GlossaryTab() {
     });
     return groups;
   }, [filteredTerms]);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+          <div className="flex items-center gap-6 mb-6">
+            <Skeleton className="h-16 w-16 rounded-lg" />
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-64" />
+              <Skeleton className="h-4 w-96" />
+            </div>
+          </div>
+          <Skeleton className="h-12 w-full rounded-lg" />
+        </div>
+        <Skeleton className="h-48 w-full rounded-xl" />
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="space-y-6 animate-in fade-in duration-500">

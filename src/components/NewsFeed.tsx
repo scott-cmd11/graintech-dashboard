@@ -49,6 +49,64 @@ const CORS_PROXIES = [
   (url: string) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&json`,
 ];
 
+// Fallback sample news data (displays if RSS feeds fail) - Real published sources with actual dates
+const FALLBACK_NEWS: NewsItem[] = [
+  {
+    id: 'fallback-1',
+    title: 'Grain inspectors could use more technology, lawmakers told',
+    source: 'Agri-Pulse Communications',
+    date: '2025-06-26T16:59:00Z',
+    summary: 'Witnesses at a House Agriculture subcommittee hearing on reauthorization of the U.S. Grain Standards Act emphasized that grain inspectors need access to new technology. The American Association of Grain Inspection and Weighing Agencies noted that grain inspection has relied on the same basic technology for 100 years.',
+    url: 'https://www.agri-pulse.com/articles/23117-grain-inspectors-could-use-more-technology-lawmakers-told',
+    category: 'Regulation',
+  },
+  {
+    id: 'fallback-2',
+    title: 'Spoiled Grain? There Are Apps for That',
+    source: 'AgWeb',
+    date: '2024-03-05T00:00:00Z',
+    summary: 'Mobile applications are bringing grain quality assessment technology directly to farmers. These apps enable real-time testing at the point of harvest, helping farmers make informed decisions about grain handling and storage.',
+    url: 'https://www.agweb.com/news/business/technology/spoiled-grain-there-are-apps',
+    category: 'Technology',
+  },
+  {
+    id: 'fallback-3',
+    title: 'Ground Truth Agriculture Advancing Grain Grading with Cutting-Edge AgTech',
+    source: 'Saskatchewan Trade and Invest',
+    date: '2025-05-13T00:00:00Z',
+    summary: 'Ground Truth Agriculture uses a combination of machine vision and near-infrared spectroscopy (NIRS) to analyze grain quality factors. The technology provides results that are consistent, accurate, and aligned with industry standards.',
+    url: 'https://investsk.ca/2025/05/13/ground-truth-agriculture-advancing-grain-grading-with-cutting-edge-agtech/',
+    category: 'Innovation',
+  },
+  {
+    id: 'fallback-4',
+    title: 'Advances in Hyperspectral Imaging Technology for Grain Quality and Safety Detection',
+    source: 'MDPI (Food Science Journal)',
+    date: '2025-08-26T00:00:00Z',
+    summary: 'Hyperspectral imaging (HSI) technology offers a non-destructive, efficient, and rapid alternative for grain quality assessment by integrating spatial and spectral data. This approach enables identification of defects, contamination, and quality parameters.',
+    url: 'https://www.mdpi.com/2304-8158/14/17/2977',
+    category: 'Research',
+  },
+  {
+    id: 'fallback-5',
+    title: 'Precision agriculture use increases with farm size and varies widely by technology',
+    source: 'USDA Economic Research Service',
+    date: '2024-12-10T00:00:00Z',
+    summary: 'USDA research shows adoption of precision agriculture technologies has increased substantially over the past 20 years. Guidance autosteering systems were used by 52% of midsize farms and 70% of large-scale crop farms in 2023, up from single digits in the early 2000s.',
+    url: 'https://www.ers.usda.gov/data-products/charts-of-note/chart-detail?chartId=110550',
+    category: 'Research',
+  },
+  {
+    id: 'fallback-6',
+    title: 'The Era of Precision Agriculture Takes Shape',
+    source: 'AEM (Association of Equipment Manufacturers)',
+    date: '2024-03-17T00:00:00Z',
+    summary: 'The precision agriculture market continues to expand as equipment manufacturers develop advanced optical sorters, automated grain handling systems, and IoT-enabled sensors. These technologies promise increased yields and improved grain quality through data-driven decision making.',
+    url: 'https://www.aem.org/news/the-era-of-precision-agriculture-has-arrived',
+    category: 'Industry',
+  },
+];
+
 // Helper function to fetch RSS feed with multiple proxy fallbacks
 async function fetchRSSFeed(feedUrl: string, feedName: string): Promise<NewsItem[]> {
   for (let proxyIndex = 0; proxyIndex < CORS_PROXIES.length; proxyIndex++) {
@@ -161,6 +219,7 @@ export const NewsFeed = memo(function NewsFeed() {
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [isCached, setIsCached] = useState(false);
+  const [isFallback, setIsFallback] = useState(false);
 
   useEffect(() => {
     async function fetchAllFeeds() {
@@ -196,14 +255,19 @@ export const NewsFeed = memo(function NewsFeed() {
           setError(null);
           setIsCached(false);
         } else if (cachedNews.length === 0) {
-          // Only show error if we have no cached articles and fetch failed
-          setError('Unable to load news at the moment. Please try again later.');
+          // Use fallback news if no RSS feeds and no cache available
+          setNews(FALLBACK_NEWS);
+          setError(null);
+          setIsCached(false);
+          setIsFallback(true);
         }
       } catch (error) {
         console.error('Error fetching news feeds:', error);
-        // Only show error if no cached articles
+        // Use fallback news if fetch fails and no cached articles
         if (news.length === 0) {
-          setError('Failed to load news feeds. Using offline cache if available.');
+          setNews(FALLBACK_NEWS);
+          setError(null);
+          setIsFallback(true);
         }
       } finally {
         setLoading(false);
@@ -399,7 +463,7 @@ export const NewsFeed = memo(function NewsFeed() {
       )}
 
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 text-center">
-        {isCached ? '📦 Cached articles (will refresh tomorrow)' : 'News curated from Google Alerts feeds. Refreshes daily.'}
+        {isFallback ? '📚 Sample articles (showing when live feeds are unavailable)' : isCached ? '📦 Cached articles (will refresh tomorrow)' : 'News curated from Google Alerts feeds. Refreshes daily.'}
       </p>
     </div>
   );
