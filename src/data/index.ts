@@ -503,7 +503,8 @@ export const historyData: HistoryEra[] = [
     title: "Inventing 'Grades'",
     desc: "The Chicago Board of Trade invented 'Grades' (like Grade No. 2) so grain could be mixed together in big silos and traded easily without checking every sack.",
     metric: "Volume & Weight",
-    icon: React.createElement(Factory, { className: "w-6 h-6 text-gray-600" })
+    icon: React.createElement(Factory, { className: "w-6 h-6 text-gray-600" }),
+    citations: ["https://www.cmegroup.com/education/articles-and-reports/the-history-of-grading-at-cme-group.html"]
   },
   {
     era: "1916 - 1925",

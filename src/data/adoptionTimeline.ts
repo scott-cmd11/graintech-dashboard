@@ -9,6 +9,8 @@ export interface AdoptionEvent {
   region: Region | "Global";
   category: "ProductLaunch" | "Regulation" | "Pilot" | "NationalProgram" | "Other";
   relatedCompanyIds?: string[];
+  url?: string;
+  citations?: string[];
 }
 
 export const adoptionEvents: AdoptionEvent[] = [
@@ -20,6 +22,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Europe",
     category: "Pilot",
     relatedCompanyIds: ["Cgrain", "FOSS"],
+    url: "https://www.cgrain.ai/technology/",
   },
   {
     id: "2019-videometer-seedlab",
@@ -29,6 +32,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Europe",
     category: "ProductLaunch",
     relatedCompanyIds: ["Videometer"],
+    url: "https://videometer.com/videometer-seedlab/",
   },
   {
     id: "2020-mobile-grading",
@@ -38,6 +42,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Global",
     category: "Pilot",
     relatedCompanyIds: ["GoMicro", "Inarix"],
+    url: "https://www.gomicro.co/grain/",
   },
   {
     id: "2020-export-standards-update",
@@ -47,6 +52,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "North America",
     category: "Regulation",
     relatedCompanyIds: ["Ground Truth Ag"],
+    url: "https://www.ams.usda.gov/grades-standards/grain-standards",
   },
   {
     id: "2021-qualysense-qsorter",
@@ -56,6 +62,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Europe",
     category: "ProductLaunch",
     relatedCompanyIds: ["QualySense"],
+    url: "https://www.qualysense.com/technology",
   },
   {
     id: "2021-asia-inline-lines",
@@ -83,6 +90,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Europe",
     category: "ProductLaunch",
     relatedCompanyIds: ["Inarix"],
+    url: "https://www.inarix.com/",
   },
   {
     id: "2022-aus-receival-demos",
@@ -101,6 +109,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Latin America",
     category: "ProductLaunch",
     relatedCompanyIds: ["ZoomAgri"],
+    url: "https://zoomagri.com/en/home/",
   },
   {
     id: "2023-agsure-wholesale",
@@ -128,6 +137,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "North America",
     category: "Pilot",
     relatedCompanyIds: ["SuperGeo"],
+    url: "https://sga.ai/products/grain/",
   },
   {
     id: "2024-cropify-launch",
@@ -137,6 +147,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Australia",
     category: "Pilot",
     relatedCompanyIds: ["Cropify"],
+    url: "https://www.cropify.io/",
   },
   {
     id: "2024-ground-truth-labs",
@@ -146,6 +157,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "North America",
     category: "Pilot",
     relatedCompanyIds: ["Ground Truth Ag"],
+    url: "https://groundtruth.ag/",
   },
   {
     id: "2024-vibe-qm3i",
@@ -155,6 +167,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Middle East",
     category: "ProductLaunch",
     relatedCompanyIds: ["Vibe Imaging Analytics"],
+    url: "https://www.vibeia.com/",
   },
   {
     id: "2024-standards-digital",
@@ -163,6 +176,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     description: "Regulators publish guidance for evaluating digital grain inspection tools.",
     region: "North America",
     category: "Regulation",
+    url: "https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/",
   },
   {
     id: "2025-aus-endorsement",
@@ -180,6 +194,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     region: "Australia",
     category: "NationalProgram",
     relatedCompanyIds: ["Deimos", "Acova"],
+    url: "https://deimos.com.au/",
   },
   {
     id: "2025-eu-dpp",
@@ -188,6 +203,7 @@ export const adoptionEvents: AdoptionEvent[] = [
     description: "Supply chains prepare for data-linked traceability requirements.",
     region: "Europe",
     category: "Regulation",
+    url: "https://commission.europa.eu/energy-climate-change-environment/standards-tools-and-labels/products-labelling-rules-and-requirements/ecodesign-sustainable-products-regulation_en",
   },
   {
     id: "2026-asia-export",

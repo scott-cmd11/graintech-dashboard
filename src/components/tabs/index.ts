@@ -10,3 +10,5 @@ export * from './AboutTab';
 export * from './GlossaryTab';
 export { TrendsPage } from './TrendsPage';
 export { NewsTab } from './NewsTab';
+export { GithubTab } from './GithubTab';
+export { ResearchPapersTab } from './ResearchPapersTab';

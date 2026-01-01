@@ -297,7 +297,7 @@ export const GrainComparisonMatrix = function GrainComparisonMatrix({
           text: `View my filtered grain solutions comparison (${filteredSolutions.length} results)`,
           url: shareUrl,
         });
-      } catch (err) {
+      } catch {
         // User cancelled share
       }
     } else {

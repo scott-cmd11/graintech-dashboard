@@ -28,7 +28,9 @@ import {
   AboutTab,
   GlossaryTab,
   TrendsPage,
-  NewsTab
+  NewsTab,
+  GithubTab,
+  ResearchPapersTab
 } from './components/tabs';
 
 // Main Dashboard Component
@@ -110,7 +112,7 @@ function Dashboard() {
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto px-4 sm:px-6 py-8 pb-24 border-l border-gray-100 dark:border-gray-800">
           <div className="max-w-6xl mx-auto">
-            {activeTab === 'about' && <AboutTab />}
+            {activeTab === 'about' && <AboutTab onNavigate={setActiveTab} />}
             {activeTab === 'glossary' && <GlossaryTab searchTerm={searchTerm} />}
             {activeTab === 'trends' && <TrendsPage />}
 
@@ -144,6 +146,8 @@ function Dashboard() {
             {activeTab === 'regulations' && <RegulationsTab />}
             {activeTab === 'history' && <HistoryTab />}
             {activeTab === 'news' && <NewsTab />}
+            {activeTab === 'github-repos' && <GithubTab />}
+            {activeTab === 'research-papers' && <ResearchPapersTab />}
           </div>
         </main>
       </div>

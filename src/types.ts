@@ -68,6 +68,7 @@ export interface HistoryEra {
   desc: string;
   metric: string;
   icon: React.ReactNode;
+  citations?: string[];
 }
 
 // Grading Philosophy Types
@@ -172,7 +173,8 @@ export type TabId =
   | 'history'
   | 'trends'
   | 'news'
-  | 'github-repos';
+  | 'github-repos'
+  | 'research-papers';
 
 export interface TabConfig {
   id: TabId;

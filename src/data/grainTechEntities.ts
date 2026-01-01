@@ -64,6 +64,7 @@ export interface GrainSolution {
   videoUrl?: string;
   primaryLat?: number;
   primaryLng?: number;
+  citations?: string[];
 }
 
 export const grainSolutions: GrainSolution[] = [
@@ -177,6 +178,7 @@ export const grainSolutions: GrainSolution[] = [
     videoUrl: "https://www.realagriculture.com/2025/08/machine-vision-and-ai-take-the-guess-work-out-of-grain-grading/",
     primaryLat: 50.4452,
     primaryLng: -104.6189,
+    citations: ["https://grainswest.com/2025/09/data-upgrade/", "https://www.realagriculture.com/2025/08/machine-vision-and-ai-take-the-guess-work-out-of-grain-grading/"],
   },
   {
     id: "cropify-opal",

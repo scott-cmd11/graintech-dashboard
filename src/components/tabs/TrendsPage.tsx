@@ -1,4 +1,4 @@
-import { TrendingUp, Globe, Zap, BarChart3, Users, Lightbulb, AlertCircle, CheckCircle } from 'lucide-react';
+import { TrendingUp, Globe, Zap, BarChart3, Users, Lightbulb, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react';
 import {
   adoptionTrends,
   regionalData,
@@ -179,12 +179,12 @@ export function TrendsPage() {
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                   <div
                     className={`rounded-full h-3 transition-all ${tech.maturity === 'Mature'
-                        ? 'bg-growth-green'
-                        : tech.maturity === 'Commercial'
-                          ? 'bg-sky-blue'
-                          : tech.maturity === 'Pilot'
-                            ? 'bg-grain-gold'
-                            : 'bg-soil-brown'
+                      ? 'bg-growth-green'
+                      : tech.maturity === 'Commercial'
+                        ? 'bg-sky-blue'
+                        : tech.maturity === 'Pilot'
+                          ? 'bg-grain-gold'
+                          : 'bg-soil-brown'
                       }`}
                     style={{ width: `${tech.adoption}%` }}
                   />
@@ -224,6 +224,23 @@ export function TrendsPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Citations for Market Chart */}
+        <div className="mb-6 flex flex-wrap gap-4">
+          {marketProjections
+            .filter(p => p.citations && p.citations.length > 0)
+            .map(p => (
+              <div key={p.year} className="text-xs text-gray-500 bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
+                <span className="font-semibold">{p.year} Projection:</span>
+                {p.citations?.map((url, i) => (
+                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-600 hover:underline inline-flex items-center gap-1">
+                    Source <ExternalLink className="w-3 h-3" />
+                  </a>
+                ))}
+              </div>
+            ))
+          }
         </div>
 
         <div className="mt-6 grid md:grid-cols-3 gap-4">
@@ -271,12 +288,12 @@ export function TrendsPage() {
                     </div>
                     <span
                       className={`text-xs font-bold px-2 py-1 rounded whitespace-nowrap ${milestone.type === 'Founding'
-                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                          : milestone.type === 'Product Launch'
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                            : milestone.type === 'Funding'
-                              ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
-                              : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                        : milestone.type === 'Product Launch'
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                          : milestone.type === 'Funding'
+                            ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                            : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
                         }`}
                     >
                       {milestone.type}
@@ -341,10 +358,10 @@ export function TrendsPage() {
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{tech.name}</h4>
                 <span
                   className={`text-xs font-bold px-2 py-1 rounded whitespace-nowrap ${tech.maturityLevel === 'Commercial'
-                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                      : tech.maturityLevel === 'Pilot'
-                        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                    : tech.maturityLevel === 'Pilot'
+                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                     }`}
                 >
                   {tech.maturityLevel}

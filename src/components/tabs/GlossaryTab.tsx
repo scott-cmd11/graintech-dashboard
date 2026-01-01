@@ -50,8 +50,8 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-in fade-in duration-500">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
-          <div className="flex items-center gap-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div className="flex items-center gap-4 mb-4">
             <Skeleton className="h-16 w-16 rounded-lg" />
             <div className="space-y-2">
               <Skeleton className="h-6 w-64" />
@@ -68,8 +68,8 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
   return (
     <div ref={containerRef} className="space-y-6 animate-in fade-in duration-500">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-4">
           <div className="shrink-0">
             <div className="w-16 h-16 rounded-lg bg-grain-gold/10 flex items-center justify-center">
               <BookOpen className="w-8 h-8 text-grain-gold" />
@@ -96,7 +96,7 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
             placeholder="Search terms or definitions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-36 pr-32 py-6 text-body-sm border border-gray-200 dark:border-gray-600 rounded-lg
+            className="w-full pl-36 pr-32 py-4 text-body-sm border border-gray-200 dark:border-gray-600 rounded-lg
                        focus:outline-none focus:ring-2 focus:ring-growth-green
                        bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
@@ -113,7 +113,7 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
       </div>
 
       {/* Quick Index of All Terms */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 className="text-heading-4 font-bold text-gray-900 dark:text-gray-100 mb-4">
           All Terms
         </h3>
@@ -124,7 +124,7 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
               onClick={() => handleTermClick(term.term)}
               className="text-sm bg-growth-green/10 text-growth-green hover:bg-growth-green/20
                          dark:bg-growth-green/20 dark:text-growth-green-light dark:hover:bg-growth-green/30
-                         px-10 py-4 rounded transition-colors font-medium"
+                         px-6 py-2 rounded transition-colors font-medium"
               title={`Search for "${term.term}"`}
             >
               {term.term}
@@ -139,7 +139,7 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
         .map(([letter, terms]) => (
           <div key={letter}>
             {/* Sticky letter header */}
-            <div className="bg-gradient-to-r from-growth-green to-growth-green-dark text-white px-12 py-4 rounded-lg mb-4 sticky top-0 z-10">
+            <div className="bg-gradient-to-r from-growth-green to-growth-green-dark text-white px-6 py-3 rounded-lg mb-4 sticky top-0 z-10">
               <h3 className="text-heading-4 font-bold">{letter}</h3>
             </div>
 
@@ -149,7 +149,7 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
                 <div
                   key={term.term}
                   className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700
-                             p-8 hover:shadow-md transition-shadow"
+                             p-6 hover:shadow-md transition-shadow"
                 >
                   {/* Term Title */}
                   <h4 className="text-heading-4 font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -163,7 +163,7 @@ export function GlossaryTab({ searchTerm = "" }: { searchTerm?: string }) {
 
                   {/* Example - if available */}
                   {term.example && (
-                    <div className="bg-grain-gold/10 border-l-4 border-grain-gold pl-8 pr-8 py-4 rounded mb-4">
+                    <div className="bg-grain-gold/10 border-l-4 border-grain-gold px-4 py-3 rounded mb-4">
                       <p className="text-body-sm text-gray-700 dark:text-gray-300">
                         <span className="font-bold text-grain-gold">Example: </span>
                         {term.example}

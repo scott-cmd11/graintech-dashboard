@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ScrollText, Globe } from 'lucide-react';
+import { ScrollText, Globe, ExternalLink } from 'lucide-react';
 import { historyData, globalGradingPhilosophies } from '../../data';
 import { Skeleton } from '../Skeleton';
 
@@ -72,6 +72,27 @@ export function HistoryTab() {
                                     </span>
                                     <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{era.metric}</span>
                                 </div>
+
+                                {era.citations && era.citations.length > 0 && (
+                                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 mb-1">Sources:</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {era.citations.map((url, idx) => (
+                                                <a
+                                                    key={idx}
+                                                    href={url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 hover:underline bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded"
+                                                    title={url}
+                                                >
+                                                    Source {idx + 1}
+                                                    <ExternalLink className="w-3 h-3" />
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}

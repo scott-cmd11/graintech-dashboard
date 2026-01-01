@@ -1,10 +1,12 @@
-import { BookOpen, Target, Lightbulb, Users } from 'lucide-react';
+import { BookOpen, Target, Lightbulb, Users, Building, Database, BrainCircuit, Scale, History } from 'lucide-react';
+import type { TabId } from '../../types';
 
-export function AboutTab() {
+export function AboutTab({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* Hero Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-growth-green to-grain-gold" />
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
           <div className="shrink-0">
             <div className="w-20 h-20 rounded-lg bg-growth-green/10 flex items-center justify-center">
@@ -17,9 +19,9 @@ export function AboutTab() {
             </h2>
             <p className="text-body-sm text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl">
               This dashboard tracks how farmers and grain handlers are using digital tools to check grain quality.
-              Traditionally, grain was graded by hand using visual inspection. Now, cameras, sensors, and AI can
-              do the same job faster and more consistently. This dashboard shows what tools exist, who's building them,
-              and how rules are changing around the world.
+              Traditionally, inspectors relied solely on visual inspection. Now, advanced cameras, sensors, and AI
+              are equipping these experts with new data to grade faster and with greater consistency. This dashboard
+              shows what tools exist and how they support the modern grain supply chain.
             </p>
           </div>
         </div>
@@ -27,46 +29,81 @@ export function AboutTab() {
 
       {/* Purpose Section */}
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-gradient-to-br from-growth-green to-growth-green-dark rounded-xl p-12 text-white shadow-md">
-          <Target className="w-12 h-12 mb-6 text-white/80" />
+        <div className="bg-gradient-to-br from-growth-green to-growth-green-dark rounded-xl p-8 text-white shadow-md">
+          <Target className="w-10 h-10 mb-6 text-white/80" />
           <h3 className="text-heading-3 font-bold mb-4">Why This Matters</h3>
           <p className="text-body-sm leading-relaxed">
             Grain quality affects everything: what farmers get paid, how much food we can make from each bushel,
-            and whether crops can be shipped overseas. When quality checks are slow and unreliable, grain sits in storage waiting for results.
-            Better measurement tools mean fairer prices, faster trade, and less waste.
+            and whether crops can be shipped overseas. By augmenting inspectors with objective digital tools,
+            we ensure safer assessment, fairer prices, faster trade, and less waste.
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-grain-gold to-grain-gold-dark rounded-xl p-12 text-white shadow-md">
-          <Lightbulb className="w-12 h-12 mb-6 text-white/80" />
+        <div className="bg-gradient-to-br from-grain-gold to-grain-gold-dark rounded-xl p-8 text-white shadow-md">
+          <Lightbulb className="w-10 h-10 mb-6 text-white/80" />
           <h3 className="text-heading-3 font-bold mb-4">What We Track</h3>
-          <ul className="space-y-4 text-body-sm leading-relaxed">
-            <li className="flex items-start gap-4">
-              <span className="font-bold shrink-0">•</span>
-              <span><strong>Companies</strong> building digital grain grading tools</span>
+          <ul className="space-y-3">
+            <li>
+              <button
+                onClick={() => onNavigate('ai-landscape')}
+                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              >
+                <div className="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <Building className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-body-sm font-medium"><strong>Companies</strong> building digital grain grading tools</span>
+              </button>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="font-bold shrink-0">•</span>
-              <span><strong>Public datasets</strong> used to train AI models</span>
+            <li>
+              <button
+                onClick={() => onNavigate('datasets')}
+                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              >
+                <div className="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <Database className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-body-sm font-medium"><strong>Public datasets</strong> used to train AI models</span>
+              </button>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="font-bold shrink-0">•</span>
-              <span><strong>Research</strong> on computer vision for agriculture</span>
+            <li>
+              <button
+                onClick={() => onNavigate('research')}
+                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              >
+                <div className="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <BrainCircuit className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-body-sm font-medium"><strong>Research</strong> on computer vision for agriculture</span>
+              </button>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="font-bold shrink-0">•</span>
-              <span><strong>Government rules</strong> that allow or require digital grading</span>
+            <li>
+              <button
+                onClick={() => onNavigate('regulations')}
+                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              >
+                <div className="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <Scale className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-body-sm font-medium"><strong>Government rules</strong> that allow or require digital grading</span>
+              </button>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="font-bold shrink-0">•</span>
-              <span><strong>History</strong> of how grain grading evolved</span>
+            <li>
+              <button
+                onClick={() => onNavigate('history')}
+                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              >
+                <div className="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <History className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-body-sm font-medium"><strong>History</strong> of how grain grading evolved</span>
+              </button>
             </li>
           </ul>
         </div>
       </div>
 
       {/* Methodology Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 className="text-heading-3 font-bold text-gray-900 dark:text-gray-100 mb-8">How We Collect This Information</h3>
         <div className="grid md:grid-cols-3 gap-8">
           <div>
@@ -103,7 +140,7 @@ export function AboutTab() {
       </div>
 
       {/* Context: Why Digitization Matters */}
-      <div className="bg-gradient-to-r from-soil-brown to-soil-brown-dark rounded-xl p-12 text-white shadow-md">
+      <div className="bg-gradient-to-r from-soil-brown to-soil-brown-dark rounded-xl p-8 text-white shadow-md">
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
           <div className="shrink-0">
             <Users className="w-16 h-16 text-white/80" />
@@ -129,22 +166,15 @@ export function AboutTab() {
               </div>
             </div>
             <p className="text-body-sm leading-relaxed mt-6">
-              Digital grading makes this whole system more transparent and fair. Instead of relying on one person's judgment,
-              we can use objective measurements that everyone can see and verify. That means less conflict, fairer prices, and better food.
+              Digital grading makes this whole system more transparent and fair. By combining human expertise with
+              objective data, we create a grading standard that everyone can trust and verify. That means less conflict,
+              fairer prices, and better food security.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Disclaimer */}
-      <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 rounded-lg p-6">
-        <p className="text-body-sm text-amber-900 dark:text-amber-200">
-          <span className="font-bold">About this dashboard:</span> This is an independent research project created to help
-          farmers, technologists, and policymakers understand the landscape of grain quality digitization. The information
-          here comes from public sources and is updated periodically. We aim to be accurate and fair to all companies and
-          researchers mentioned.
-        </p>
-      </div>
+
     </div>
   );
 }

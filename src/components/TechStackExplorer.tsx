@@ -59,41 +59,41 @@ export const TechStackExplorer = function TechStackExplorer({
   const [localFormFactors, setLocalFormFactors] = useState<FormFactor[]>([]);
   const [localUseCases, setLocalUseCases] = useState<UseCase[]>([]);
 
-  const sharedFilters = isControlled
+  const sharedFilters = useMemo(() => isControlled
     ? {
-        regions: filters?.regions ?? [],
-        sensingTech: filters?.sensingTech ?? [],
-        formFactors: filters?.formFactors ?? [],
-        useCases: filters?.useCases ?? [],
-      }
+      regions: filters?.regions ?? [],
+      sensingTech: filters?.sensingTech ?? [],
+      formFactors: filters?.formFactors ?? [],
+      useCases: filters?.useCases ?? [],
+    }
     : {
-        regions: [],
-        sensingTech: localSensingTech,
-        formFactors: localFormFactors,
-        useCases: localUseCases,
-      };
+      regions: [],
+      sensingTech: localSensingTech,
+      formFactors: localFormFactors,
+      useCases: localUseCases,
+    }, [isControlled, filters, localSensingTech, localFormFactors, localUseCases]);
 
   const updateSharedFilters = (
     updater:
       | {
+        regions?: Region[];
+        sensingTech: SensingTech[];
+        formFactors: FormFactor[];
+        useCases: UseCase[];
+      }
+      | ((
+        prev: {
           regions?: Region[];
           sensingTech: SensingTech[];
           formFactors: FormFactor[];
           useCases: UseCase[];
         }
-      | ((
-          prev: {
-            regions?: Region[];
-            sensingTech: SensingTech[];
-            formFactors: FormFactor[];
-            useCases: UseCase[];
-          }
-        ) => {
-          regions?: Region[];
-          sensingTech: SensingTech[];
-          formFactors: FormFactor[];
-          useCases: UseCase[];
-        })
+      ) => {
+        regions?: Region[];
+        sensingTech: SensingTech[];
+        formFactors: FormFactor[];
+        useCases: UseCase[];
+      })
   ) => {
     const next = typeof updater === "function" ? updater(sharedFilters) : updater;
     if (isControlled && onFiltersChange) {
@@ -222,11 +222,10 @@ export const TechStackExplorer = function TechStackExplorer({
                         sensingTech: toggleFilter(prev.sensingTech, tech),
                       }))
                     }
-                    className={`${chipBase} ${
-                      selected
+                    className={`${chipBase} ${selected
                         ? "bg-emerald-600 border-emerald-600 text-white"
                         : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
+                      }`}
                   >
                     {formatEnumLabel(tech)}
                   </button>
@@ -247,11 +246,10 @@ export const TechStackExplorer = function TechStackExplorer({
                 <button
                   key={layer}
                   onClick={() => setAiLayers((prev) => toggleFilter(prev, layer))}
-                  className={`${chipBase} ${
-                    selected
+                  className={`${chipBase} ${selected
                       ? "bg-teal-600 border-teal-600 text-white"
                       : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                    }`}
                 >
                   {layer}
                 </button>
@@ -277,11 +275,10 @@ export const TechStackExplorer = function TechStackExplorer({
                         formFactors: toggleFilter(prev.formFactors, factor),
                       }))
                     }
-                    className={`${chipBase} ${
-                      selected
+                    className={`${chipBase} ${selected
                         ? "bg-blue-500 border-blue-500 text-white"
                         : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
+                      }`}
                   >
                     {formatEnumLabel(factor)}
                   </button>
@@ -308,11 +305,10 @@ export const TechStackExplorer = function TechStackExplorer({
                         useCases: toggleFilter(prev.useCases, useCase),
                       }))
                     }
-                    className={`${chipBase} ${
-                      selected
+                    className={`${chipBase} ${selected
                         ? "bg-teal-500 border-teal-500 text-white"
                         : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                    }`}
+                      }`}
                   >
                     {formatEnumLabel(useCase)}
                   </button>
@@ -390,11 +386,11 @@ export const TechStackExplorer = function TechStackExplorer({
                 )}
               </div>
 
-            <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
-              <div>Tech: {formatEnumList(solution.sensingTech)}</div>
-              <div>Form: {formatEnumList(solution.formFactors)}</div>
-              <div>Use cases: {formatEnumList(solution.useCases)}</div>
-            </div>
+              <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                <div>Tech: {formatEnumList(solution.sensingTech)}</div>
+                <div>Form: {formatEnumList(solution.formFactors)}</div>
+                <div>Use cases: {formatEnumList(solution.useCases)}</div>
+              </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {solution.formFactors.map((factor) => (

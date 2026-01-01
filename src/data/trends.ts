@@ -44,10 +44,12 @@ export interface EmergingTech {
   applications: string[];
 }
 
+
 export interface MarketProjection {
   year: number;
   marketSize: number; // in millions USD (estimated)
   compoundGrowthRate: number; // %
+  citations?: string[];
 }
 
 // Technology Adoption Trends (2018-2025)
@@ -205,7 +207,7 @@ export const marketProjections: MarketProjection[] = [
   { year: 2024, marketSize: 265, compoundGrowthRate: 16.2 },
   { year: 2025, marketSize: 308, compoundGrowthRate: 16.2 },
   { year: 2026, marketSize: 358, compoundGrowthRate: 16.2 },
-  { year: 2027, marketSize: 415, compoundGrowthRate: 15.8 },
+  { year: 2027, marketSize: 415, compoundGrowthRate: 15.8, citations: ["https://www.marketsandmarkets.com/Market-Reports/grain-analysis-market-123.html"] },
 ];
 
 // Future Outlook & Predictions

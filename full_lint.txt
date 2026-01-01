@@ -1,0 +1,25 @@
+﻿
+> graintech-dashboard@2.0.0 lint
+> eslint src --ext .ts,.tsx
+
+
+C:\Users\scott\graintech-dashboard\src\components\GitHubReposExplorer.tsx
+  36:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  83:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\scott\graintech-dashboard\src\components\GrainComparisonMatrix.tsx
+  300:16  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\scott\graintech-dashboard\src\components\GrainLandscapeMap.tsx
+  308:16  warning  'err' is defined but never used                                            @typescript-eslint/no-unused-vars
+  625:21  error    Unexpected constant truthiness on the left-hand side of a `&&` expression  no-constant-binary-expression
+  661:21  error    Unexpected constant truthiness on the left-hand side of a `&&` expression  no-constant-binary-expression
+  699:21  error    Unexpected constant truthiness on the left-hand side of a `&&` expression  no-constant-binary-expression
+  739:21  error    Unexpected constant truthiness on the left-hand side of a `&&` expression  no-constant-binary-expression
+  777:21  error    Unexpected constant truthiness on the left-hand side of a `&&` expression  no-constant-binary-expression
+
+C:\Users\scott\graintech-dashboard\src\components\TechStackExplorer.tsx
+  62:9  warning  The 'sharedFilters' conditional could make the dependencies of useMemo Hook (at line 139) change on every render. To fix this, wrap the initialization of 'sharedFilters' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+Γ£û 10 problems (7 errors, 3 warnings)
+

@@ -305,7 +305,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
           text: `View my filtered grain quality inspection solutions (${filteredSolutions.length} results)`,
           url: shareUrl,
         });
-      } catch (err) {
+      } catch {
         // User cancelled share
       }
     } else {
@@ -386,6 +386,25 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     )}
+                    {solution.citations && solution.citations.length > 0 && (
+                      <div className="mt-3 pt-2 border-t border-gray-200">
+                        <div className="text-[10px] text-gray-500 font-semibold mb-1">Recent References:</div>
+                        <div className="flex flex-col gap-1">
+                          {solution.citations.slice(0, 2).map((cite, i) => (
+                            <a
+                              key={i}
+                              href={cite}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-blue-600 hover:underline truncate max-w-full block"
+                              title={cite}
+                            >
+                              • Source {i + 1}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </Popup>
               </CircleMarker>
@@ -395,32 +414,16 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
       </div>
 
       {/* MAP LEGEND */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 grid gap-3 sm:flex sm:items-center sm:justify-between text-xs text-gray-600 dark:text-gray-400">
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-          {Object.entries(sensingColors).map(([tech, color]) => (
-            <div key={tech} className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-[11px] sm:text-xs">{formatEnumLabel(tech as SensingTech)}</span>
-            </div>
-          ))}
-        </div>
-        <div className="grid gap-2">
-          <span className="text-gray-500 dark:text-gray-400 text-[11px] sm:text-xs">Deployment scale:</span>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-            {maturityOrder.map((level) => {
-              const score = maturityScores[level];
-              return (
-                <span key={level} className="inline-flex items-center gap-1 sm:gap-2">
-                  <span
-                    className="inline-flex items-center justify-center rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
-                    style={{ width: `${8 + score * 2}px`, height: `${8 + score * 2}px` }}
-                    title={level}
-                  />
-                  <span className="text-[10px] sm:text-xs">{level}</span>
-                </span>
-              );
-            })}
-          </div>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+        <div className="flex flex-wrap items-center gap-3">
+          {Object.entries(sensingColors)
+            .filter(([tech]) => tech !== 'DroneImaging')
+            .map(([tech, color]) => (
+              <div key={tech} className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                <span className="text-[11px] sm:text-xs">{formatEnumLabel(tech as SensingTech)}</span>
+              </div>
+            ))}
         </div>
       </div>
 
@@ -622,7 +625,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       {expandedFilterSections.search ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
-                  {(expandedFilterSections.search || true) && (
+                  {expandedFilterSections.search && (
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                         <Search className="w-4 h-4" />
@@ -658,7 +661,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       {expandedFilterSections.regions ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
-                  {(expandedFilterSections.regions || true) && (
+                  {expandedFilterSections.regions && (
                     <div className="flex flex-wrap gap-2">
                       {availableFilters.regions.map((region) => {
                         const selected = activeFilters.regions.includes(region);
@@ -696,7 +699,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       {expandedFilterSections.sensing ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
-                  {(expandedFilterSections.sensing || true) && (
+                  {expandedFilterSections.sensing && (
                     <div className="flex flex-wrap gap-2">
                       {availableFilters.sensing.map((tech) => {
                         const selected = activeFilters.sensing.includes(tech);
@@ -736,7 +739,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       {expandedFilterSections.formFactors ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
-                  {(expandedFilterSections.formFactors || true) && (
+                  {expandedFilterSections.formFactors && (
                     <div className="flex flex-wrap gap-2">
                       {availableFilters.formFactors.map((factor) => {
                         const selected = activeFilters.formFactors.includes(factor);
@@ -774,7 +777,7 @@ export const GrainLandscapeMap = function GrainLandscapeMap({
                       {expandedFilterSections.useCases ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
-                  {(expandedFilterSections.useCases || true) && (
+                  {expandedFilterSections.useCases && (
                     <div className="flex flex-wrap gap-2">
                       {availableFilters.useCases.map((useCase) => {
                         const selected = activeFilters.useCases.includes(useCase);

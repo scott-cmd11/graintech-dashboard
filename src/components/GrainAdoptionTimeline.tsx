@@ -6,6 +6,7 @@ import type {
   Region,
 } from "../data/grainTechEntities";
 import { formatCompanyUrl, getCompanyUrl } from "../utils/companyLookup";
+import { formatEnumLabel } from "../utils/formatLabels";
 
 interface GrainAdoptionTimelineProps {
   adoptionEvents: AdoptionEvent[];
@@ -22,20 +23,7 @@ const categoryColors: Record<AdoptionEvent["category"], string> = {
 
 const chipBase =
   "px-3 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500";
-const monthNames = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+
 
 function toggleFilter<T>(items: T[], value: T): T[] {
   return items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
@@ -80,6 +68,7 @@ export const GrainAdoptionTimeline = function GrainAdoptionTimeline({
     });
   }, [adoptionEvents, regions, categories]);
 
+  // Sort Newest -> Oldest for horizontal timeline (Left -> Right)
   const grouped = useMemo(() => {
     const byYear = new Map<number, AdoptionEvent[]>();
     filteredEvents.forEach((event) => {
@@ -88,17 +77,12 @@ export const GrainAdoptionTimeline = function GrainAdoptionTimeline({
       byYear.set(event.year, list);
     });
     return Array.from(byYear.entries())
-      .sort((a, b) => b[0] - a[0])
+      .sort((a, b) => b[0] - a[0]) // DESCENDING
       .map(([year, events]) => ({
         year,
         events: events.sort((a, b) => (b.month ?? 0) - (a.month ?? 0)),
       }));
   }, [filteredEvents]);
-
-  const activeEvent = activeEventId
-    ? filteredEvents.find((event) => event.id === activeEventId)
-    : null;
-  const relatedSolutions = activeEvent ? matchCompanies(activeEvent, grainSolutions) : [];
 
   const clearFilters = () => {
     setRegions([]);
@@ -106,206 +90,157 @@ export const GrainAdoptionTimeline = function GrainAdoptionTimeline({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <div className="flex items-center gap-3">
-          <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-              Adoption Timeline
-            </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              A curated view of product launches, pilots, and policy milestones across regions.
-            </p>
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+      {/* Header & Controls */}
+      <div className="flex flex-col gap-6 mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                Adoption Timeline
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Tracking the evolution of grading technology over time.
+              </p>
+            </div>
+          </div>
+          <div className="text-xs font-mono bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-gray-600 dark:text-gray-300">
+            {filteredEvents.length} milestones
           </div>
         </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400">
-          {filteredEvents.length} events
-        </div>
-      </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 mb-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Regions
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {regionOptions.map((region) => {
-              const selected = regions.includes(region as Region);
-              return (
+        {/* Filters Panel */}
+        <div className="flex flex-wrap items-start gap-8 py-4 border-y border-gray-100 dark:border-gray-700">
+          <div className="space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Regions</span>
+            <div className="flex flex-wrap gap-2">
+              {regionOptions.map((region) => (
                 <button
                   key={region}
                   onClick={() => setRegions((prev) => toggleFilter(prev, region as Region))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-emerald-600 border-emerald-600 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                  className={`${chipBase} ${regions.includes(region as Region)
+                    ? "bg-emerald-600 border-emerald-600 text-white"
+                    : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-emerald-400"
+                    }`}
                 >
                   {region}
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-            Categories
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {categoryOptions.map((category) => {
-              const selected = categories.includes(category);
-              return (
+          <div className="space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Categories</span>
+            <div className="flex flex-wrap gap-2">
+              {categoryOptions.map((category) => (
                 <button
                   key={category}
                   onClick={() => setCategories((prev) => toggleFilter(prev, category))}
-                  className={`${chipBase} ${
-                    selected
-                      ? "bg-indigo-500 border-indigo-500 text-white"
-                      : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-                  }`}
+                  className={`${chipBase} ${categories.includes(category)
+                    ? "bg-indigo-600 border-indigo-600 text-white"
+                    : "bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-indigo-400"
+                    }`}
                 >
-                  {category}
+                  {formatEnumLabel(category)}
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
+
+          {(regions.length > 0 || categories.length > 0) && (
+            <button onClick={clearFilters} className="text-xs text-red-500 hover:underline self-end pb-1">
+              Reset Filters
+            </button>
+          )}
         </div>
       </div>
 
-      {(regions.length > 0 || categories.length > 0) && (
-        <button
-          onClick={clearFilters}
-          className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 mb-4"
-        >
-          Clear filters
-        </button>
-      )}
+      {/* Horizontal Scroll Area */}
+      <div
+        className="flex overflow-x-auto pb-8 pt-4 gap-8 custom-scrollbar relative min-h-[400px]"
+      >
+        {grouped.map((group) => (
+          <div key={group.year} className="flex-shrink-0 flex flex-col gap-4 snap-start relative">
+            {/* Year Marker */}
+            <div className="text-4xl font-black text-gray-200 dark:text-gray-700 select-none sticky left-0 leading-none">
+              {group.year}
+            </div>
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="space-y-8">
-          {grouped.map((group) => (
-            <div key={group.year} className="relative pl-6">
-              <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700" />
-              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                {group.year}
-              </div>
-              <div className="space-y-4">
-                {group.events.map((event) => {
-                  const related = matchCompanies(event, grainSolutions);
-                  return (
-                    <div key={event.id} className="relative group">
-                      <button
-                        onClick={() => setActiveEventId(event.id)}
-                        className={`w-full text-left rounded-xl border p-4 transition-colors ${
-                          activeEventId === event.id
-                            ? "border-teal-300 dark:border-teal-600 bg-teal-50/60 dark:bg-teal-900/20"
-                            : "border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/40"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className={`w-3 h-3 rounded-full ${categoryColors[event.category]}`} />
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                            {event.category}
-                          </span>
-                          <span className="text-xs text-gray-400 dark:text-gray-500">{event.region}</span>
-                        </div>
-                        <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          {event.title}
-                        </h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                          {event.description}
-                        </p>
-                      </button>
+            <div className="flex gap-4">
+              {group.events.map((event) => {
+                const isActive = activeEventId === event.id;
+                const relatedSolutions = isActive ? matchCompanies(event, grainSolutions) : [];
 
-                      <div className="absolute left-0 top-full mt-2 hidden group-hover:block bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg p-3 text-xs text-gray-600 dark:text-gray-300 max-w-sm z-10">
-                        <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                          {event.title}
-                        </div>
-                        <div>{event.description}</div>
-                        <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
-                          {event.month && monthNames[event.month - 1]
-                            ? `${monthNames[event.month - 1]} ${event.year}`
-                            : event.year} • {event.region} • {event.category}
-                        </div>
-                        {related.length > 0 && (
-                          <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
-                            Related: {related.map((solution) => solution.company).join(", ")}
-                          </div>
-                        )}
+                return (
+                  <div
+                    key={event.id}
+                    className={`w-[320px] bg-white dark:bg-gray-800 rounded-xl border transition-all flex flex-col shadow-sm hover:shadow-md ${isActive
+                      ? "border-teal-500 ring-1 ring-teal-500 z-10 scale-[1.02]"
+                      : "border-gray-200 dark:border-gray-700"
+                      }`}
+                  >
+                    {/* Card Content */}
+                    <div
+                      className="p-5 flex-1 cursor-pointer"
+                      onClick={() => setActiveEventId(isActive ? null : event.id)}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className={`w-2 h-2 rounded-full ${categoryColors[event.category]}`} />
+                        <span className="text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400">
+                          {formatEnumLabel(event.category)}
+                        </span>
+                        <span className="ml-auto text-[10px] font-mono text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-0.5 rounded">
+                          {event.region}
+                        </span>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
 
-        <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-4 h-fit">
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Event details
-          </h4>
-          {activeEvent ? (
-            <div className="space-y-3 text-xs text-gray-600 dark:text-gray-300">
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-200">
-                  {activeEvent.title}
-                </span>
-                <p className="mt-1">{activeEvent.description}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-200">Region:</span>{" "}
-                {activeEvent.region}
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700 dark:text-gray-200">Category:</span>{" "}
-                {activeEvent.category}
-              </div>
-              {relatedSolutions.length > 0 ? (
-                <div>
-                  <span className="font-semibold text-gray-700 dark:text-gray-200">
-                    Related solutions:
-                  </span>
-                  <div className="mt-2 space-y-2">
-                    {relatedSolutions.map((solution) => {
-                      const companyUrl = solution.url || getCompanyUrl(solution.company);
-                      return (
-                        <div key={solution.id} className="rounded-lg bg-white dark:bg-gray-800 p-2 border border-gray-200 dark:border-gray-700">
-                          <div className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                            <span>{solution.company}</span>
-                            {companyUrl && (
-                              <a
-                                href={formatCompanyUrl(companyUrl)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800"
-                              >
-                                <ExternalLink className="w-3 h-3" />
-                              </a>
-                            )}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            {solution.productName}
-                          </div>
+                      <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">
+                        {event.title}
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-4">
+                        {event.description}
+                      </p>
+                    </div>
+
+                    {/* Footer / Source Link */}
+                    {event.url && (
+                      <div className="px-5 py-3 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700 rounded-b-xl flex items-center justify-between">
+                        <span className="text-[10px] text-gray-400 font-medium">Source Available</span>
+                        <a
+                          href={event.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Verify Source <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
+
+                    {/* Inline Expansion for Solutions */}
+                    {isActive && relatedSolutions.length > 0 && (
+                      <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-700 bg-teal-50/50 dark:bg-gray-800/80 animate-in slide-in-from-top-2 duration-200">
+                        <p className="text-xs font-bold text-teal-800 dark:text-teal-400 mb-2">Related Technology:</p>
+                        <div className="space-y-2">
+                          {relatedSolutions.map(sol => (
+                            <div key={sol.id} className="text-xs bg-white dark:bg-gray-700 p-2 rounded border border-gray-200 dark:border-gray-600 shadow-sm">
+                              <div className="font-semibold">{sol.company}</div>
+                              <div className="text-gray-500">{sol.productName}</div>
+                            </div>
+                          ))}
                         </div>
-                      );
-                    })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ) : (
-                <div className="text-gray-500 dark:text-gray-400">
-                  No related solutions linked.
-                </div>
-              )}
+                );
+              })}
             </div>
-          ) : (
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Select an event to see details and related solutions.
-            </p>
-          )}
-        </div>
+          </div>
+        ))}
+        {/* Right padding for scroll snapping */}
+        <div className="w-8 shrink-0" />
       </div>
     </div>
   );
