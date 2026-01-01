@@ -1,14 +1,9 @@
 import { memo, useState, useEffect, useMemo } from 'react';
 import {
   ArrowUpRight,
-  Calendar,
   ChevronDown,
   ChevronUp,
-  Clock,
   Newspaper,
-  RefreshCw,
-  User,
-  AlertCircle,
   Filter,
   Search
 } from 'lucide-react';
@@ -177,7 +172,7 @@ export const NewsFeed = memo(function NewsFeed() {
       setNews([]);
 
       try {
-        let queriesToFetch = [];
+        let queriesToFetch: { q: string; name: string }[] = [];
 
         if (selectedCompanyId === 'all') {
           queriesToFetch = defaultQueries;
