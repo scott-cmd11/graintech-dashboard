@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from 'react';
+import { memo, useState, useEffect, useMemo } from 'react';
 import {
   ArrowUpRight,
   Calendar,
@@ -9,7 +9,10 @@ import {
   RefreshCw,
   User,
   AlertCircle,
+  Filter,
+  Search
 } from 'lucide-react';
+import { companiesData } from '../data';
 
 interface NewsItem {
   id: string;
@@ -22,26 +25,6 @@ interface NewsItem {
   category?: string;
 }
 
-// Google Alerts RSS Feed URLs
-const RSS_FEEDS = [
-  {
-    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/5452083690063778198',
-    name: 'Grain Quality',
-  },
-  {
-    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/6657544371106105633',
-    name: 'Grain Technology',
-  },
-  {
-    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/17711904352499016105',
-    name: 'Agricultural Innovation',
-  },
-  {
-    url: 'https://www.google.ca/alerts/feeds/03030665084568507357/7719612955356284469',
-    name: 'Grain Inspection',
-  },
-];
-
 // CORS proxies in order of preference
 const CORS_PROXIES = [
   (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
@@ -49,66 +32,56 @@ const CORS_PROXIES = [
   (url: string) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&json`,
 ];
 
-// Fallback sample news data (displays if RSS feeds fail) - Real published sources with actual dates
+// Fallback sample news data (displays if RSS feeds fail)
 const FALLBACK_NEWS: NewsItem[] = [
   {
     id: 'fallback-1',
     title: 'Grain inspectors could use more technology, lawmakers told',
-    source: 'Agri-Pulse Communications',
+    source: 'Agri-Pulse',
     date: '2025-06-26T16:59:00Z',
-    summary: 'Witnesses at a House Agriculture subcommittee hearing on reauthorization of the U.S. Grain Standards Act emphasized that grain inspectors need access to new technology. The American Association of Grain Inspection and Weighing Agencies noted that grain inspection has relied on the same basic technology for 100 years.',
+    summary: 'Witnesses at a House Agriculture subcommittee hearing... emphasized that grain inspectors need access to new technology.',
     url: 'https://www.agri-pulse.com/articles/23117-grain-inspectors-could-use-more-technology-lawmakers-told',
     category: 'Regulation',
   },
   {
     id: 'fallback-2',
-    title: 'Spoiled Grain? There Are Apps for That',
-    source: 'AgWeb',
-    date: '2024-03-05T00:00:00Z',
-    summary: 'Mobile applications are bringing grain quality assessment technology directly to farmers. These apps enable real-time testing at the point of harvest, helping farmers make informed decisions about grain handling and storage.',
-    url: 'https://www.agweb.com/news/business/technology/spoiled-grain-there-are-apps',
-    category: 'Technology',
+    title: 'ZoomAgri lands $6m from GrainCorp and others',
+    source: 'AgFunderNews',
+    date: '2023-07-27T07:00:00Z',
+    summary: 'ZoomAgri lands $6m from GrainCorp and others to expand AI-powered grain inspection system.',
+    url: 'https://agfundernews.com/zoomagri-lands-6m-from-graincorp-and-others-to-expand-ai-powered-grain-inspection-system',
+    category: 'Industry',
   },
   {
     id: 'fallback-3',
-    title: 'Ground Truth Agriculture Advancing Grain Grading with Cutting-Edge AgTech',
-    source: 'Saskatchewan Trade and Invest',
+    title: 'Ground Truth Agriculture Advancing Grain Grading',
+    source: 'SaskTrade',
     date: '2025-05-13T00:00:00Z',
-    summary: 'Ground Truth Agriculture uses a combination of machine vision and near-infrared spectroscopy (NIRS) to analyze grain quality factors. The technology provides results that are consistent, accurate, and aligned with industry standards.',
+    summary: 'Ground Truth Agriculture uses a combination of machine vision and near-infrared spectroscopy (NIRS) to analyze grain quality.',
     url: 'https://investsk.ca/2025/05/13/ground-truth-agriculture-advancing-grain-grading-with-cutting-edge-agtech/',
     category: 'Innovation',
   },
   {
     id: 'fallback-4',
-    title: 'Advances in Hyperspectral Imaging Technology for Grain Quality and Safety Detection',
-    source: 'MDPI (Food Science Journal)',
-    date: '2025-08-26T00:00:00Z',
-    summary: 'Hyperspectral imaging (HSI) technology offers a non-destructive, efficient, and rapid alternative for grain quality assessment by integrating spatial and spectral data. This approach enables identification of defects, contamination, and quality parameters.',
-    url: 'https://www.mdpi.com/2304-8158/14/17/2977',
-    category: 'Research',
-  },
-  {
-    id: 'fallback-5',
-    title: 'Precision agriculture use increases with farm size and varies widely by technology',
-    source: 'USDA Economic Research Service',
-    date: '2024-12-10T00:00:00Z',
-    summary: 'USDA research shows adoption of precision agriculture technologies has increased substantially over the past 20 years. Guidance autosteering systems were used by 52% of midsize farms and 70% of large-scale crop farms in 2023, up from single digits in the early 2000s.',
-    url: 'https://www.ers.usda.gov/data-products/charts-of-note/chart-detail?chartId=110550',
-    category: 'Research',
-  },
-  {
-    id: 'fallback-6',
-    title: 'The Era of Precision Agriculture Takes Shape',
-    source: 'AEM (Association of Equipment Manufacturers)',
-    date: '2024-03-17T00:00:00Z',
-    summary: 'The precision agriculture market continues to expand as equipment manufacturers develop advanced optical sorters, automated grain handling systems, and IoT-enabled sensors. These technologies promise increased yields and improved grain quality through data-driven decision making.',
-    url: 'https://www.aem.org/news/the-era-of-precision-agriculture-has-arrived',
-    category: 'Industry',
+    title: 'GoMicro AI web app live for five Australian crops',
+    source: 'Grain Central',
+    date: '2023-06-21T00:00:00Z',
+    summary: 'GoMicro’s AI grain assessment technology is now available as a web app for wheat, barley, canola, lentils and peas.',
+    url: 'https://www.graincentral.com/ag-tech/gomicro-ai-web-app-live-for-five-australian-crops/',
+    category: 'Technology',
   },
 ];
 
+// Helper function to build Google News RSS URL
+function getGoogleNewsRssUrl(query: string): string {
+  // Use US English but query can be global
+  return `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+}
+
 // Helper function to fetch RSS feed with multiple proxy fallbacks
-async function fetchRSSFeed(feedUrl: string, feedName: string): Promise<NewsItem[]> {
+async function fetchRSSFeed(query: string, categoryName: string): Promise<NewsItem[]> {
+  const feedUrl = getGoogleNewsRssUrl(query);
+
   for (let proxyIndex = 0; proxyIndex < CORS_PROXIES.length; proxyIndex++) {
     try {
       const proxyUrl = CORS_PROXIES[proxyIndex](feedUrl);
@@ -116,13 +89,9 @@ async function fetchRSSFeed(feedUrl: string, feedName: string): Promise<NewsItem
         signal: AbortSignal.timeout(5000) // 5 second timeout
       });
 
-      if (!response.ok) {
-        continue; // Try next proxy
-      }
+      if (!response.ok) continue;
 
       let feedContent = '';
-
-      // Handle different proxy response formats
       if (proxyIndex === 0 || proxyIndex === 1) {
         feedContent = await response.text();
       } else {
@@ -130,87 +99,58 @@ async function fetchRSSFeed(feedUrl: string, feedName: string): Promise<NewsItem
         feedContent = data.contents || '';
       }
 
-      if (!feedContent) {
-        continue;
-      }
+      if (!feedContent) continue;
 
-      // Parse the XML response
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(feedContent, 'text/xml');
 
-      if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
-        console.error(`Failed to parse RSS feed: ${feedName}`);
-        continue;
-      }
+      if (xmlDoc.getElementsByTagName('parsererror').length > 0) continue;
 
       const items = xmlDoc.getElementsByTagName('item');
       const newsItems: NewsItem[] = [];
 
-      Array.from(items).slice(0, 20).forEach((item, index) => {
+      Array.from(items).slice(0, 10).forEach((item, index) => {
         const title = item.getElementsByTagName('title')[0]?.textContent || 'No title';
         const link = item.getElementsByTagName('link')[0]?.textContent || '';
         const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || new Date().toISOString();
-        const description = item.getElementsByTagName('description')[0]?.textContent || '';
+        // Google News RSS descriptions often contain HTML anchors, we want just text if possible, or use snippet
+        let description = item.getElementsByTagName('description')[0]?.textContent || '';
 
-        // Clean up HTML from description
+        // Google News RSS descriptions are often just links, so let's try to extract source from title if needed
+        // Format often: "Title - Source"
+        let source = categoryName;
+        const titleParts = title.split(' - ');
+        if (titleParts.length > 1) {
+          source = titleParts[titleParts.length - 1]; // Last part is usually source
+        }
+
+        // Clean up description HTML
         const cleanDescription = description
-          .replace(/<[^>]*>/g, '')
-          .substring(0, 150)
+          .replace(/<a[^>]*>.*?<\/a>/g, '') // Remove links
+          .replace(/<[^>]*>/g, '') // Remove other tags
+          .replace(/&nbsp;/g, ' ')
           .trim();
 
         if (title && link) {
           newsItems.push({
-            id: `${feedName}-${index}-${Date.now()}`,
+            id: `${query}-${index}-${Date.now()}`,
             title,
-            source: feedName,
+            source: source,
             date: pubDate,
-            summary: cleanDescription || 'No summary available',
+            summary: cleanDescription || title, // Fallback to title if summary is empty
             url: link,
+            category: categoryName
           });
         }
       });
 
-      if (newsItems.length > 0) {
-        return newsItems;
-      }
+      if (newsItems.length > 0) return newsItems;
     } catch (error) {
-      console.warn(`Proxy ${proxyIndex} failed for ${feedName}:`, error);
-      continue; // Try next proxy
+      console.warn(`Proxy ${proxyIndex} failed for ${query}:`, error);
+      continue;
     }
   }
-
-  console.error(`All proxies failed for RSS feed: ${feedName}`);
   return [];
-}
-
-// Cache management functions
-function getCachedNews(): NewsItem[] {
-  try {
-    const cached = localStorage.getItem('graintech_news_cache');
-    if (!cached) return [];
-
-    const { articles, timestamp } = JSON.parse(cached);
-    const oneDayMs = 24 * 60 * 60 * 1000;
-
-    // Return cached articles if less than 24 hours old
-    if (Date.now() - timestamp < oneDayMs) {
-      return articles;
-    }
-  } catch (error) {
-    console.error('Error reading news cache:', error);
-  }
-  return [];
-}
-
-function setCachedNews(articles: NewsItem[]): void {
-  try {
-    localStorage.setItem('graintech_news_cache', JSON.stringify({
-      articles,
-      timestamp: Date.now(),
-    }));
-  } catch (error) {
-    console.error('Error saving news cache:', error);
-  }
 }
 
 export const NewsFeed = memo(function NewsFeed() {
@@ -218,253 +158,233 @@ export const NewsFeed = memo(function NewsFeed() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
-  const [isCached, setIsCached] = useState(false);
-  const [isFallback, setIsFallback] = useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Default "Industry" queries
+  const defaultQueries = useMemo(() => [
+    { q: 'Grain Quality Technology', name: 'Industry' },
+    { q: 'Grain Inspection Innovation', name: 'Innovation' },
+    { q: 'ZoomAgri Australia', name: 'ZoomAgri' }, // Specific user request
+    { q: 'GoMicro Grain', name: 'GoMicro' },
+    { q: 'Grainship Technology', name: 'Logistics' }
+  ], []);
 
   useEffect(() => {
-    async function fetchAllFeeds() {
+    async function loadNews() {
+      setLoading(true);
+      setError(null);
+      setNews([]);
+
       try {
-        // Load cached articles immediately
-        const cachedNews = getCachedNews();
-        if (cachedNews.length > 0) {
-          setNews(cachedNews);
-          setIsCached(true);
-          setError(null);
+        let queriesToFetch = [];
+
+        if (selectedCompanyId === 'all') {
+          queriesToFetch = defaultQueries;
+        } else {
+          const company = companiesData.find(c => c.id.toString() === selectedCompanyId);
+          if (company) {
+            // Smart query construction
+            queriesToFetch = [
+              { q: `"${company.name}" grain`, name: company.name }, // Exact match preferred
+              { q: `${company.name} ${company.product}`, name: 'Product' },
+              { q: `${company.name} technology`, name: 'Tech' }
+            ];
+          }
         }
 
-        // Still load, but only show loading if no cache
-        if (cachedNews.length === 0) {
-          setLoading(true);
+        // If manual search query exists, override
+        if (searchQuery) {
+          queriesToFetch = [{ q: searchQuery, name: 'Search' }];
         }
 
-        // Fetch all RSS feeds in parallel
-        const feedPromises = RSS_FEEDS.map((feed) =>
-          fetchRSSFeed(feed.url, feed.name)
-        );
+        const promises = queriesToFetch.map(q => fetchRSSFeed(q.q, q.name));
+        const results = await Promise.all(promises);
 
-        const allFeeds = await Promise.all(feedPromises);
-
-        // Combine all feeds and sort by date (newest first)
-        const combinedNews = allFeeds
+        const combinedNews = results
           .flat()
+          .filter((item, index, self) =>
+            index === self.findIndex((t) => t.title === item.title) // Dedup by title
+          )
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
         if (combinedNews.length > 0) {
           setNews(combinedNews);
-          setCachedNews(combinedNews);
-          setError(null);
-          setIsCached(false);
-        } else if (cachedNews.length === 0) {
-          // Use fallback news if no RSS feeds and no cache available
-          setNews(FALLBACK_NEWS);
-          setError(null);
-          setIsCached(false);
-          setIsFallback(true);
+        } else {
+          // If filtering by specific company yields no results, might be good to show fallback or empty state
+          // For 'all', show fallback
+          if (selectedCompanyId === 'all' && !searchQuery) {
+            setNews(FALLBACK_NEWS);
+          }
         }
-      } catch (error) {
-        console.error('Error fetching news feeds:', error);
-        // Use fallback news if fetch fails and no cached articles
-        if (news.length === 0) {
-          setNews(FALLBACK_NEWS);
-          setError(null);
-          setIsFallback(true);
-        }
+      } catch (err) {
+        console.error('Failed to load news', err);
+        if (selectedCompanyId === 'all') setNews(FALLBACK_NEWS);
+        setError('Failed to fetch latest updates');
       } finally {
         setLoading(false);
       }
     }
 
-    fetchAllFeeds();
-  }, []);
+    // Debounce basic search, but load immediately on category change
+    const timeoutId = setTimeout(loadNews, 500);
+    return () => clearTimeout(timeoutId);
+  }, [selectedCompanyId, searchQuery, defaultQueries]);
 
-  const displayedNews = showAll ? news : news.slice(0, 5);
-
-  const isDateOnly = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
-
-  const parseDate = (value: string) => {
-    if (isDateOnly(value)) {
-      return new Date(`${value}T00:00:00`);
-    }
-    return new Date(value);
-  };
-
-  const formatDate = (value: string) => {
-    const date = parseDate(value);
-    if (Number.isNaN(date.getTime())) return 'Unknown date';
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  const formatTime = (value: string) => {
-    if (isDateOnly(value)) return null;
-    const date = parseDate(value);
-    if (Number.isNaN(date.getTime())) return null;
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  };
-
-  const gradients = [
-    'from-amber-500/80 via-orange-500/70 to-rose-500/70',
-    'from-emerald-500/80 via-teal-500/70 to-cyan-500/70',
-    'from-sky-500/80 via-blue-500/70 to-indigo-500/70',
-    'from-fuchsia-500/80 via-purple-500/70 to-indigo-500/70',
-  ];
-
-  const getGradient = (source: string) => {
-    const hash = source.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return gradients[Math.abs(hash) % gradients.length];
-  };
-
-  const getSourceInitials = (source: string) => {
-    const parts = source.split(' ').filter(Boolean);
-    const initials = parts.map((part) => part[0]).slice(0, 2).join('');
-    return initials ? initials.toUpperCase() : 'GI';
-  };
+  const displayedNews = showAll ? news : news.slice(0, 9); // Show more by default
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-        <div className="flex items-center gap-3">
-          <Newspaper className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 display-font">Industry news</h3>
-        </div>
-        {!loading && news.length > 0 && (
-          <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-            <RefreshCw className="w-3 h-3" />
-            From Google Alerts
-          </span>
-        )}
-      </div>
+    <div className="space-y-6">
+      {/* Controls */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
 
-      {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-700">
-              <div className="h-36 bg-gray-200 dark:bg-gray-700" />
-              <div className="p-4 space-y-3">
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5" />
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/5" />
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24" />
-              </div>
+          {/* Company Filter */}
+          <div className="relative w-full md:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Filter className="h-4 w-4 text-gray-400" />
             </div>
-          ))}
-        </div>
-      ) : error ? (
-        <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-semibold text-amber-900 dark:text-amber-300">Unable to load news</h4>
-            <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">{error}</p>
+            <select
+              value={selectedCompanyId}
+              onChange={(e) => {
+                setSelectedCompanyId(e.target.value);
+                setSearchQuery(''); // Clear manual search
+              }}
+              className="block w-full pl-10 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+            >
+              <option value="all">Global Industry News</option>
+              <optgroup label="Filter by Technology">
+                {companiesData.sort((a, b) => a.name.localeCompare(b.name)).map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {company.name}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+          </div>
+
+          {/* Manual Search */}
+          <div className="relative w-full md:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search news..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
           </div>
         </div>
-      ) : news.length === 0 ? (
-        <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 p-4 text-center">
-          <p className="text-gray-600 dark:text-gray-400">No news articles available at the moment.</p>
+      </div>
+
+      {/* News Grid */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Newspaper className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 display-font">
+              {selectedCompanyId !== 'all'
+                ? `${companiesData.find(c => c.id.toString() === selectedCompanyId)?.name} News`
+                : 'Latest Industry Updates'}
+            </h3>
+          </div>
+          <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+            Powered by Google News
+          </span>
         </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {displayedNews.map((item) => {
-            const timeLabel = formatTime(item.date);
-            const imageUrl = item.imageUrl;
-            return (
+
+        {loading ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-700">
+                <div className="h-36 bg-gray-200 dark:bg-gray-700" />
+                <div className="p-4 space-y-3">
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 text-center text-red-800 dark:text-red-200">
+            {error}
+          </div>
+        ) : news.length === 0 ? (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <Newspaper className="w-12 h-12 mx-auto mb-3 opacity-20" />
+            <p>No recent news found for this specific query.</p>
+            <button
+              onClick={() => setSelectedCompanyId('all')}
+              className="mt-4 text-indigo-600 font-medium hover:underline"
+            >
+              Back to Global News
+            </button>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {displayedNews.map((item) => (
               <article
                 key={item.id}
-                className="group overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800/70 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800/70 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md h-full"
               >
-                <div
-                  className={`relative h-36 w-full ${
-                    imageUrl ? 'bg-slate-900' : `bg-gradient-to-br ${getGradient(item.source)}`
-                  }`}
-                >
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={item.title}
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                  ) : null}
-                  <div className="absolute inset-0 bg-slate-900/30" />
-                  {item.category && (
-                    <span className="absolute right-3 top-3 rounded-full bg-white/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/90">
-                      {item.category}
-                    </span>
+                <div className="p-5 flex flex-col h-full bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/50">
+                  <div className="mb-3">
+                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+                      <span className="font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full">
+                        {item.source}
+                      </span>
+                      <span>{new Date(item.date).toLocaleDateString()}</span>
+                    </div>
+                    <h4 className="text-base font-bold text-gray-900 dark:text-gray-100 leading-tight group-hover:text-indigo-600 transition-colors">
+                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                        {item.title}
+                      </a>
+                    </h4>
+                  </div>
+
+                  {/* Summary snippet if available and not same as title */}
+                  {item.summary && item.summary !== item.title && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4 flex-1">
+                      {item.summary}
+                    </p>
                   )}
-                  <div className="absolute bottom-3 left-3">
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">
-                      Source
-                    </span>
-                    <div className="text-xl font-semibold text-white">{getSourceInitials(item.source)}</div>
+
+                  <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
+                    >
+                      Read Article
+                      <ArrowUpRight className="w-3 h-3" />
+                    </a>
                   </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span className="inline-flex items-center gap-1">
-                      <User className="w-3.5 h-3.5" />
-                      {item.source}
-                    </span>
-                    <span className="text-gray-300 dark:text-gray-600">|</span>
-                    <span className="inline-flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {formatDate(item.date)}
-                    </span>
-                    {timeLabel && (
-                      <>
-                        <span className="text-gray-300 dark:text-gray-600">|</span>
-                        <span className="inline-flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          {timeLabel}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  <h4 className="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
-                    {item.title}
-                  </h4>
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
-                    {item.summary}
-                  </p>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200"
-                  >
-                    Read more
-                    <ArrowUpRight className="w-4 h-4" />
-                  </a>
                 </div>
               </article>
-            );
-          })}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {news.length > 5 && !loading && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="w-full mt-6 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-center gap-1"
-        >
-          {showAll ? (
-            <>
-              <ChevronUp className="w-4 h-4" />
-              Show less
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-4 h-4" />
-              Show all ({news.length} articles)
-            </>
-          )}
-        </button>
-      )}
-
-      <p className="text-xs text-gray-400 dark:text-gray-500 mt-4 text-center">
-        {isFallback ? '📚 Sample articles (showing when live feeds are unavailable)' : isCached ? '📦 Cached articles (will refresh tomorrow)' : 'News curated from Google Alerts feeds. Refreshes daily.'}
-      </p>
+        {news.length > 9 && !loading && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="w-full mt-8 py-3 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
+          >
+            {showAll ? (
+              <>
+                Show less <ChevronUp className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                Show all {news.length} articles <ChevronDown className="w-4 h-4" />
+              </>
+            )}
+          </button>
+        )}
+      </div>
     </div>
   );
 });
